@@ -7,13 +7,15 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/lib/TextField';
-
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
+import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right';
 import Divider from 'material-ui/lib/divider';
 import LinkIcon from 'material-ui/lib/svg-icons/content/link';
 import {onMessageChange, onStateChange, onNewMessageRecieved} from '../actions';
+
+import ChatAreaHeader from './ChatAreaHeader';
 
 
 var nameSpaceSocket;
@@ -66,29 +68,6 @@ const SideBar = ({username,users = []}) => {
     </div>)
 };
 
-const GroupDetailsHeader = ({channelName}) => (
-    <div className="ml-g-header">
-        <div className="ml-g-h-label">{channelName}</div>
-        <IconMenu
-            className="ml-g-h-icon"
-            iconButtonElement={<IconButton><LinkIcon /></IconButton>}
-            anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-        >
-            <MenuItem primaryText="Copy Link"/>
-            <Divider/>
-            <MenuItem
-                primaryText="Share Link"
-                rightIcon={<ArrowDropRight />}
-                menuItems={[
-                    <MenuItem primaryText="Facebook" />,
-                    <MenuItem primaryText="Twitter" />
-                ]}
-            />
-        </IconMenu>
-    </div>
-);
-
 const userTyping = (usersTyping = []) => {
     const length = usersTyping.length;
 
@@ -135,7 +114,7 @@ class MessageForm extends Component {
 
         return (
             <div className="messageForm">
-                <GroupDetailsHeader {...props}/>
+                <ChatAreaHeader {...props}/>
                 <div ref="messageList" className="messagesList">
                     {_.map(messages, ({type, data}) => {
                         return type === 'MESSAGE' ? <Message {...data}/> : <Info {...data}/>;
@@ -234,3 +213,22 @@ const ChatRoom = connect(
 )(ChatRoomComponent);
 
 export default ChatRoom;
+
+
+//<IconMenu
+//    className="ml-g-h-icon"
+//    iconButtonElement={<IconButton><LinkIcon /></IconButton>}
+//    anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+//    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+//>
+//    <MenuItem primaryText="Copy Link"/>
+//    <Divider/>
+//    <MenuItem
+//        primaryText="Share Link"
+//        rightIcon={<RightIcon />}
+//        menuItems={[
+//                    <MenuItem primaryText="Facebook" />,
+//                    <MenuItem primaryText="Twitter" />
+//                ]}
+//    />
+//</IconMenu>

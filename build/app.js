@@ -62,7 +62,7 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _main = __webpack_require__(281);
+	var _main = __webpack_require__(308);
 
 	var _main2 = _interopRequireDefault(_main);
 
@@ -70,7 +70,7 @@
 
 	var _redux = __webpack_require__(167);
 
-	var _reducers = __webpack_require__(285);
+	var _reducers = __webpack_require__(312);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -88,7 +88,7 @@
 
 	var store = (0, _redux.createStore)(_reducers2.default, getDefaultState());
 
-	var injectTapEventPlugin = __webpack_require__(286);
+	var injectTapEventPlugin = __webpack_require__(313);
 	injectTapEventPlugin();
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -19776,9 +19776,13 @@
 
 	var _ChatArea2 = _interopRequireDefault(_ChatArea);
 
-	var _actions = __webpack_require__(279);
+	var _snackbar = __webpack_require__(304);
 
-	var _Login = __webpack_require__(280);
+	var _snackbar2 = _interopRequireDefault(_snackbar);
+
+	var _actions = __webpack_require__(302);
+
+	var _Login = __webpack_require__(307);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
@@ -19813,8 +19817,6 @@
 
 	function onKnockClick(username, channelName) {
 	    socket.emit('checkChannel', channelName);
-
-	    //socket.emit('login', {username, channelName});
 	}
 
 	var MessageDate = function MessageDate(_ref) {
@@ -20099,14 +20101,9 @@
 	        key: 'render',
 	        value: function render() {
 	            var that = this;
-	            var _that$state = that.state;
-	            var nickName = _that$state.nickName;
-	            var users = _that$state.users;
-	            var messageTyped = _that$state.messageTyped;
-	            var _that$state$messages = _that$state.messages;
-	            var messages = _that$state$messages === undefined ? [] : _that$state$messages;
-	            var usersTyping = _that$state.usersTyping;
-	            var channelName = _that$state.channelName;
+	            var _that$props = that.props;
+	            var showSnackBar = _that$props.showSnackBar;
+	            var closeSnackbar = _that$props.closeSnackbar;
 
 
 	            return _react2.default.createElement(
@@ -20116,7 +20113,13 @@
 	                    _paper2.default,
 	                    { style: getAppPaperStyles.call(that), zDepth: 3 },
 	                    this.props.state !== 'USER_LOGGED_IN' ? _react2.default.createElement(_Login2.default, { onKnockClick: onKnockClick }) : _react2.default.createElement(_ChatArea2.default, null)
-	                )
+	                ),
+	                _react2.default.createElement(_snackbar2.default, {
+	                    open: showSnackBar,
+	                    message: 'Chat link ( ' + window.location.href + ' ) is copied to your clipboard',
+	                    autoHideDuration: 2000,
+	                    onRequestClose: closeSnackbar
+	                })
 	            );
 	        }
 	    }]);
@@ -20129,7 +20132,8 @@
 	        channelName: state.channelName,
 	        username: state.username,
 	        disableChannelName: state.disableChannelName,
-	        state: state.state
+	        state: state.state,
+	        showSnackBar: state.showSnackBar
 	    };
 	};
 
@@ -20137,6 +20141,9 @@
 	    return {
 	        onUserLoggedIn: function onUserLoggedIn() {
 	            dispatch((0, _actions.onUserLogin)());
+	        },
+	        closeSnackbar: function closeSnackbar() {
+	            dispatch((0, _actions.toggleSnackbar)(false));
 	        }
 	    };
 	};
@@ -44446,27 +44453,35 @@
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
-	var _iconMenu = __webpack_require__(291);
+	var _iconMenu = __webpack_require__(279);
 
 	var _iconMenu2 = _interopRequireDefault(_iconMenu);
 
-	var _menuItem = __webpack_require__(301);
+	var _menuItem = __webpack_require__(289);
 
 	var _menuItem2 = _interopRequireDefault(_menuItem);
 
-	var _iconButton = __webpack_require__(304);
+	var _iconButton = __webpack_require__(292);
 
 	var _iconButton2 = _interopRequireDefault(_iconButton);
 
-	var _divider = __webpack_require__(311);
+	var _chevronRight = __webpack_require__(298);
+
+	var _chevronRight2 = _interopRequireDefault(_chevronRight);
+
+	var _divider = __webpack_require__(299);
 
 	var _divider2 = _interopRequireDefault(_divider);
 
-	var _link = __webpack_require__(310);
+	var _link = __webpack_require__(301);
 
 	var _link2 = _interopRequireDefault(_link);
 
-	var _actions = __webpack_require__(279);
+	var _actions = __webpack_require__(302);
+
+	var _ChatAreaHeader = __webpack_require__(303);
+
+	var _ChatAreaHeader2 = _interopRequireDefault(_ChatAreaHeader);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44598,39 +44613,6 @@
 	    );
 	};
 
-	var GroupDetailsHeader = function GroupDetailsHeader(_ref7) {
-	    var channelName = _ref7.channelName;
-	    return _react2.default.createElement(
-	        'div',
-	        { className: 'ml-g-header' },
-	        _react2.default.createElement(
-	            'div',
-	            { className: 'ml-g-h-label' },
-	            channelName
-	        ),
-	        _react2.default.createElement(
-	            _iconMenu2.default,
-	            {
-	                className: 'ml-g-h-icon',
-	                iconButtonElement: _react2.default.createElement(
-	                    _iconButton2.default,
-	                    null,
-	                    _react2.default.createElement(_link2.default, null)
-	                ),
-	                anchorOrigin: { horizontal: 'left', vertical: 'top' },
-	                targetOrigin: { horizontal: 'left', vertical: 'top' }
-	            },
-	            _react2.default.createElement(_menuItem2.default, { primaryText: 'Copy Link' }),
-	            _react2.default.createElement(_divider2.default, null),
-	            _react2.default.createElement(_menuItem2.default, {
-	                primaryText: 'Share Link',
-	                rightIcon: _react2.default.createElement(ArrowDropRight, null),
-	                menuItems: [_react2.default.createElement(_menuItem2.default, { primaryText: 'Facebook' }), _react2.default.createElement(_menuItem2.default, { primaryText: 'Twitter' })]
-	            })
-	        )
-	    );
-	};
-
 	var userTyping = function userTyping() {
 	    var usersTyping = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
@@ -44696,13 +44678,13 @@
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'messageForm' },
-	                _react2.default.createElement(GroupDetailsHeader, props),
+	                _react2.default.createElement(_ChatAreaHeader2.default, props),
 	                _react2.default.createElement(
 	                    'div',
 	                    { ref: 'messageList', className: 'messagesList' },
-	                    _.map(messages, function (_ref8) {
-	                        var type = _ref8.type;
-	                        var data = _ref8.data;
+	                    _.map(messages, function (_ref7) {
+	                        var type = _ref7.type;
+	                        var data = _ref7.data;
 
 	                        return type === 'MESSAGE' ? _react2.default.createElement(Message, data) : _react2.default.createElement(Info, data);
 	                    })
@@ -44756,10 +44738,10 @@
 
 	        nameSpaceSocket.emit('login', username);
 
-	        nameSpaceSocket.on('userLoggedIn', function (_ref9) {
-	            var time = _ref9.time;
-	            var user = _ref9.user;
-	            var users = _ref9.users;
+	        nameSpaceSocket.on('userLoggedIn', function (_ref8) {
+	            var time = _ref8.time;
+	            var user = _ref8.user;
+	            var users = _ref8.users;
 	            var _this2$props$messages = _this2.props.messages;
 	            var messages = _this2$props$messages === undefined ? [] : _this2$props$messages;
 
@@ -44767,10 +44749,10 @@
 	            _this2.props.onStateChange({ messages: messages, users: users });
 	        });
 
-	        nameSpaceSocket.on('userLoggedOut', function (_ref10) {
-	            var time = _ref10.time;
-	            var user = _ref10.user;
-	            var users = _ref10.users;
+	        nameSpaceSocket.on('userLoggedOut', function (_ref9) {
+	            var time = _ref9.time;
+	            var user = _ref9.user;
+	            var users = _ref9.users;
 	            var _this2$props$messages2 = _this2.props.messages;
 	            var messages = _this2$props$messages2 === undefined ? [] : _this2$props$messages2;
 
@@ -44778,8 +44760,8 @@
 	            _this2.props.onStateChange({ messages: messages, users: users });
 	        });
 
-	        nameSpaceSocket.on('userTyping', function (_ref11) {
-	            var usersTyping = _ref11.usersTyping;
+	        nameSpaceSocket.on('userTyping', function (_ref10) {
+	            var usersTyping = _ref10.usersTyping;
 
 	            _this2.props.onStateChange({ usersTyping: usersTyping });
 	        });
@@ -44835,913 +44817,26 @@
 
 	exports.default = ChatRoom;
 
+	//<IconMenu
+	//    className="ml-g-h-icon"
+	//    iconButtonElement={<IconButton><LinkIcon /></IconButton>}
+	//    anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+	//    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+	//>
+	//    <MenuItem primaryText="Copy Link"/>
+	//    <Divider/>
+	//    <MenuItem
+	//        primaryText="Share Link"
+	//        rightIcon={<RightIcon />}
+	//        menuItems={[
+	//                    <MenuItem primaryText="Facebook" />,
+	//                    <MenuItem primaryText="Twitter" />
+	//                ]}
+	//    />
+	//</IconMenu>
+
 /***/ },
 /* 279 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.changeUsername = changeUsername;
-	exports.changeChannelName = changeChannelName;
-	exports.onUserLogin = onUserLogin;
-	exports.onMessageChange = onMessageChange;
-	exports.onStateChange = onStateChange;
-	exports.onNewMessageRecieved = onNewMessageRecieved;
-	/**
-	 * Created by amanjain on 30/07/16 at 10:17 AM.
-	 * Description :
-	 */
-
-	var USERNAME_CHANGED = exports.USERNAME_CHANGED = 'USERNAME_CHANGED';
-	var CHANNEL_NAME_CHANGED = exports.CHANNEL_NAME_CHANGED = 'CHANNEL_NAME_CHANGED';
-	//chatApp
-	var USER_LOGGED_IN = exports.USER_LOGGED_IN = 'USER_LOGGED_IN';
-	var USER_MESSAGE_CHANGE = exports.USER_MESSAGE_CHANGE = 'USER_MESSAGE_CHANGE';
-	var ON_STATE_UPDATE = exports.ON_STATE_UPDATE = 'ON_STATE_UPDATE';
-	var NEW_MESSAGE_RECIEVED = exports.NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
-
-	/*
-	 * action creators
-	 */
-
-	function changeUsername(data) {
-	    return { type: USERNAME_CHANGED, data: data };
-	}
-
-	function changeChannelName(data) {
-	    return { type: CHANNEL_NAME_CHANGED, data: data };
-	}
-
-	//chatApp
-	function onUserLogin(data) {
-	    return { type: USER_LOGGED_IN, data: data };
-	}
-
-	function onMessageChange(data) {
-	    return { type: USER_MESSAGE_CHANGE, data: data };
-	}
-
-	function onStateChange(data) {
-	    return { type: ON_STATE_UPDATE, data: data };
-	}
-
-	function onNewMessageRecieved(data) {
-	    return { type: NEW_MESSAGE_RECIEVED, data: data };
-	}
-
-/***/ },
-/* 280 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(160);
-
-	var _paper = __webpack_require__(273);
-
-	var _paper2 = _interopRequireDefault(_paper);
-
-	var _raisedButton = __webpack_require__(275);
-
-	var _raisedButton2 = _interopRequireDefault(_raisedButton);
-
-	var _TextField = __webpack_require__(190);
-
-	var _TextField2 = _interopRequireDefault(_TextField);
-
-	var _person = __webpack_require__(276);
-
-	var _person2 = _interopRequireDefault(_person);
-
-	var _actions = __webpack_require__(279);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by amanjain on 30/07/16 at 9:33 AM.
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Description :
-	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
-
-	var LoginComponent = function (_Component) {
-	    _inherits(LoginComponent, _Component);
-
-	    function LoginComponent() {
-	        _classCallCheck(this, LoginComponent);
-
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LoginComponent).apply(this, arguments));
-	    }
-
-	    _createClass(LoginComponent, [{
-	        key: 'render',
-	        value: function render() {
-	            var _props = this.props;
-	            var username = _props.username;
-	            var channelName = _props.channelName;
-	            var onKnockClick = _props.onKnockClick;
-	            var onChannelNameChange = _props.onChannelNameChange;
-	            var onUsernameChange = _props.onUsernameChange;
-	            var disableChannelName = _props.disableChannelName;
-
-
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                _react2.default.createElement(
-	                    _paper2.default,
-	                    { style: {
-	                            height: '100px',
-	                            width: '100px',
-	                            position: 'absolute',
-	                            top: '-50px',
-	                            left: 'calc(50% - 50px)',
-	                            display: 'inline-block',
-	                            textAlign: 'center',
-	                            backgroundColor: '#009688'
-	                        }, circle: true, zDepth: 1 },
-	                    _react2.default.createElement(_person2.default, { style: {
-	                            height: '60px',
-	                            width: '60px',
-	                            marginTop: '15px',
-	                            fill: '#fff'
-	                        } })
-	                ),
-	                _react2.default.createElement(
-	                    'form',
-	                    { className: 'nick-wrap', onSubmit: function onSubmit(e) {
-	                            onKnockClick(username, channelName);e.preventDefault();
-	                        } },
-	                    _react2.default.createElement(_TextField2.default, {
-	                        hintText: 'Nickname',
-	                        floatingLabelText: 'Nickname',
-	                        fullWidth: true,
-	                        onChange: function onChange(e) {
-	                            onUsernameChange(e.target.value);
-	                        },
-	                        value: username,
-	                        autoComplete: 'off'
-	                    }),
-	                    _react2.default.createElement(_TextField2.default, {
-	                        hintText: 'Channel Name',
-	                        floatingLabelText: 'comchat.io/',
-	                        fullWidth: true,
-	                        onChange: function onChange(e) {
-	                            onChannelNameChange(e.target.value);
-	                        },
-	                        value: channelName,
-	                        disabled: disableChannelName,
-	                        autoComplete: 'off',
-	                        errorText: disableChannelName ? 'You are trying to access \'' + channelName + '\' channel. You do not need to change it.' : "",
-	                        errorStyle: {
-	                            color: '#81C784'
-	                        }
-	                    }),
-	                    _react2.default.createElement(_raisedButton2.default, {
-	                        style: { marginTop: "25px" },
-	                        label: 'Knock',
-	                        fullWidth: true,
-	                        primary: true,
-	                        onClick: function onClick() {
-	                            onKnockClick(username, channelName);
-	                        },
-	                        disabled: !username
-	                    })
-	                )
-	            );
-	        }
-	    }]);
-
-	    return LoginComponent;
-	}(_react.Component);
-
-	var mapStateToProps = function mapStateToProps(state) {
-	    return {
-	        channelName: state.channelName,
-	        username: state.username,
-	        disableChannelName: state.disableChannelName
-	    };
-	};
-
-	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	    return {
-	        onChannelNameChange: function onChannelNameChange(channelName) {
-	            window.history.pushState("", "", '/' + channelName);
-	            dispatch((0, _actions.changeChannelName)(channelName));
-	        },
-	        onUsernameChange: function onUsernameChange(username) {
-	            dispatch((0, _actions.changeUsername)(username));
-	        }
-	    };
-	};
-
-	var Login = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginComponent);
-
-	exports.default = Login;
-
-/***/ },
-/* 281 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(282);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(284)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 282 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(283)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "html, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 75%;\n  float: left; }\n\n.ma-sidebar {\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%); }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 5px 30px; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 283 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 284 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 285 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	    value: true
-	});
-	exports.default = reducer;
-
-	var _actions = __webpack_require__(279);
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
-	                                                                                                                                                                                                     * Created by amanjain on 30/07/16 at 9:46 AM.
-	                                                                                                                                                                                                     * Description :
-	                                                                                                                                                                                                     */
-
-	function reducer() {
-	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	    var action = arguments[1];
-
-
-	    switch (action.type) {
-	        //Loging
-	        case _actions.USERNAME_CHANGED:
-	            return Object.assign({}, state, { username: action.data });
-	        case _actions.CHANNEL_NAME_CHANGED:
-	            return Object.assign({}, state, { channelName: action.data });
-
-	        //chatApp
-	        case _actions.USER_LOGGED_IN:
-	            return Object.assign({}, state, { state: 'USER_LOGGED_IN', messages: [], users: [] });
-	        case _actions.USER_MESSAGE_CHANGE:
-	            return Object.assign({}, state, { message: action.data });
-	        case _actions.ON_STATE_UPDATE:
-	            return Object.assign({}, state, action.data);
-	        case _actions.NEW_MESSAGE_RECIEVED:
-	            var messages = state.messages;
-	            messages = [].concat(_toConsumableArray(messages), [{ type: 'MESSAGE', data: action.data }]);
-	            return Object.assign({}, state, { messages: messages });
-	        default:
-	            return state;
-	    }
-	}
-
-/***/ },
-/* 286 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var defaultClickRejectionStrategy = __webpack_require__(287);
-
-	module.exports = function injectTapEventPlugin (strategyOverrides) {
-	  strategyOverrides = strategyOverrides || {}
-	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
-
-	  __webpack_require__(31).injection.injectEventPluginsByName({
-	    "TapEventPlugin":       __webpack_require__(288)(shouldRejectClick)
-	  });
-	};
-
-
-/***/ },
-/* 287 */
-/***/ function(module, exports) {
-
-	module.exports = function(lastTouchEvent, clickTimestamp) {
-	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
-	    return true;
-	  }
-	};
-
-
-/***/ },
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TapEventPlugin
-	 * @typechecks static-only
-	 */
-
-	"use strict";
-
-	var EventConstants = __webpack_require__(30);
-	var EventPluginUtils = __webpack_require__(33);
-	var EventPropagators = __webpack_require__(73);
-	var SyntheticUIEvent = __webpack_require__(87);
-	var TouchEventUtils = __webpack_require__(289);
-	var ViewportMetrics = __webpack_require__(38);
-
-	var keyOf = __webpack_require__(290);
-	var topLevelTypes = EventConstants.topLevelTypes;
-
-	var isStartish = EventPluginUtils.isStartish;
-	var isEndish = EventPluginUtils.isEndish;
-
-	var isTouch = function(topLevelType) {
-	  var touchTypes = [
-	    topLevelTypes.topTouchCancel,
-	    topLevelTypes.topTouchEnd,
-	    topLevelTypes.topTouchStart,
-	    topLevelTypes.topTouchMove
-	  ];
-	  return touchTypes.indexOf(topLevelType) >= 0;
-	}
-
-	/**
-	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
-	 * in order to still be considered a 'tap' event.
-	 */
-	var tapMoveThreshold = 10;
-	var ignoreMouseThreshold = 750;
-	var startCoords = {x: null, y: null};
-	var lastTouchEvent = null;
-
-	var Axis = {
-	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
-	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
-	};
-
-	function getAxisCoordOfEvent(axis, nativeEvent) {
-	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
-	  if (singleTouch) {
-	    return singleTouch[axis.page];
-	  }
-	  return axis.page in nativeEvent ?
-	    nativeEvent[axis.page] :
-	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
-	}
-
-	function getDistance(coords, nativeEvent) {
-	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	  return Math.pow(
-	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
-	    0.5
-	  );
-	}
-
-	var touchEvents = [
-	  topLevelTypes.topTouchStart,
-	  topLevelTypes.topTouchCancel,
-	  topLevelTypes.topTouchEnd,
-	  topLevelTypes.topTouchMove,
-	];
-
-	var dependencies = [
-	  topLevelTypes.topMouseDown,
-	  topLevelTypes.topMouseMove,
-	  topLevelTypes.topMouseUp,
-	].concat(touchEvents);
-
-	var eventTypes = {
-	  touchTap: {
-	    phasedRegistrationNames: {
-	      bubbled: keyOf({onTouchTap: null}),
-	      captured: keyOf({onTouchTapCapture: null})
-	    },
-	    dependencies: dependencies
-	  }
-	};
-
-	var now = (function() {
-	  if (Date.now) {
-	    return Date.now;
-	  } else {
-	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
-	    return function () {
-	      return +new Date;
-	    }
-	  }
-	})();
-
-	function createTapEventPlugin(shouldRejectClick) {
-	  return {
-
-	    tapMoveThreshold: tapMoveThreshold,
-
-	    ignoreMouseThreshold: ignoreMouseThreshold,
-
-	    eventTypes: eventTypes,
-
-	    /**
-	     * @param {string} topLevelType Record from `EventConstants`.
-	     * @param {DOMEventTarget} topLevelTarget The listening component root node.
-	     * @param {string} topLevelTargetID ID of `topLevelTarget`.
-	     * @param {object} nativeEvent Native browser event.
-	     * @return {*} An accumulation of synthetic events.
-	     * @see {EventPluginHub.extractEvents}
-	     */
-	    extractEvents: function(
-	        topLevelType,
-	        topLevelTarget,
-	        topLevelTargetID,
-	        nativeEvent,
-	        nativeEventTarget) {
-
-	      if (isTouch(topLevelType)) {
-	        lastTouchEvent = now();
-	      } else {
-	        if (shouldRejectClick(lastTouchEvent, now())) {
-	          return null;
-	        }
-	      }
-
-	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
-	        return null;
-	      }
-	      var event = null;
-	      var distance = getDistance(startCoords, nativeEvent);
-	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
-	        event = SyntheticUIEvent.getPooled(
-	          eventTypes.touchTap,
-	          topLevelTargetID,
-	          nativeEvent,
-	          nativeEventTarget
-	        );
-	      }
-	      if (isStartish(topLevelType)) {
-	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
-	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
-	      } else if (isEndish(topLevelType)) {
-	        startCoords.x = 0;
-	        startCoords.y = 0;
-	      }
-	      EventPropagators.accumulateTwoPhaseDispatches(event);
-	      return event;
-	    }
-
-	  };
-	}
-
-	module.exports = createTapEventPlugin;
-
-
-/***/ },
-/* 289 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2014 Facebook, Inc.
-	 *
-	 * Licensed under the Apache License, Version 2.0 (the "License");
-	 * you may not use this file except in compliance with the License.
-	 * You may obtain a copy of the License at
-	 *
-	 * http://www.apache.org/licenses/LICENSE-2.0
-	 *
-	 * Unless required by applicable law or agreed to in writing, software
-	 * distributed under the License is distributed on an "AS IS" BASIS,
-	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	 * See the License for the specific language governing permissions and
-	 * limitations under the License.
-	 *
-	 * @providesModule TouchEventUtils
-	 */
-
-	var TouchEventUtils = {
-	  /**
-	   * Utility function for common case of extracting out the primary touch from a
-	   * touch event.
-	   * - `touchEnd` events usually do not have the `touches` property.
-	   *   http://stackoverflow.com/questions/3666929/
-	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
-	   *
-	   * @param {Event} nativeEvent Native event that may or may not be a touch.
-	   * @return {TouchesObject?} an object with pageX and pageY or null.
-	   */
-	  extractSingleTouch: function(nativeEvent) {
-	    var touches = nativeEvent.touches;
-	    var changedTouches = nativeEvent.changedTouches;
-	    var hasTouches = touches && touches.length > 0;
-	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
-
-	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
-	           hasTouches ? touches[0] :
-	           nativeEvent;
-	  }
-	};
-
-	module.exports = TouchEventUtils;
-
-
-/***/ },
-/* 290 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule keyOf
-	 */
-
-	/**
-	 * Allows extraction of a minified key. Let's the build system minify keys
-	 * without losing the ability to dynamically use key strings as values
-	 * themselves. Pass in an object with a single key/val pair and it will return
-	 * you the string key of that single record. Suppose you want to grab the
-	 * value for a key 'className' inside of an object. Key/val minification may
-	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
-	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
-	 * reuse those resolutions.
-	 */
-	"use strict";
-
-	var keyOf = function (oneKeyObj) {
-	  var key;
-	  for (key in oneKeyObj) {
-	    if (!oneKeyObj.hasOwnProperty(key)) {
-	      continue;
-	    }
-	    return key;
-	  }
-	  return null;
-	};
-
-	module.exports = keyOf;
-
-/***/ },
-/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -45772,7 +44867,7 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _menu = __webpack_require__(292);
+	var _menu = __webpack_require__(280);
 
 	var _menu2 = _interopRequireDefault(_menu);
 
@@ -45780,7 +44875,7 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _popover = __webpack_require__(295);
+	var _popover = __webpack_require__(283);
 
 	var _popover2 = _interopRequireDefault(_popover);
 
@@ -46141,7 +45236,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 292 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46168,7 +45263,7 @@
 
 	var _stylePropable2 = _interopRequireDefault(_stylePropable);
 
-	var _clickAwayable = __webpack_require__(293);
+	var _clickAwayable = __webpack_require__(281);
 
 	var _clickAwayable2 = _interopRequireDefault(_clickAwayable);
 
@@ -46188,7 +45283,7 @@
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _list = __webpack_require__(294);
+	var _list = __webpack_require__(282);
 
 	var _list2 = _interopRequireDefault(_list);
 
@@ -46756,7 +45851,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 293 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46815,7 +45910,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 294 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46981,7 +46076,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 295 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47000,11 +46095,11 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
-	var _windowListenable = __webpack_require__(296);
+	var _windowListenable = __webpack_require__(284);
 
 	var _windowListenable2 = _interopRequireDefault(_windowListenable);
 
-	var _renderToLayer = __webpack_require__(297);
+	var _renderToLayer = __webpack_require__(285);
 
 	var _renderToLayer2 = _interopRequireDefault(_renderToLayer);
 
@@ -47020,7 +46115,7 @@
 
 	var _paper2 = _interopRequireDefault(_paper);
 
-	var _lodash = __webpack_require__(298);
+	var _lodash = __webpack_require__(286);
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -47028,7 +46123,7 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _popoverDefaultAnimation = __webpack_require__(300);
+	var _popoverDefaultAnimation = __webpack_require__(288);
 
 	var _popoverDefaultAnimation2 = _interopRequireDefault(_popoverDefaultAnimation);
 
@@ -47414,7 +46509,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 296 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47450,7 +46545,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 297 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47625,7 +46720,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 298 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -47636,7 +46731,7 @@
 	 * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <https://lodash.com/license>
 	 */
-	var debounce = __webpack_require__(299);
+	var debounce = __webpack_require__(287);
 
 	/** Used as the `TypeError` message for "Functions" methods. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -47727,7 +46822,7 @@
 
 
 /***/ },
-/* 299 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -47967,7 +47062,7 @@
 
 
 /***/ },
-/* 300 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48143,7 +47238,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 301 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48174,15 +47269,15 @@
 
 	var _colors2 = _interopRequireDefault(_colors);
 
-	var _popover = __webpack_require__(295);
+	var _popover = __webpack_require__(283);
 
 	var _popover2 = _interopRequireDefault(_popover);
 
-	var _check = __webpack_require__(302);
+	var _check = __webpack_require__(290);
 
 	var _check2 = _interopRequireDefault(_check);
 
-	var _listItem = __webpack_require__(303);
+	var _listItem = __webpack_require__(291);
 
 	var _listItem2 = _interopRequireDefault(_listItem);
 
@@ -48190,7 +47285,7 @@
 
 	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
 
-	var _menu = __webpack_require__(292);
+	var _menu = __webpack_require__(280);
 
 	var _menu2 = _interopRequireDefault(_menu);
 
@@ -48498,7 +47593,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 302 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48539,7 +47634,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 303 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48586,19 +47681,19 @@
 
 	var _enhancedButton2 = _interopRequireDefault(_enhancedButton);
 
-	var _iconButton = __webpack_require__(304);
+	var _iconButton = __webpack_require__(292);
 
 	var _iconButton2 = _interopRequireDefault(_iconButton);
 
-	var _arrowDropUp = __webpack_require__(307);
+	var _arrowDropUp = __webpack_require__(295);
 
 	var _arrowDropUp2 = _interopRequireDefault(_arrowDropUp);
 
-	var _arrowDropDown = __webpack_require__(308);
+	var _arrowDropDown = __webpack_require__(296);
 
 	var _arrowDropDown2 = _interopRequireDefault(_arrowDropDown);
 
-	var _nestedList = __webpack_require__(309);
+	var _nestedList = __webpack_require__(297);
 
 	var _nestedList2 = _interopRequireDefault(_nestedList);
 
@@ -49201,7 +48296,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 304 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49236,11 +48331,11 @@
 
 	var _enhancedButton2 = _interopRequireDefault(_enhancedButton);
 
-	var _fontIcon = __webpack_require__(305);
+	var _fontIcon = __webpack_require__(293);
 
 	var _fontIcon2 = _interopRequireDefault(_fontIcon);
 
-	var _tooltip = __webpack_require__(306);
+	var _tooltip = __webpack_require__(294);
 
 	var _tooltip2 = _interopRequireDefault(_tooltip);
 
@@ -49539,7 +48634,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 305 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49686,7 +48781,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 306 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49892,7 +48987,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 307 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49933,7 +49028,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 308 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49974,7 +49069,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 309 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49991,7 +49086,7 @@
 
 	var _styles = __webpack_require__(195);
 
-	var _list = __webpack_require__(294);
+	var _list = __webpack_require__(282);
 
 	var _list2 = _interopRequireDefault(_list);
 
@@ -50060,7 +49155,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 310 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50083,8 +49178,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var ContentLink = _react2.default.createClass({
-	  displayName: 'ContentLink',
+	var NavigationChevronRight = _react2.default.createClass({
+	  displayName: 'NavigationChevronRight',
 
 	  mixins: [_reactAddonsPureRenderMixin2.default],
 
@@ -50092,16 +49187,16 @@
 	    return _react2.default.createElement(
 	      _svgIcon2.default,
 	      this.props,
-	      _react2.default.createElement('path', { d: 'M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' })
+	      _react2.default.createElement('path', { d: 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' })
 	    );
 	  }
 	});
 
-	exports.default = ContentLink;
+	exports.default = NavigationChevronRight;
 	module.exports = exports['default'];
 
 /***/ },
-/* 311 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50116,7 +49211,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _muiThemeable = __webpack_require__(312);
+	var _muiThemeable = __webpack_require__(300);
 
 	var _muiThemeable2 = _interopRequireDefault(_muiThemeable);
 
@@ -50183,7 +49278,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 312 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50228,6 +49323,1621 @@
 	  return MuiComponent;
 	}
 	module.exports = exports['default'];
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(258);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _svgIcon = __webpack_require__(277);
+
+	var _svgIcon2 = _interopRequireDefault(_svgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ContentLink = _react2.default.createClass({
+	  displayName: 'ContentLink',
+
+	  mixins: [_reactAddonsPureRenderMixin2.default],
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      _svgIcon2.default,
+	      this.props,
+	      _react2.default.createElement('path', { d: 'M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' })
+	    );
+	  }
+	});
+
+	exports.default = ContentLink;
+	module.exports = exports['default'];
+
+/***/ },
+/* 302 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.changeUsername = changeUsername;
+	exports.changeChannelName = changeChannelName;
+	exports.onUserLogin = onUserLogin;
+	exports.onMessageChange = onMessageChange;
+	exports.onStateChange = onStateChange;
+	exports.onNewMessageRecieved = onNewMessageRecieved;
+	exports.toggleSnackbar = toggleSnackbar;
+	/**
+	 * Created by amanjain on 30/07/16 at 10:17 AM.
+	 * Description :
+	 */
+
+	var USERNAME_CHANGED = exports.USERNAME_CHANGED = 'USERNAME_CHANGED';
+	var CHANNEL_NAME_CHANGED = exports.CHANNEL_NAME_CHANGED = 'CHANNEL_NAME_CHANGED';
+	//chatApp
+	var USER_LOGGED_IN = exports.USER_LOGGED_IN = 'USER_LOGGED_IN';
+	var USER_MESSAGE_CHANGE = exports.USER_MESSAGE_CHANGE = 'USER_MESSAGE_CHANGE';
+	var ON_STATE_UPDATE = exports.ON_STATE_UPDATE = 'ON_STATE_UPDATE';
+	var NEW_MESSAGE_RECIEVED = exports.NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
+	var TOGGLE_SNACKBAR = exports.TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
+
+	/*
+	 * action creators
+	 */
+
+	function changeUsername(data) {
+	    return { type: USERNAME_CHANGED, data: data };
+	}
+
+	function changeChannelName(data) {
+	    return { type: CHANNEL_NAME_CHANGED, data: data };
+	}
+
+	//chatApp
+	function onUserLogin(data) {
+	    return { type: USER_LOGGED_IN, data: data };
+	}
+
+	function onMessageChange(data) {
+	    return { type: USER_MESSAGE_CHANGE, data: data };
+	}
+
+	function onStateChange(data) {
+	    return { type: ON_STATE_UPDATE, data: data };
+	}
+
+	function onNewMessageRecieved(data) {
+	    return { type: NEW_MESSAGE_RECIEVED, data: data };
+	}
+
+	function toggleSnackbar(data) {
+	    return { type: TOGGLE_SNACKBAR, data: data };
+	}
+
+/***/ },
+/* 303 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _link = __webpack_require__(301);
+
+	var _link2 = _interopRequireDefault(_link);
+
+	var _iconButton = __webpack_require__(292);
+
+	var _iconButton2 = _interopRequireDefault(_iconButton);
+
+	var _actions = __webpack_require__(302);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by amanjain on 31/07/16 at 6:08 PM.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Description :
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	function copyTextToClipboard() {
+	    var textArea = document.createElement("textarea");
+
+	    //
+	    // *** This styling is an extra step which is likely not required. ***
+	    //
+	    // Why is it here? To ensure:
+	    // 1. the element is able to have focus and selection.
+	    // 2. if element was to flash render it has minimal visual impact.
+	    // 3. less flakyness with selection and copying which **might** occur if
+	    //    the textarea element is not visible.
+	    //
+	    // The likelihood is the element won't even render, not even a flash,
+	    // so some of these are just precautions. However in IE the element
+	    // is visible whilst the popup box asking the user for permission for
+	    // the web page to copy to the clipboard.
+	    //
+
+	    // Place in top-left corner of screen regardless of scroll position.
+	    textArea.style.position = 'fixed';
+	    textArea.style.top = 0;
+	    textArea.style.left = 0;
+
+	    // Ensure it has a small width and height. Setting to 1px / 1em
+	    // doesn't work as this gives a negative w/h on some browsers.
+	    textArea.style.width = '2em';
+	    textArea.style.height = '2em';
+
+	    // We don't need padding, reducing the size if it does flash render.
+	    textArea.style.padding = 0;
+
+	    // Clean up any borders.
+	    textArea.style.border = 'none';
+	    textArea.style.outline = 'none';
+	    textArea.style.boxShadow = 'none';
+
+	    // Avoid flash of white box if rendered for any reason.
+	    textArea.style.background = 'transparent';
+
+	    textArea.value = window.location.href;
+
+	    document.body.appendChild(textArea);
+
+	    textArea.select();
+
+	    try {
+	        var successful = document.execCommand('copy');
+	        var msg = successful ? 'successful' : 'unsuccessful';
+	        console.log('Copying text command was ' + msg);
+	    } catch (err) {
+	        console.log('Oops, unable to copy');
+	    }
+
+	    document.body.removeChild(textArea);
+	}
+
+	var ChatAreaHeaderComponent = function (_Component) {
+	    _inherits(ChatAreaHeaderComponent, _Component);
+
+	    function ChatAreaHeaderComponent() {
+	        _classCallCheck(this, ChatAreaHeaderComponent);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(ChatAreaHeaderComponent).apply(this, arguments));
+	    }
+
+	    _createClass(ChatAreaHeaderComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props;
+	            var channelName = _props.channelName;
+	            var showSnackbar = _props.showSnackbar;
+
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'ml-g-header' },
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'ml-g-h-label' },
+	                    channelName
+	                ),
+	                _react2.default.createElement(
+	                    _iconButton2.default,
+	                    { className: 'ml-g-h-icon', onClick: function onClick() {
+	                            copyTextToClipboard();showSnackbar();
+	                        } },
+	                    _react2.default.createElement(_link2.default, null)
+	                )
+	            );
+	        }
+	    }]);
+
+	    return ChatAreaHeaderComponent;
+	}(_react.Component);
+
+	var mapStateToProps = function mapStateToProps(state) {
+	    return {
+	        channelName: state.channelName
+	    };
+	};
+
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	    return {
+	        showSnackbar: function showSnackbar() {
+	            dispatch((0, _actions.toggleSnackbar)(true));
+	        }
+	    };
+	};
+
+	var ChatAreaHeader = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ChatAreaHeaderComponent);
+
+	exports.default = ChatAreaHeader;
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _stylePropable = __webpack_require__(194);
+
+	var _stylePropable2 = _interopRequireDefault(_stylePropable);
+
+	var _transitions = __webpack_require__(217);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _clickAwayable = __webpack_require__(281);
+
+	var _clickAwayable2 = _interopRequireDefault(_clickAwayable);
+
+	var _flatButton = __webpack_require__(252);
+
+	var _flatButton2 = _interopRequireDefault(_flatButton);
+
+	var _getMuiTheme = __webpack_require__(220);
+
+	var _getMuiTheme2 = _interopRequireDefault(_getMuiTheme);
+
+	var _contextPure = __webpack_require__(247);
+
+	var _contextPure2 = _interopRequireDefault(_contextPure);
+
+	var _styleResizable = __webpack_require__(305);
+
+	var _styleResizable2 = _interopRequireDefault(_styleResizable);
+
+	var _warning = __webpack_require__(193);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	var _deprecatedPropType = __webpack_require__(306);
+
+	var _deprecatedPropType2 = _interopRequireDefault(_deprecatedPropType);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+	var Snackbar = _react2.default.createClass({
+	  displayName: 'Snackbar',
+
+	  propTypes: {
+	    /**
+	     * The label for the action on the snackbar.
+	     */
+	    action: _react2.default.PropTypes.string,
+
+	    /**
+	     * The number of milliseconds to wait before automatically dismissing.
+	     * If no value is specified the snackbar will dismiss normally.
+	     * If a value is provided the snackbar can still be dismissed normally.
+	     * If a snackbar is dismissed before the timer expires, the timer will be cleared.
+	     */
+	    autoHideDuration: _react2.default.PropTypes.number,
+
+	    /**
+	     * Override the inline-styles of the body element.
+	     */
+	    bodyStyle: _react2.default.PropTypes.object,
+
+	    /**
+	     * The css class name of the root element.
+	     */
+	    className: _react2.default.PropTypes.string,
+
+	    /**
+	     * The message to be displayed.
+	     */
+	    message: _react2.default.PropTypes.node.isRequired,
+
+	    /**
+	     * Fired when the action button is touchtapped.
+	     *
+	     * @param {object} event Action button event.
+	     */
+	    onActionTouchTap: _react2.default.PropTypes.func,
+
+	    /**
+	     * Fired when the `Snackbar` is dismissed.
+	     */
+	    onDismiss: (0, _deprecatedPropType2.default)(_react2.default.PropTypes.func, 'Instead, use the open property to control the component.'),
+
+	    /**
+	     * Fired when the `Snackbar` is requested to be closed by a click outside the `Snackbar`, or after the
+	     * `autoHideDuration` timer expires.
+	     *
+	     * Typically `onRequestClose` is used to set state in the parent component, which is used to control the `Snackbar`
+	     * `open` prop.
+	     *
+	     * The `reason` parameter can optionally be used to control the response to `onRequestClose`,
+	     * for example ignoring `clickaway`.
+	     *
+	     * @param {string} reason Can be:`"timeout"` (`autoHideDuration` expired) or: `"clickaway"`
+	     */
+	    onRequestClose: _react2.default.PropTypes.func.isRequired,
+
+	    /**
+	     * Fired when the `Snackbar` is shown.
+	     */
+	    onShow: (0, _deprecatedPropType2.default)(_react2.default.PropTypes.func, 'Instead, use the open property to control the component.'),
+
+	    /**
+	     * Controls whether the `Snackbar` is opened or not.
+	     */
+	    open: _react2.default.PropTypes.bool.isRequired,
+
+	    /**
+	     * If true, the `Snackbar` will open once mounted.
+	     */
+	    openOnMount: (0, _deprecatedPropType2.default)(_react2.default.PropTypes.bool, 'Instead, use the open property to control the component.'),
+
+	    /**
+	     * Override the inline-styles of the root element.
+	     */
+	    style: _react2.default.PropTypes.object
+	  },
+
+	  contextTypes: {
+	    muiTheme: _react2.default.PropTypes.object
+	  },
+
+	  //for passing default theme context to children
+	  childContextTypes: {
+	    muiTheme: _react2.default.PropTypes.object
+	  },
+
+	  mixins: [_stylePropable2.default, _styleResizable2.default, _clickAwayable2.default, _contextPure2.default],
+
+	  statics: {
+	    getRelevantContextKeys: function getRelevantContextKeys(muiTheme) {
+	      var theme = muiTheme.snackbar;
+	      var spacing = muiTheme.rawTheme.spacing;
+
+	      return {
+	        textColor: theme.textColor,
+	        backgroundColor: theme.backgroundColor,
+	        desktopGutter: spacing.desktopGutter,
+	        desktopSubheaderHeight: spacing.desktopSubheaderHeight,
+	        actionColor: theme.actionColor
+	      };
+	    },
+	    getChildrenClasses: function getChildrenClasses() {
+	      return [_flatButton2.default];
+	    }
+	  },
+
+	  getInitialState: function getInitialState() {
+	    var open = this.props.open;
+
+	    if (open === null) {
+	      open = this.props.openOnMount;
+	    }
+
+	    return {
+	      open: open,
+	      message: this.props.message,
+	      action: this.props.action,
+	      muiTheme: this.context.muiTheme || (0, _getMuiTheme2.default)()
+	    };
+	  },
+	  getChildContext: function getChildContext() {
+	    return {
+	      muiTheme: this.state.muiTheme
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var _this = this;
+
+	    if (this.state.open) {
+	      this._setAutoHideTimer();
+
+	      //Only Bind clickaway after transition finishes
+	      this.timerTransitionId = setTimeout(function () {
+	        _this._bindClickAway();
+	      }, 400);
+	    }
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(nextProps, nextContext) {
+	    var _this2 = this;
+
+	    var newMuiTheme = nextContext.muiTheme ? nextContext.muiTheme : this.state.muiTheme;
+	    this.setState({
+	      muiTheme: newMuiTheme
+	    });
+
+	    if (this.state.open && nextProps.open === this.props.open && (nextProps.message !== this.props.message || nextProps.action !== this.props.action)) {
+	      this.setState({
+	        open: false
+	      });
+
+	      clearTimeout(this.timerOneAtTheTimeId);
+	      this.timerOneAtTheTimeId = setTimeout(function () {
+	        _this2.setState({
+	          message: nextProps.message,
+	          action: nextProps.action,
+	          open: true
+	        });
+	      }, 400);
+	    } else {
+	      var open = nextProps.open;
+
+	      this.setState({
+	        open: open !== null ? open : this.state.open,
+	        message: nextProps.message,
+	        action: nextProps.action
+	      });
+	    }
+	  },
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    var _this3 = this;
+
+	    if (prevState.open !== this.state.open) {
+	      if (this.state.open) {
+	        this._setAutoHideTimer();
+
+	        //Only Bind clickaway after transition finishes
+	        this.timerTransitionId = setTimeout(function () {
+	          _this3._bindClickAway();
+	        }, 400);
+	      } else {
+	        clearTimeout(this.timerAutoHideId);
+	        this._unbindClickAway();
+	      }
+	    }
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    clearTimeout(this.timerAutoHideId);
+	    clearTimeout(this.timerTransitionId);
+	    clearTimeout(this.timerOneAtTheTimeId);
+	    this._unbindClickAway();
+	  },
+
+	  manuallyBindClickAway: true,
+
+	  timerAutoHideId: undefined,
+	  timerTransitionId: undefined,
+	  timerOneAtTheTimeId: undefined,
+
+	  componentClickAway: function componentClickAway() {
+	    if (this.props.open !== null && this.props.onRequestClose) {
+	      this.props.onRequestClose('clickaway');
+	    } else {
+	      this.setState({ open: false });
+	    }
+	  },
+	  getStyles: function getStyles() {
+	    var _constructor$getRelev = this.constructor.getRelevantContextKeys(this.state.muiTheme);
+
+	    var textColor = _constructor$getRelev.textColor;
+	    var backgroundColor = _constructor$getRelev.backgroundColor;
+	    var desktopGutter = _constructor$getRelev.desktopGutter;
+	    var desktopSubheaderHeight = _constructor$getRelev.desktopSubheaderHeight;
+	    var actionColor = _constructor$getRelev.actionColor;
+
+	    var isSmall = this.state.deviceSize === this.constructor.Sizes.SMALL;
+
+	    var styles = {
+	      root: {
+	        position: 'fixed',
+	        left: 0,
+	        display: 'flex',
+	        right: 0,
+	        bottom: 0,
+	        zIndex: this.state.muiTheme.zIndex.snackbar,
+	        visibility: 'hidden',
+	        transform: 'translate3d(0, ' + desktopSubheaderHeight + 'px, 0)',
+	        transition: _transitions2.default.easeOut('400ms', 'transform') + ',' + _transitions2.default.easeOut('400ms', 'visibility')
+	      },
+	      rootWhenOpen: {
+	        visibility: 'visible',
+	        transform: 'translate3d(0, 0, 0)'
+	      },
+	      body: {
+	        backgroundColor: backgroundColor,
+	        padding: '0 ' + desktopGutter + 'px',
+	        height: desktopSubheaderHeight,
+	        lineHeight: desktopSubheaderHeight + 'px',
+	        borderRadius: isSmall ? 0 : 2,
+	        maxWidth: isSmall ? 'inherit' : 568,
+	        minWidth: isSmall ? 'inherit' : 288,
+	        flexGrow: isSmall ? 1 : 0,
+	        margin: 'auto'
+	      },
+	      content: {
+	        fontSize: 14,
+	        color: textColor,
+	        opacity: 0,
+	        transition: _transitions2.default.easeOut('400ms', 'opacity')
+	      },
+	      contentWhenOpen: {
+	        opacity: 1,
+	        transition: _transitions2.default.easeOut('500ms', 'opacity', '100ms')
+	      },
+	      action: {
+	        color: actionColor,
+	        float: 'right',
+	        marginTop: 6,
+	        marginRight: -16,
+	        marginLeft: desktopGutter,
+	        backgroundColor: 'transparent'
+	      }
+	    };
+
+	    return styles;
+	  },
+	  show: function show() {
+	    process.env.NODE_ENV !== "production" ? (0, _warning2.default)(false, 'show has been deprecated in favor of explicitly setting the open property.') : undefined;
+
+	    this.setState({
+	      open: true
+	    });
+
+	    if (this.props.onShow) {
+	      this.props.onShow();
+	    }
+	  },
+	  _onDismiss: function _onDismiss() {
+	    if (this.props.onDismiss) {
+	      this.props.onDismiss();
+	    }
+	  },
+	  dismiss: function dismiss() {
+	    process.env.NODE_ENV !== "production" ? (0, _warning2.default)(false, 'dismiss has been deprecated in favor of explicitly setting the open property.') : undefined;
+
+	    this.setState({
+	      open: false
+	    }, this._onDismiss);
+	  },
+	  _setAutoHideTimer: function _setAutoHideTimer() {
+	    var _this4 = this;
+
+	    var autoHideDuration = this.props.autoHideDuration;
+
+	    if (autoHideDuration > 0) {
+	      clearTimeout(this.timerAutoHideId);
+	      this.timerAutoHideId = setTimeout(function () {
+	        if (_this4.props.open !== null && _this4.props.onRequestClose) {
+	          _this4.props.onRequestClose('timeout');
+	        } else {
+	          _this4.setState({ open: false });
+	        }
+	      }, autoHideDuration);
+	    }
+	  },
+	  render: function render() {
+	    var _props = this.props;
+	    var onActionTouchTap = _props.onActionTouchTap;
+	    var style = _props.style;
+	    var bodyStyle = _props.bodyStyle;
+
+	    var others = _objectWithoutProperties(_props, ['onActionTouchTap', 'style', 'bodyStyle']);
+
+	    var styles = this.getStyles();
+
+	    var _state = this.state;
+	    var open = _state.open;
+	    var action = _state.action;
+	    var message = _state.message;
+
+	    var rootStyles = open ? this.mergeStyles(styles.root, styles.rootWhenOpen, style) : this.mergeStyles(styles.root, style);
+
+	    var actionButton = undefined;
+	    if (action) {
+	      actionButton = _react2.default.createElement(_flatButton2.default, {
+	        style: styles.action,
+	        label: action,
+	        onTouchTap: onActionTouchTap
+	      });
+	    }
+
+	    var mergedBodyStyle = this.mergeStyles(styles.body, bodyStyle);
+
+	    var contentStyle = open ? this.mergeStyles(styles.content, styles.contentWhenOpen) : styles.content;
+
+	    return _react2.default.createElement(
+	      'div',
+	      _extends({}, others, { style: rootStyles }),
+	      _react2.default.createElement(
+	        'div',
+	        { style: mergedBodyStyle },
+	        _react2.default.createElement(
+	          'div',
+	          { style: contentStyle },
+	          _react2.default.createElement(
+	            'span',
+	            null,
+	            message
+	          ),
+	          actionButton
+	        )
+	      )
+	    );
+	  }
+	});
+
+	exports.default = Snackbar;
+	module.exports = exports['default'];
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _events = __webpack_require__(261);
+
+	var _events2 = _interopRequireDefault(_events);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Sizes = {
+	  SMALL: 1,
+	  MEDIUM: 2,
+	  LARGE: 3
+	};
+
+	exports.default = {
+
+	  statics: {
+	    Sizes: Sizes
+	  },
+
+	  getInitialState: function getInitialState() {
+	    return {
+	      deviceSize: Sizes.SMALL
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this._updateDeviceSize();
+	    if (!this.manuallyBindResize) this._bindResize();
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this._unbindResize();
+	  },
+	  isDeviceSize: function isDeviceSize(desiredSize) {
+	    return this.state.deviceSize >= desiredSize;
+	  },
+	  _updateDeviceSize: function _updateDeviceSize() {
+	    var width = window.innerWidth;
+
+	    if (width >= 992) {
+	      this.setState({ deviceSize: Sizes.LARGE });
+	    } else if (width >= 768) {
+	      this.setState({ deviceSize: Sizes.MEDIUM });
+	    } else {
+	      // width < 768
+	      this.setState({ deviceSize: Sizes.SMALL });
+	    }
+	  },
+	  _bindResize: function _bindResize() {
+	    _events2.default.on(window, 'resize', this._updateDeviceSize);
+	  },
+	  _unbindResize: function _unbindResize() {
+	    _events2.default.off(window, 'resize', this._updateDeviceSize);
+	  }
+	};
+	module.exports = exports['default'];
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = deprecated;
+
+	var _warning = __webpack_require__(193);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function deprecated(propType, explanation) {
+	  return function validate(props, propName, componentName) {
+	    if (props[propName] != null) {
+	      process.env.NODE_ENV !== "production" ? (0, _warning2.default)(false, '"' + propName + '" property of "' + componentName + '" has been deprecated.\n' + explanation) : undefined;
+	    }
+
+	    return propType(props, propName, componentName);
+	  };
+	}
+	module.exports = exports['default'];
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _paper = __webpack_require__(273);
+
+	var _paper2 = _interopRequireDefault(_paper);
+
+	var _raisedButton = __webpack_require__(275);
+
+	var _raisedButton2 = _interopRequireDefault(_raisedButton);
+
+	var _TextField = __webpack_require__(190);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
+	var _person = __webpack_require__(276);
+
+	var _person2 = _interopRequireDefault(_person);
+
+	var _actions = __webpack_require__(302);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Created by amanjain on 30/07/16 at 9:33 AM.
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * Description :
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+	var LoginComponent = function (_Component) {
+	    _inherits(LoginComponent, _Component);
+
+	    function LoginComponent() {
+	        _classCallCheck(this, LoginComponent);
+
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(LoginComponent).apply(this, arguments));
+	    }
+
+	    _createClass(LoginComponent, [{
+	        key: 'render',
+	        value: function render() {
+	            var _props = this.props;
+	            var username = _props.username;
+	            var channelName = _props.channelName;
+	            var onKnockClick = _props.onKnockClick;
+	            var onChannelNameChange = _props.onChannelNameChange;
+	            var onUsernameChange = _props.onUsernameChange;
+	            var disableChannelName = _props.disableChannelName;
+
+
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    _paper2.default,
+	                    { style: {
+	                            height: '100px',
+	                            width: '100px',
+	                            position: 'absolute',
+	                            top: '-50px',
+	                            left: 'calc(50% - 50px)',
+	                            display: 'inline-block',
+	                            textAlign: 'center',
+	                            backgroundColor: '#009688'
+	                        }, circle: true, zDepth: 1 },
+	                    _react2.default.createElement(_person2.default, { style: {
+	                            height: '60px',
+	                            width: '60px',
+	                            marginTop: '15px',
+	                            fill: '#fff'
+	                        } })
+	                ),
+	                _react2.default.createElement(
+	                    'form',
+	                    { className: 'nick-wrap', onSubmit: function onSubmit(e) {
+	                            onKnockClick(username, channelName);e.preventDefault();
+	                        } },
+	                    _react2.default.createElement(_TextField2.default, {
+	                        hintText: 'Nickname',
+	                        floatingLabelText: 'Nickname',
+	                        fullWidth: true,
+	                        onChange: function onChange(e) {
+	                            onUsernameChange(e.target.value);
+	                        },
+	                        value: username,
+	                        autoComplete: 'off'
+	                    }),
+	                    _react2.default.createElement(_TextField2.default, {
+	                        hintText: 'Channel Name',
+	                        floatingLabelText: 'comchat.io/',
+	                        fullWidth: true,
+	                        onChange: function onChange(e) {
+	                            onChannelNameChange(e.target.value);
+	                        },
+	                        value: channelName,
+	                        disabled: disableChannelName,
+	                        autoComplete: 'off',
+	                        errorText: disableChannelName ? 'You are trying to access \'' + channelName + '\' channel. You do not need to change it.' : "",
+	                        errorStyle: {
+	                            color: '#81C784'
+	                        }
+	                    }),
+	                    _react2.default.createElement(_raisedButton2.default, {
+	                        style: { marginTop: "25px" },
+	                        label: 'Knock',
+	                        fullWidth: true,
+	                        primary: true,
+	                        onClick: function onClick() {
+	                            onKnockClick(username, channelName);
+	                        },
+	                        disabled: !username
+	                    })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return LoginComponent;
+	}(_react.Component);
+
+	var mapStateToProps = function mapStateToProps(state) {
+	    return {
+	        channelName: state.channelName,
+	        username: state.username,
+	        disableChannelName: state.disableChannelName
+	    };
+	};
+
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	    return {
+	        onChannelNameChange: function onChannelNameChange(channelName) {
+	            window.history.pushState("", "", '/' + channelName);
+	            dispatch((0, _actions.changeChannelName)(channelName));
+	        },
+	        onUsernameChange: function onUsernameChange(username) {
+	            dispatch((0, _actions.changeUsername)(username));
+	        }
+	    };
+	};
+
+	var Login = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginComponent);
+
+	exports.default = Login;
+
+/***/ },
+/* 308 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(309);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(311)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/index.js!./main.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 309 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(310)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "html, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 75%;\n  float: left; }\n\n.ma-sidebar {\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 5px 30px; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 310 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		var blob = new Blob([css], { type: "text/css" });
+
+		var oldSrc = linkElement.href;
+
+		linkElement.href = URL.createObjectURL(blob);
+
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = reducer;
+
+	var _actions = __webpack_require__(302);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
+	                                                                                                                                                                                                     * Created by amanjain on 30/07/16 at 9:46 AM.
+	                                                                                                                                                                                                     * Description :
+	                                                                                                                                                                                                     */
+
+	function reducer() {
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	    var action = arguments[1];
+
+
+	    switch (action.type) {
+	        //Loging
+	        case _actions.USERNAME_CHANGED:
+	            return Object.assign({}, state, { username: action.data });
+	        case _actions.CHANNEL_NAME_CHANGED:
+	            return Object.assign({}, state, { channelName: action.data });
+
+	        //chatApp
+	        case _actions.USER_LOGGED_IN:
+	            return Object.assign({}, state, { state: 'USER_LOGGED_IN', messages: [], users: [] });
+	        case _actions.USER_MESSAGE_CHANGE:
+	            return Object.assign({}, state, { message: action.data });
+	        case _actions.ON_STATE_UPDATE:
+	            return Object.assign({}, state, action.data);
+	        case _actions.TOGGLE_SNACKBAR:
+	            return Object.assign({}, state, { showSnackBar: action.data });
+	        case _actions.NEW_MESSAGE_RECIEVED:
+	            var messages = state.messages;
+	            messages = [].concat(_toConsumableArray(messages), [{ type: 'MESSAGE', data: action.data }]);
+	            return Object.assign({}, state, { messages: messages });
+	        default:
+	            return state;
+	    }
+	}
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var defaultClickRejectionStrategy = __webpack_require__(314);
+
+	module.exports = function injectTapEventPlugin (strategyOverrides) {
+	  strategyOverrides = strategyOverrides || {}
+	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
+
+	  __webpack_require__(31).injection.injectEventPluginsByName({
+	    "TapEventPlugin":       __webpack_require__(315)(shouldRejectClick)
+	  });
+	};
+
+
+/***/ },
+/* 314 */
+/***/ function(module, exports) {
+
+	module.exports = function(lastTouchEvent, clickTimestamp) {
+	  if (lastTouchEvent && (clickTimestamp - lastTouchEvent) < 750) {
+	    return true;
+	  }
+	};
+
+
+/***/ },
+/* 315 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TapEventPlugin
+	 * @typechecks static-only
+	 */
+
+	"use strict";
+
+	var EventConstants = __webpack_require__(30);
+	var EventPluginUtils = __webpack_require__(33);
+	var EventPropagators = __webpack_require__(73);
+	var SyntheticUIEvent = __webpack_require__(87);
+	var TouchEventUtils = __webpack_require__(316);
+	var ViewportMetrics = __webpack_require__(38);
+
+	var keyOf = __webpack_require__(317);
+	var topLevelTypes = EventConstants.topLevelTypes;
+
+	var isStartish = EventPluginUtils.isStartish;
+	var isEndish = EventPluginUtils.isEndish;
+
+	var isTouch = function(topLevelType) {
+	  var touchTypes = [
+	    topLevelTypes.topTouchCancel,
+	    topLevelTypes.topTouchEnd,
+	    topLevelTypes.topTouchStart,
+	    topLevelTypes.topTouchMove
+	  ];
+	  return touchTypes.indexOf(topLevelType) >= 0;
+	}
+
+	/**
+	 * Number of pixels that are tolerated in between a `touchStart` and `touchEnd`
+	 * in order to still be considered a 'tap' event.
+	 */
+	var tapMoveThreshold = 10;
+	var ignoreMouseThreshold = 750;
+	var startCoords = {x: null, y: null};
+	var lastTouchEvent = null;
+
+	var Axis = {
+	  x: {page: 'pageX', client: 'clientX', envScroll: 'currentPageScrollLeft'},
+	  y: {page: 'pageY', client: 'clientY', envScroll: 'currentPageScrollTop'}
+	};
+
+	function getAxisCoordOfEvent(axis, nativeEvent) {
+	  var singleTouch = TouchEventUtils.extractSingleTouch(nativeEvent);
+	  if (singleTouch) {
+	    return singleTouch[axis.page];
+	  }
+	  return axis.page in nativeEvent ?
+	    nativeEvent[axis.page] :
+	    nativeEvent[axis.client] + ViewportMetrics[axis.envScroll];
+	}
+
+	function getDistance(coords, nativeEvent) {
+	  var pageX = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	  var pageY = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	  return Math.pow(
+	    Math.pow(pageX - coords.x, 2) + Math.pow(pageY - coords.y, 2),
+	    0.5
+	  );
+	}
+
+	var touchEvents = [
+	  topLevelTypes.topTouchStart,
+	  topLevelTypes.topTouchCancel,
+	  topLevelTypes.topTouchEnd,
+	  topLevelTypes.topTouchMove,
+	];
+
+	var dependencies = [
+	  topLevelTypes.topMouseDown,
+	  topLevelTypes.topMouseMove,
+	  topLevelTypes.topMouseUp,
+	].concat(touchEvents);
+
+	var eventTypes = {
+	  touchTap: {
+	    phasedRegistrationNames: {
+	      bubbled: keyOf({onTouchTap: null}),
+	      captured: keyOf({onTouchTapCapture: null})
+	    },
+	    dependencies: dependencies
+	  }
+	};
+
+	var now = (function() {
+	  if (Date.now) {
+	    return Date.now;
+	  } else {
+	    // IE8 support: http://stackoverflow.com/questions/9430357/please-explain-why-and-how-new-date-works-as-workaround-for-date-now-in
+	    return function () {
+	      return +new Date;
+	    }
+	  }
+	})();
+
+	function createTapEventPlugin(shouldRejectClick) {
+	  return {
+
+	    tapMoveThreshold: tapMoveThreshold,
+
+	    ignoreMouseThreshold: ignoreMouseThreshold,
+
+	    eventTypes: eventTypes,
+
+	    /**
+	     * @param {string} topLevelType Record from `EventConstants`.
+	     * @param {DOMEventTarget} topLevelTarget The listening component root node.
+	     * @param {string} topLevelTargetID ID of `topLevelTarget`.
+	     * @param {object} nativeEvent Native browser event.
+	     * @return {*} An accumulation of synthetic events.
+	     * @see {EventPluginHub.extractEvents}
+	     */
+	    extractEvents: function(
+	        topLevelType,
+	        topLevelTarget,
+	        topLevelTargetID,
+	        nativeEvent,
+	        nativeEventTarget) {
+
+	      if (isTouch(topLevelType)) {
+	        lastTouchEvent = now();
+	      } else {
+	        if (shouldRejectClick(lastTouchEvent, now())) {
+	          return null;
+	        }
+	      }
+
+	      if (!isStartish(topLevelType) && !isEndish(topLevelType)) {
+	        return null;
+	      }
+	      var event = null;
+	      var distance = getDistance(startCoords, nativeEvent);
+	      if (isEndish(topLevelType) && distance < tapMoveThreshold) {
+	        event = SyntheticUIEvent.getPooled(
+	          eventTypes.touchTap,
+	          topLevelTargetID,
+	          nativeEvent,
+	          nativeEventTarget
+	        );
+	      }
+	      if (isStartish(topLevelType)) {
+	        startCoords.x = getAxisCoordOfEvent(Axis.x, nativeEvent);
+	        startCoords.y = getAxisCoordOfEvent(Axis.y, nativeEvent);
+	      } else if (isEndish(topLevelType)) {
+	        startCoords.x = 0;
+	        startCoords.y = 0;
+	      }
+	      EventPropagators.accumulateTwoPhaseDispatches(event);
+	      return event;
+	    }
+
+	  };
+	}
+
+	module.exports = createTapEventPlugin;
+
+
+/***/ },
+/* 316 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2014 Facebook, Inc.
+	 *
+	 * Licensed under the Apache License, Version 2.0 (the "License");
+	 * you may not use this file except in compliance with the License.
+	 * You may obtain a copy of the License at
+	 *
+	 * http://www.apache.org/licenses/LICENSE-2.0
+	 *
+	 * Unless required by applicable law or agreed to in writing, software
+	 * distributed under the License is distributed on an "AS IS" BASIS,
+	 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	 * See the License for the specific language governing permissions and
+	 * limitations under the License.
+	 *
+	 * @providesModule TouchEventUtils
+	 */
+
+	var TouchEventUtils = {
+	  /**
+	   * Utility function for common case of extracting out the primary touch from a
+	   * touch event.
+	   * - `touchEnd` events usually do not have the `touches` property.
+	   *   http://stackoverflow.com/questions/3666929/
+	   *   mobile-sarai-touchend-event-not-firing-when-last-touch-is-removed
+	   *
+	   * @param {Event} nativeEvent Native event that may or may not be a touch.
+	   * @return {TouchesObject?} an object with pageX and pageY or null.
+	   */
+	  extractSingleTouch: function(nativeEvent) {
+	    var touches = nativeEvent.touches;
+	    var changedTouches = nativeEvent.changedTouches;
+	    var hasTouches = touches && touches.length > 0;
+	    var hasChangedTouches = changedTouches && changedTouches.length > 0;
+
+	    return !hasTouches && hasChangedTouches ? changedTouches[0] :
+	           hasTouches ? touches[0] :
+	           nativeEvent;
+	  }
+	};
+
+	module.exports = TouchEventUtils;
+
+
+/***/ },
+/* 317 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule keyOf
+	 */
+
+	/**
+	 * Allows extraction of a minified key. Let's the build system minify keys
+	 * without losing the ability to dynamically use key strings as values
+	 * themselves. Pass in an object with a single key/val pair and it will return
+	 * you the string key of that single record. Suppose you want to grab the
+	 * value for a key 'className' inside of an object. Key/val minification may
+	 * have aliased that key to be 'xa12'. keyOf({className: null}) will return
+	 * 'xa12' in that case. Resolve keys you want to use once at startup time, then
+	 * reuse those resolutions.
+	 */
+	"use strict";
+
+	var keyOf = function (oneKeyObj) {
+	  var key;
+	  for (key in oneKeyObj) {
+	    if (!oneKeyObj.hasOwnProperty(key)) {
+	      continue;
+	    }
+	    return key;
+	  }
+	  return null;
+	};
+
+	module.exports = keyOf;
 
 /***/ }
 /******/ ]);

@@ -9,7 +9,8 @@ import {
     USER_LOGGED_IN,
     USER_MESSAGE_CHANGE,
     ON_STATE_UPDATE,
-    NEW_MESSAGE_RECIEVED
+    NEW_MESSAGE_RECIEVED,
+    TOGGLE_SNACKBAR
 } from './actions';
 
 
@@ -29,6 +30,8 @@ export default function reducer(state = {}, action) {
             return Object.assign({}, state, {message: action.data});
         case ON_STATE_UPDATE:
             return Object.assign({}, state, action.data);
+        case TOGGLE_SNACKBAR:
+            return Object.assign({}, state, {showSnackBar: action.data});
         case NEW_MESSAGE_RECIEVED:
             let messages = state.messages;
             messages = [...messages, {type: 'MESSAGE', data: action.data}];

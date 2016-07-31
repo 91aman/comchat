@@ -3,7 +3,7 @@ var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.set('port', (process.env.PORT || 5000));
+var port = process.env.PORT || 5000;
 
 app.get('/build/app.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/../../build/app.js'));
@@ -13,7 +13,7 @@ app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname + '/../../index.html'));
 });
 
-http.listen(2000, function () {
+http.listen(port, function () {
     console.log('listening on *:2000');
 });
 

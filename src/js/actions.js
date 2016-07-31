@@ -11,6 +11,7 @@ export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_MESSAGE_CHANGE = 'USER_MESSAGE_CHANGE';
 export const ON_STATE_UPDATE = 'ON_STATE_UPDATE';
 export const NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
+export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 
 /*
  * action creators
@@ -39,5 +40,9 @@ export function onStateChange(data) {
 
 export function onNewMessageRecieved(data) {
     return {type: NEW_MESSAGE_RECIEVED, data}
+}
+
+export function toggleSnackbar(data) {
+    return {type: TOGGLE_SNACKBAR, data}
 }
 

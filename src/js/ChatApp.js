@@ -7,8 +7,9 @@ import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import PersonIcon from 'material-ui/lib/svg-icons/social/person';
 import ChatArea from './chatArea/ChatArea';
+import Snackbar from 'material-ui/lib/snackbar';
 
-import {onUserLogin} from './actions';
+import {onUserLogin, toggleSnackbar} from './actions';
 
 import LoginForm from './login/Login' ;
 
@@ -35,8 +36,6 @@ function getAppPaperStyles() {
 
 function onKnockClick(username, channelName) {
     socket.emit('checkChannel', channelName);
-
-    //socket.emit('login', {username, channelName});
 }
 
 const MessageDate = ({time}) => {
@@ -191,13 +190,19 @@ class ChatAppComponent extends Component {
 
     render() {
         const that = this,
-            {state : {nickName,users,messageTyped, messages = [], usersTyping, channelName}} = that;
+            { showSnackBar, closeSnackbar} = that.props;
 
         return (
             <div className="chatApp">
                 <Paper style={getAppPaperStyles.call(that)} zDepth={3}>
                     {this.props.state !== 'USER_LOGGED_IN' ? <LoginForm onKnockClick={onKnockClick}/> : <ChatArea/>}
                 </Paper>
+                <Snackbar
+                    open={showSnackBar}
+                    message={`Chat link ( ${window.location.href} ) is copied to your clipboard`}
+                    autoHideDuration={2000}
+                    onRequestClose={closeSnackbar}
+                />
             </div>
         );
     }
@@ -208,7 +213,8 @@ const mapStateToProps = (state) => {
         channelName: state.channelName,
         username: state.username,
         disableChannelName: state.disableChannelName,
-        state: state.state
+        state: state.state,
+        showSnackBar: state.showSnackBar
     }
 };
 
@@ -216,6 +222,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onUserLoggedIn: () => {
             dispatch(onUserLogin())
+        },
+        closeSnackbar: () => {
+            dispatch(toggleSnackbar(false))
         }
     }
 };
