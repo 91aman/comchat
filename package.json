@@ -1,0 +1,46 @@
+{
+  "name": "chatApp",
+  "version": "0.0.1",
+  "description": "My first chat app",
+  "keywords": [
+    "Chat",
+    "Instant",
+    "Messages",
+    "comchat",
+    "talk",
+    "socket"
+  ],
+  "author": "Aman Jain",
+  "license": "MIT",
+  "engines": {
+    "node": "4.2.2"
+  },
+  "main": "web.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "node ./src/server/index.js"
+  },
+  "dependencies": {
+    "express" : "4.14.0",
+    "socket.io" : "1.4.8",
+    "babel-core": "^6.3.13",
+    "babel-loader": "^6.2.0",
+    "webpack": "^1.12.9",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-es2015": "^6.3.13",
+    "lodash": "^3.10.1",
+    "style-loader": "^0.13.0",
+    "css-loader": " ^0.23.0",
+    "sass-loader": "^3.1.2",
+    "react-dom": "^0.14.3",
+    "classnames": "^v2.2.3",
+    "react": "^0.14.7",
+    "node-sass": "^3.4.2",
+    "left-pad": "^1.0.2",
+    "jquery" : "^2.2.3",
+    "material-ui" : "^0.14.4",
+    "react-tap-event-plugin" : "^0.2.0",
+    "redux" : "^3.5.2",
+    "react-redux" : "^4.4.5"
+  }
+}
