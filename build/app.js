@@ -20116,7 +20116,7 @@
 	                ),
 	                _react2.default.createElement(_snackbar2.default, {
 	                    open: showSnackBar,
-	                    message: 'Chat link ( ' + window.location.href + ' ) is copied to your clipboard',
+	                    message: 'Chat link ( http://comchat.io' + window.location.pathname + ' ) is copied to your clipboard',
 	                    autoHideDuration: 2000,
 	                    onRequestClose: closeSnackbar
 	                })
@@ -49506,7 +49506,7 @@
 	    // Avoid flash of white box if rendered for any reason.
 	    textArea.style.background = 'transparent';
 
-	    textArea.value = window.location.href;
+	    textArea.value = 'http://comchat.io' + window.location.pathname;
 
 	    document.body.appendChild(textArea);
 
@@ -49514,11 +49514,7 @@
 
 	    try {
 	        var successful = document.execCommand('copy');
-	        var msg = successful ? 'successful' : 'unsuccessful';
-	        console.log('Copying text command was ' + msg);
-	    } catch (err) {
-	        console.log('Oops, unable to copy');
-	    }
+	    } catch (err) {}
 
 	    document.body.removeChild(textArea);
 	}
