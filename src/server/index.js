@@ -3,6 +3,7 @@ var path = require('path');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+app.set('port', (process.env.PORT || 5000));
 
 app.get('/build/app.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/../../build/app.js'));
