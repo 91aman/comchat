@@ -8,33 +8,25 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import PersonIcon from 'material-ui/lib/svg-icons/social/person';
 import ChatArea from './chatArea/ChatArea';
 import Snackbar from 'material-ui/lib/snackbar';
+import ClassName from 'classnames';
 
-import {onUserLogin, toggleSnackbar} from './actions';
+import {onUserLogin, toggleSnackbar, changeChannelName} from './actions';
 
 import LoginForm from './login/Login' ;
 
 var socket;
 
-function getAppPaperStyles() {
-    return this.props.state === 'USER_LOGGED_IN' ? {
-        height: '80%',
-        width: '80%',
-        position: 'absolute',
-        top: '10%',
-        left: '10%',
-        display: 'inline-block'
-    } : {
-        backgroundColor: '#F5F5F5',
-        height: '450px',
-        width: '30%',
-        position: 'absolute',
-        top: '10%',
-        left: '35%',
-        display: 'inline-block'
-    }
+function get4DigitRandomNumber() {
+    return Math.floor(Math.random() * 9000) + 1000;
 }
 
-function onKnockClick(username, channelName) {
+function onKnockClick(username, channelName = '') {
+    if (!channelName.trim()) {
+        channelName = `${username}-${get4DigitRandomNumber()}`;
+        this.props.onChannelNameChange(channelName)
+    }
+
+    window.history.pushState("", "", `/${channelName}`);
     socket.emit('checkChannel', channelName);
 }
 
@@ -190,12 +182,13 @@ class ChatAppComponent extends Component {
 
     render() {
         const that = this,
-            { showSnackBar, closeSnackbar} = that.props;
+            { showSnackBar, closeSnackbar, state} = that.props,
+            isLoggedIn = state === 'USER_LOGGED_IN';
 
         return (
             <div className="chatApp">
-                <Paper style={getAppPaperStyles.call(that)} zDepth={3}>
-                    {this.props.state !== 'USER_LOGGED_IN' ? <LoginForm onKnockClick={onKnockClick}/> : <ChatArea/>}
+                <Paper className={ClassName("ca-main-paper", {chatBox : isLoggedIn})} zDepth={3}>
+                    {isLoggedIn ? <ChatArea/> : <LoginForm onKnockClick={_.bind(onKnockClick, that)}/>}
                 </Paper>
                 <Snackbar
                     open={showSnackBar}
@@ -220,6 +213,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        onChannelNameChange: (channelName) => {
+            dispatch(changeChannelName(channelName))
+        },
         onUserLoggedIn: () => {
             dispatch(onUserLogin())
         },

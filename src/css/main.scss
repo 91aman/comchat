@@ -22,6 +22,22 @@ body {
   left: 0;
 }
 
+.ca-main-paper {
+  display: inline-block;
+  height: 80%;
+  width: 100%;
+  position: absolute;
+  top: 20%;
+  left: 0;
+
+  &.chatBox {
+    top: 0;
+    background: #F5F5F5;
+    height: 100%;
+    width: 100%;
+  }
+}
+
 .nick-wrap {
   padding: 0 50px;
   position: absolute;
@@ -37,11 +53,12 @@ body {
 
 .messageForm {
   height: 100%;
-  width: 75%;
+  width: 100%;
   float: left;
 }
 
 .ma-sidebar {
+  display: none; //todo : do this from js
   width: 25%;
   float: left;
   height: 100%;
@@ -84,16 +101,16 @@ body {
 
   > * {
     position: relative;
-    top:50%;
+    top: 50%;
     transform: translateY(-50%) !important;
   }
 }
 
-.ml-g-h-label{
-  float:left;
+.ml-g-h-label {
+  float: left;
 }
 
-.ml-g-h-icon{
+.ml-g-h-icon {
   float: right;
 }
 
@@ -140,5 +157,37 @@ body {
   box-sizing: border-box;
   padding: 14px 30px;
   border-top: 1px solid #dedede;
+}
+
+@media screen and (min-width: 56.25em) {
+  .ca-main-paper {
+    top: 10%;
+    width: 450px;
+    height: 450px;
+    left: calc((100% - 450px) / 2);
+
+    &.chatBox {
+      top:10%;
+      left:0;
+      height: 80%;
+    }
+  }
+
+  .messageForm {
+    width: 75%;
+  }
+
+  .ma-sidebar {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 75em) {
+  .ca-main-paper.chatBox {
+    left: calc((100% - 1200px) / 2);
+    top: 10%;
+    height: 80%;
+    width: 1200px;
+  }
 }
 

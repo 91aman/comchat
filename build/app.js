@@ -62,7 +62,7 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _main = __webpack_require__(308);
+	var _main = __webpack_require__(309);
 
 	var _main2 = _interopRequireDefault(_main);
 
@@ -70,7 +70,7 @@
 
 	var _redux = __webpack_require__(167);
 
-	var _reducers = __webpack_require__(312);
+	var _reducers = __webpack_require__(313);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -88,7 +88,7 @@
 
 	var store = (0, _redux.createStore)(_reducers2.default, getDefaultState());
 
-	var injectTapEventPlugin = __webpack_require__(313);
+	var injectTapEventPlugin = __webpack_require__(314);
 	injectTapEventPlugin();
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -19780,9 +19780,13 @@
 
 	var _snackbar2 = _interopRequireDefault(_snackbar);
 
+	var _classnames = __webpack_require__(307);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
 	var _actions = __webpack_require__(302);
 
-	var _Login = __webpack_require__(307);
+	var _Login = __webpack_require__(308);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
@@ -19796,26 +19800,19 @@
 
 	var socket;
 
-	function getAppPaperStyles() {
-	    return this.props.state === 'USER_LOGGED_IN' ? {
-	        height: '80%',
-	        width: '80%',
-	        position: 'absolute',
-	        top: '10%',
-	        left: '10%',
-	        display: 'inline-block'
-	    } : {
-	        backgroundColor: '#F5F5F5',
-	        height: '450px',
-	        width: '30%',
-	        position: 'absolute',
-	        top: '10%',
-	        left: '35%',
-	        display: 'inline-block'
-	    };
+	function get4DigitRandomNumber() {
+	    return Math.floor(Math.random() * 9000) + 1000;
 	}
 
-	function onKnockClick(username, channelName) {
+	function onKnockClick(username) {
+	    var channelName = arguments.length <= 1 || arguments[1] === undefined ? '' : arguments[1];
+
+	    if (!channelName.trim()) {
+	        channelName = username + '-' + get4DigitRandomNumber();
+	        this.props.onChannelNameChange(channelName);
+	    }
+
+	    window.history.pushState("", "", '/' + channelName);
 	    socket.emit('checkChannel', channelName);
 	}
 
@@ -20104,15 +20101,16 @@
 	            var _that$props = that.props;
 	            var showSnackBar = _that$props.showSnackBar;
 	            var closeSnackbar = _that$props.closeSnackbar;
-
+	            var state = _that$props.state;
+	            var isLoggedIn = state === 'USER_LOGGED_IN';
 
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'chatApp' },
 	                _react2.default.createElement(
 	                    _paper2.default,
-	                    { style: getAppPaperStyles.call(that), zDepth: 3 },
-	                    this.props.state !== 'USER_LOGGED_IN' ? _react2.default.createElement(_Login2.default, { onKnockClick: onKnockClick }) : _react2.default.createElement(_ChatArea2.default, null)
+	                    { className: (0, _classnames2.default)("ca-main-paper", { chatBox: isLoggedIn }), zDepth: 3 },
+	                    isLoggedIn ? _react2.default.createElement(_ChatArea2.default, null) : _react2.default.createElement(_Login2.default, { onKnockClick: _lodash2.default.bind(onKnockClick, that) })
 	                ),
 	                _react2.default.createElement(_snackbar2.default, {
 	                    open: showSnackBar,
@@ -20139,6 +20137,9 @@
 
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	    return {
+	        onChannelNameChange: function onChannelNameChange(channelName) {
+	            dispatch((0, _actions.changeChannelName)(channelName));
+	        },
 	        onUserLoggedIn: function onUserLoggedIn() {
 	            dispatch((0, _actions.onUserLogin)());
 	        },
@@ -44642,13 +44643,17 @@
 	}
 
 	function onSubmit(e) {
+	    e.preventDefault();
 	    var _props = this.props;
-	    var message = _props.message;
+	    var _props$message = _props.message;
+	    var message = _props$message === undefined ? '' : _props$message;
 	    var onMessageChange = _props.onMessageChange;
 
-	    nameSpaceSocket.emit('chat message', message);
-	    onMessageChange('');
-	    e.preventDefault();
+
+	    if (!!message.trim()) {
+	        nameSpaceSocket.emit('chat message', message);
+	        onMessageChange('');
+	    }
 	}
 
 	var MessageForm = function (_Component) {
@@ -50089,6 +50094,60 @@
 /* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+
+	(function () {
+		'use strict';
+
+		var hasOwn = {}.hasOwnProperty;
+
+		function classNames () {
+			var classes = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+
+				var argType = typeof arg;
+
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+
+			return classes.join(' ');
+		}
+
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if (true) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	}());
+
+
+/***/ },
+/* 308 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -50177,7 +50236,8 @@
 	                ),
 	                _react2.default.createElement(
 	                    'form',
-	                    { className: 'nick-wrap', onSubmit: function onSubmit(e) {
+	                    { className: 'nick-wrap',
+	                        onSubmit: function onSubmit(e) {
 	                            onKnockClick(username, channelName);e.preventDefault();
 	                        } },
 	                    _react2.default.createElement(_TextField2.default, {
@@ -50234,7 +50294,6 @@
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 	    return {
 	        onChannelNameChange: function onChannelNameChange(channelName) {
-	            window.history.pushState("", "", '/' + channelName);
 	            dispatch((0, _actions.changeChannelName)(channelName));
 	        },
 	        onUsernameChange: function onUsernameChange(username) {
@@ -50248,16 +50307,16 @@
 	exports.default = Login;
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(309);
+	var content = __webpack_require__(310);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(311)(content, {});
+	var update = __webpack_require__(312)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -50274,21 +50333,21 @@
 	}
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(310)();
+	exports = module.exports = __webpack_require__(311)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "html, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 75%;\n  float: left; }\n\n.ma-sidebar {\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 5px 30px; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n", ""]);
+	exports.push([module.id, "html, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.ca-main-paper {\n  display: inline-block;\n  height: 80%;\n  width: 100%;\n  position: absolute;\n  top: 20%;\n  left: 0; }\n  .ca-main-paper.chatBox {\n    top: 0;\n    background: #F5F5F5;\n    height: 100%;\n    width: 100%; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 100%;\n  float: left; }\n\n.ma-sidebar {\n  display: none;\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 5px 30px; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n\n@media screen and (min-width: 56.25em) {\n  .ca-main-paper {\n    top: 10%;\n    width: 450px;\n    height: 450px;\n    left: calc((100% - 450px) / 2); }\n    .ca-main-paper.chatBox {\n      top: 10%;\n      left: 0;\n      height: 80%; }\n  .messageForm {\n    width: 75%; }\n  .ma-sidebar {\n    display: block; } }\n\n@media screen and (min-width: 75em) {\n  .ca-main-paper.chatBox {\n    left: calc((100% - 1200px) / 2);\n    top: 10%;\n    height: 80%;\n    width: 1200px; } }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports) {
 
 	/*
@@ -50344,7 +50403,7 @@
 
 
 /***/ },
-/* 311 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -50596,7 +50655,7 @@
 
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50644,23 +50703,23 @@
 	}
 
 /***/ },
-/* 313 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defaultClickRejectionStrategy = __webpack_require__(314);
+	var defaultClickRejectionStrategy = __webpack_require__(315);
 
 	module.exports = function injectTapEventPlugin (strategyOverrides) {
 	  strategyOverrides = strategyOverrides || {}
 	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
 
 	  __webpack_require__(31).injection.injectEventPluginsByName({
-	    "TapEventPlugin":       __webpack_require__(315)(shouldRejectClick)
+	    "TapEventPlugin":       __webpack_require__(316)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -50671,7 +50730,7 @@
 
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -50699,10 +50758,10 @@
 	var EventPluginUtils = __webpack_require__(33);
 	var EventPropagators = __webpack_require__(73);
 	var SyntheticUIEvent = __webpack_require__(87);
-	var TouchEventUtils = __webpack_require__(316);
+	var TouchEventUtils = __webpack_require__(317);
 	var ViewportMetrics = __webpack_require__(38);
 
-	var keyOf = __webpack_require__(317);
+	var keyOf = __webpack_require__(318);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -50848,7 +50907,7 @@
 
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports) {
 
 	/**
@@ -50896,7 +50955,7 @@
 
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports) {
 
 	/**

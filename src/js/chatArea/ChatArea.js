@@ -96,10 +96,13 @@ function onUserMessageChange(e) {
 
 
 function onSubmit(e) {
-    const {message, onMessageChange } = this.props;
-    nameSpaceSocket.emit('chat message', message);
-    onMessageChange('');
     e.preventDefault();
+    const {message = '', onMessageChange } = this.props;
+
+    if (!!message.trim()) {
+        nameSpaceSocket.emit('chat message', message);
+        onMessageChange('');
+    }
 }
 
 class MessageForm extends Component {

@@ -43,7 +43,8 @@ class LoginComponent extends Component {
                         fill : '#fff'
                         }}/>
                 </Paper>
-                <form className="nick-wrap" onSubmit={(e) => {onKnockClick(username, channelName); e.preventDefault();}}>
+                <form className="nick-wrap"
+                      onSubmit={(e) => {onKnockClick(username, channelName); e.preventDefault();}}>
                     <TextField
                         hintText="Nickname"
                         floatingLabelText="Nickname"
@@ -92,7 +93,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onChannelNameChange: (channelName) => {
-            window.history.pushState("", "", `/${channelName}`);
             dispatch(changeChannelName(channelName))
         },
         onUsernameChange: (username) => {
