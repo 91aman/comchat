@@ -12,6 +12,8 @@ export const USER_MESSAGE_CHANGE = 'USER_MESSAGE_CHANGE';
 export const ON_STATE_UPDATE = 'ON_STATE_UPDATE';
 export const NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
 export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
+export const TOGGLE_EMOTICON_POPOVER = 'TOGGLE_EMOTICON_POPOVER';
+export const ON_EMOTICON_ADD = 'ON_EMOTICON_ADD';
 
 /*
  * action creators
@@ -44,5 +46,13 @@ export function onNewMessageRecieved(data) {
 
 export function toggleSnackbar(data) {
     return {type: TOGGLE_SNACKBAR, data}
+}
+
+export function toggleEmoticonPopover(data) {
+    return {type: TOGGLE_EMOTICON_POPOVER, data}
+}
+
+export function onEmoticonClick(data) {
+    return {type: ON_EMOTICON_ADD, data}
 }
 

@@ -1,3 +1,5 @@
+@import "balloon-css/balloon";
+
 html, body {
   height: 100%;
 }
@@ -5,6 +7,21 @@ html, body {
 body {
   margin: 0;
   background: #FAFAFA;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin:0;
+}
+
+.clearfix::after{
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
 }
 
 #app, .chatApp {
@@ -159,7 +176,30 @@ body {
   border-top: 1px solid #dedede;
 }
 
-@media screen and (min-width: 56.25em) {
+.ib-em-bt {
+  position: absolute !important;
+  right: 25px;
+}
+
+.ib-em-icon {
+  fill: #999 !important;
+}
+
+.ib-text input {
+  padding-right: 40px !important;
+  box-sizing: border-box;
+
+}
+
+.emoji {
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-block;
+  margin-bottom: -0.25em;
+  background-size: contain;
+}
+
+@media screen and (min-width: 900px) {
   .ca-main-paper {
     top: 10%;
     width: 450px;
@@ -167,8 +207,8 @@ body {
     left: calc((100% - 450px) / 2);
 
     &.chatBox {
-      top:10%;
-      left:0;
+      top: 10%;
+      left: 0;
       height: 80%;
     }
   }
@@ -182,7 +222,7 @@ body {
   }
 }
 
-@media screen and (min-width: 75em) {
+@media screen and (min-width: 1200px) {
   .ca-main-paper.chatBox {
     left: calc((100% - 1200px) / 2);
     top: 10%;

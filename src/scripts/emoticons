@@ -1,0 +1,27 @@
+/*************EMOTICONS************/
+
+To fetch emoticon list from http://www.webpagefx.com/tools/emoji-cheat-sheet/
+
+var obj = {};
+["people", "nature", "objects", "places", "symbols"].forEach(function(a){
+  obj[a] = {};
+  $('.'+a).find('.name').each(function(iter,name){
+    var n = $(name).text();
+    obj[a][n] = {name: n, 'alternate-name' : $(name).attr('data-alternative-name')}
+  })
+})
+console.log(obj);
+
+/**************************************/
+
+/*************PARTY PARROT************/
+to fetch party parrot names from http://cultofthepartyparrot.com/
+
+var obj = {};
+$($0).find('img').each(function(iter,node){
+var name = $(node).attr('src').split('/')[1].split('.')[0];
+obj[name] = {name : name}
+})
+console.log(obj);
+
+/**************************************/

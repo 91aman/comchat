@@ -9,6 +9,11 @@ app.get('/build/app.js', function (req, res) {
     res.sendFile(path.join(__dirname + '/../../build/app.js'));
 });
 
+app.get('/src/*', function (req, res) {
+    console.log(__dirname + '/../../'+req.originalUrl);
+    res.sendFile(path.join(__dirname + '/../../'+ req.originalUrl));
+});
+
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname + '/../../index.html'));
 });

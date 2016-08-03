@@ -1,7 +1,15 @@
+const path = require( 'path' );
+const PWD = process.env.PWD;
+
 module.exports = {
     entry: './src/js/main.js',
     output: {
         filename: './build/app.js'
+    },
+    sassLoader: {
+        includePaths: [
+            './node_modules/'
+        ]
     },
     module: {
         loaders: [

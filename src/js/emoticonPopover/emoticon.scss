@@ -1,0 +1,105 @@
+
+.emo-pop {
+  height: 17rem !important;
+  width: 17rem !important;
+
+  div{
+    height:100%;
+  }
+}
+
+.ep-emo-wrap{
+  float: left;
+  height: 35px;
+  width: 35px;
+  margin: 2px;
+  position: relative;
+  cursor: pointer;
+
+  img {
+    height: auto;
+    width: auto;
+    max-height: 22px;
+    max-width: 22px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%) translateY(-50%);
+  }
+}
+
+.emo-pop-wrap{
+  height: calc(100% - 41px);
+  overflow-y: auto;
+}
+
+.emo-pop-wrap .ep-emo-wrap {
+
+  &:nth-child(n):hover {
+    background: #e57373;
+  }
+
+  &:nth-child(2n):hover {
+    background: #FFF176;
+  }
+  &:nth-child(3n):hover {
+    background: #BA68C8;
+  }
+
+  &:nth-child(4n):hover {
+    background: #FFD54F;
+  }
+  &:nth-child(5n):hover {
+    background: #7986CB;
+  }
+
+  &:nth-child(6n):hover {
+    background: #FFB74D;
+  }
+
+  &:nth-child(7n):hover {
+    background: #4FC3F7;
+  }
+
+  &:nth-child(8n):hover {
+    background: #FF8A65;
+  }
+  &:nth-child(9n):hover {
+    background: #4DB6AC;
+  }
+
+  &:nth-child(10n):hover {
+    background: #81C784;
+  }
+  &:nth-child(11n):hover {
+    background: #AED581;
+  }
+
+  &:nth-child(12n):hover {
+    background: #DCE775;
+  }
+
+  &:hover {
+    border-radius: 5px;
+    -webkit-transition: background 50ms ease-out;
+    -moz-transition: background 50ms ease-out;
+    transition: background 50ms ease-out;
+  }
+}
+
+.emo-pop-list-wrap{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #f7f7f7;
+  border-top: 1px solid #ddd;
+
+  .ep-emo-wrap{
+    margin-bottom: 0;
+    border-bottom: 3px solid transparent;
+
+    &.selected{
+      border-bottom: 3px solid greenyellow;
+    }
+  }
+}

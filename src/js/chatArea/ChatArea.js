@@ -13,7 +13,12 @@ import IconButton from 'material-ui/lib/icon-button';
 import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right';
 import Divider from 'material-ui/lib/divider';
 import LinkIcon from 'material-ui/lib/svg-icons/content/link';
-import {onMessageChange, onStateChange, onNewMessageRecieved} from '../actions';
+import EmotionIcon from 'material-ui/lib/svg-icons/editor/insert-emoticon';
+
+import Emojify from '../../libs/emojify' ;
+
+import EmoticonPopOver from '../emoticonPopover';
+import {onMessageChange, onStateChange, onNewMessageRecieved, toggleEmoticonPopover} from '../actions';
 
 import ChatAreaHeader from './ChatAreaHeader';
 
@@ -44,7 +49,8 @@ const Message = ({msg , time, username, color}) => {
     return (<div className="message">
         <MessageDate time={new Date(time)}/>
         <SenderName name={username} color={color}/>
-        <span className="message-desc">{msg}</span>
+        <span className="message-desc" dangerouslySetInnerHTML={{__html: window.emojify.getEmogifiedString(msg)}}>
+        </span>
     </div>)
 };
 
@@ -109,11 +115,12 @@ class MessageForm extends Component {
 
     componentDidUpdate(prevProps, prevState, prevContext) {
         this.refs['messageList'] && (this.refs['messageList'].scrollTop = this.refs['messageList'].scrollHeight);
+        Emojify.run();
     }
 
     render() {
         const {props} = this,
-            {messages, message, usersTyping = []} = props;
+            {messages, message, openEmoticonPopover, usersTyping = []} = props;
 
         return (
             <div className="messageForm">
@@ -128,6 +135,7 @@ class MessageForm extends Component {
                     <form
                         onSubmit={_.bind(onSubmit, this)}>
                         <TextField
+                            className="ib-text"
                             ref="text-field"
                             hintText="Type your message"
                             fullWidth={true}
@@ -135,11 +143,16 @@ class MessageForm extends Component {
                             value={message}
                             autoComplete="off"
                         />
+                        <IconButton className="ib-em-bt" onClick={(e ) => { openEmoticonPopover(true, e.currentTarget)}}>
+                            <EmotionIcon className="ib-em-icon"/>
+                        </IconButton>
+                        <EmoticonPopOver/>
                     </form>
                 </footer>
             </div>
         )
     }
+
 }
 
 class ChatRoomComponent extends Component {
@@ -205,8 +218,10 @@ const mapDispatchToProps = (dispatch) => {
         },
         onNewMessageRecieve: (message) => {
             dispatch(onNewMessageRecieved(message));
+        },
+        openEmoticonPopover: (open, element) => {
+            dispatch(toggleEmoticonPopover({open, element}));
         }
-
     }
 };
 
