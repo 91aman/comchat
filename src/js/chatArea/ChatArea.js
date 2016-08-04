@@ -15,8 +15,7 @@ import Divider from 'material-ui/lib/divider';
 import LinkIcon from 'material-ui/lib/svg-icons/content/link';
 import EmotionIcon from 'material-ui/lib/svg-icons/editor/insert-emoticon';
 
-import Emojify from '../../libs/emojify' ;
-
+import MessageUtils from '../utils/messageUtils';
 import EmoticonPopOver from '../emoticonPopover';
 import {onMessageChange, onStateChange, onNewMessageRecieved, toggleEmoticonPopover} from '../actions';
 
@@ -49,7 +48,7 @@ const Message = ({msg , time, username, color}) => {
     return (<div className="message">
         <MessageDate time={new Date(time)}/>
         <SenderName name={username} color={color}/>
-        <span className="message-desc" dangerouslySetInnerHTML={{__html: window.emojify.getEmogifiedString(msg)}}>
+        <span className="message-desc" dangerouslySetInnerHTML={{__html: msg}}>
         </span>
     </div>)
 };
@@ -115,7 +114,6 @@ class MessageForm extends Component {
 
     componentDidUpdate(prevProps, prevState, prevContext) {
         this.refs['messageList'] && (this.refs['messageList'].scrollTop = this.refs['messageList'].scrollHeight);
-        Emojify.run();
     }
 
     render() {
@@ -143,7 +141,8 @@ class MessageForm extends Component {
                             value={message}
                             autoComplete="off"
                         />
-                        <IconButton className="ib-em-bt" onClick={(e ) => { openEmoticonPopover(true, e.currentTarget)}}>
+                        <IconButton className="ib-em-bt"
+                                    onClick={(e ) => { openEmoticonPopover(true, e.currentTarget)}}>
                             <EmotionIcon className="ib-em-icon"/>
                         </IconButton>
                         <EmoticonPopOver/>
@@ -183,7 +182,8 @@ class ChatRoomComponent extends Component {
         });
 
         nameSpaceSocket.on('chat message', (message) => {
-            this.props.onNewMessageRecieve(message);
+            this.props.onNewMessageRecieve(Object.assign(message, {msg: MessageUtils.parseMessage(message.msg)}));
+
         });
     }
 

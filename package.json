@@ -18,12 +18,12 @@
   "main": "web.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start" : "node ./src/server/index.js"
+    "start": "node ./src/server/index.js"
   },
   "dependencies": {
-    "balloon-css" : "0.3.0",
-    "express" : "4.14.0",
-    "socket.io" : "1.4.8",
+    "balloon-css": "0.3.0",
+    "express": "4.14.0",
+    "socket.io": "1.4.8",
     "babel-core": "^6.3.13",
     "babel-loader": "^6.2.0",
     "webpack": "^1.12.9",
@@ -38,10 +38,11 @@
     "react": "^0.14.7",
     "node-sass": "^3.4.2",
     "left-pad": "^1.0.2",
-    "jquery" : "^2.2.3",
-    "material-ui" : "^0.14.4",
-    "react-tap-event-plugin" : "^0.2.0",
-    "redux" : "^3.5.2",
-    "react-redux" : "^4.4.5"
+    "jquery": "^2.2.3",
+    "material-ui": "^0.14.4",
+    "react-tap-event-plugin": "^0.2.0",
+    "redux": "^3.5.2",
+    "react-redux": "^4.4.5",
+    "autolinker": "^0.25.2"
   }
 }

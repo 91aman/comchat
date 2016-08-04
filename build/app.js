@@ -62,7 +62,7 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _main = __webpack_require__(316);
+	var _main = __webpack_require__(318);
 
 	var _main2 = _interopRequireDefault(_main);
 
@@ -70,7 +70,7 @@
 
 	var _redux = __webpack_require__(167);
 
-	var _reducers = __webpack_require__(318);
+	var _reducers = __webpack_require__(320);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -88,7 +88,7 @@
 
 	var store = (0, _redux.createStore)(_reducers2.default, getDefaultState());
 
-	var injectTapEventPlugin = __webpack_require__(319);
+	var injectTapEventPlugin = __webpack_require__(321);
 	injectTapEventPlugin();
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -19776,17 +19776,17 @@
 
 	var _ChatArea2 = _interopRequireDefault(_ChatArea);
 
-	var _snackbar = __webpack_require__(312);
+	var _snackbar = __webpack_require__(314);
 
 	var _snackbar2 = _interopRequireDefault(_snackbar);
 
-	var _classnames = __webpack_require__(305);
+	var _classnames = __webpack_require__(306);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
-	var _Login = __webpack_require__(315);
+	var _Login = __webpack_require__(317);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
@@ -44482,17 +44482,17 @@
 
 	var _insertEmoticon2 = _interopRequireDefault(_insertEmoticon);
 
-	var _emojify = __webpack_require__(303);
+	var _messageUtils = __webpack_require__(303);
 
-	var _emojify2 = _interopRequireDefault(_emojify);
+	var _messageUtils2 = _interopRequireDefault(_messageUtils);
 
-	var _emoticonPopover = __webpack_require__(304);
+	var _emoticonPopover = __webpack_require__(305);
 
 	var _emoticonPopover2 = _interopRequireDefault(_emoticonPopover);
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
-	var _ChatAreaHeader = __webpack_require__(311);
+	var _ChatAreaHeader = __webpack_require__(313);
 
 	var _ChatAreaHeader2 = _interopRequireDefault(_ChatAreaHeader);
 
@@ -44570,7 +44570,7 @@
 	        { className: 'message' },
 	        _react2.default.createElement(MessageDate, { time: new Date(time) }),
 	        _react2.default.createElement(SenderName, { name: username, color: color }),
-	        _react2.default.createElement('span', { className: 'message-desc', dangerouslySetInnerHTML: { __html: window.emojify.getEmogifiedString(msg) } })
+	        _react2.default.createElement('span', { className: 'message-desc', dangerouslySetInnerHTML: { __html: msg } })
 	    );
 	};
 
@@ -44677,7 +44677,6 @@
 	        key: 'componentDidUpdate',
 	        value: function componentDidUpdate(prevProps, prevState, prevContext) {
 	            this.refs['messageList'] && (this.refs['messageList'].scrollTop = this.refs['messageList'].scrollHeight);
-	            _emojify2.default.run();
 	        }
 	    }, {
 	        key: 'render',
@@ -44731,7 +44730,8 @@
 	                        }),
 	                        _react2.default.createElement(
 	                            _iconButton2.default,
-	                            { className: 'ib-em-bt', onClick: function onClick(e) {
+	                            { className: 'ib-em-bt',
+	                                onClick: function onClick(e) {
 	                                    openEmoticonPopover(true, e.currentTarget);
 	                                } },
 	                            _react2.default.createElement(_insertEmoticon2.default, { className: 'ib-em-icon' })
@@ -44791,7 +44791,7 @@
 	        });
 
 	        nameSpaceSocket.on('chat message', function (message) {
-	            _this2.props.onNewMessageRecieve(message);
+	            _this2.props.onNewMessageRecieve(Object.assign(message, { msg: _messageUtils2.default.parseMessage(message.msg) }));
 	        });
 	        return _this2;
 	    }
@@ -49436,436 +49436,3846 @@
 /* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _autolinker = __webpack_require__(304);
+
+	var _autolinker2 = _interopRequireDefault(_autolinker);
+
+	var _lodash = __webpack_require__(188);
+
+	var _lodash2 = _interopRequireDefault(_lodash);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//const autolinker = new Autolinker({
+	//    urls: {
+	//        schemeMatches: true,
+	//        wwwMatches: true,
+	//        tldMatches: true
+	//    },
+	//    email: true,
+	//    phone: false,
+	//    twitter: true,
+	//    hashtag: 'twitter',
+	//
+	//    stripPrefix: true,
+	//    newWindow: true,
+	//
+	//    truncate: {
+	//        length: 0,
+	//        location: 'end'
+	//    },
+	//
+	//    className: 'md-link'
+	//});
 
 	/**
-	 * taken from 
+	 * Created by amanjain on 04/08/16 at 12:42 PM.
+	 * Description :
 	 */
 
-	(function (root, factory) {
-	    'use strict';
+	var getEmogifiedMsg = function getEmogifiedMsg(msg) {
+	    return window.emojify.getEmogifiedString(msg);
+	};
 
-	    if (true) {
-	        // AMD. Register as an anonymous module.
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	    } else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-	        // Node. Does not work with strict CommonJS, but
-	        // only CommonJS-like environments that support module.exports,
-	        // like Node.
-	        module.exports = factory();
-	    } else {
-	        // Browser globals (root is window)
-	        root.emojify = factory();
+	var getLinkifyMsg = function getLinkifyMsg(msg) {
+	    return _autolinker2.default.link(msg, {
+	        urls: {
+	            schemeMatches: true,
+	            wwwMatches: true,
+	            tldMatches: true
+	        },
+	        email: true,
+	        phone: false,
+	        twitter: true,
+	        hashtag: 'twitter',
+
+	        stripPrefix: false,
+	        newWindow: true,
+
+	        truncate: {
+	            length: 0,
+	            location: 'end'
+	        },
+
+	        className: 'md-link'
+	    });
+	};
+
+	exports.default = {
+	    parseMessage: function parseMessage(msg) {
+	        var emogifiedMsg = getEmogifiedMsg(msg);
+	        return getLinkifyMsg(emogifiedMsg);
 	    }
-	})(undefined, function () {
-	    'use strict';
-
-	    var emojify = function () {
-	        /**
-	         * NB!
-	         * The namedEmojiString variable is updated automatically by the
-	         * "update" gulp task. Do not remove the comment as this will
-	         * cause the gulp task to stop working.
-	         */
-	        var namedEmojiString =
-	        /*##EMOJILIST*/"+1,-1,100,1234,8ball,a,ab,abc,abcd,accept,aerial_tramway,airplane,alarm_clock,alien,ambulance,anchor,angel,anger,angry,anguished,ant,apple,aquarius,aries,arrow_backward,arrow_double_down,arrow_double_up,arrow_down,arrow_down_small,arrow_forward,arrow_heading_down,arrow_heading_up,arrow_left,arrow_lower_left,arrow_lower_right,arrow_right,arrow_right_hook,arrow_up,arrow_up_down,arrow_up_small,arrow_upper_left,arrow_upper_right,arrows_clockwise,arrows_counterclockwise,art,articulated_lorry,astonished,atm,b,baby,baby_bottle,baby_chick,baby_symbol,back,baggage_claim,balloon,ballot_box_with_check,bamboo,banana,bangbang,bank,bar_chart,barber,baseball,basketball,bath,bathtub,battery,bear,bee,beer,beers,beetle,beginner,bell,bento,bicyclist,bike,bikini,bird,birthday,black_circle,black_joker,black_medium_small_square,black_medium_square,black_nib,black_small_square,black_square,black_square_button,blossom,blowfish,blue_book,blue_car,blue_heart,blush,boar,boat,bomb,book,bookmark,bookmark_tabs,books,boom,boot,bouquet,bow,bowling,bowtie,boy,bread,bride_with_veil,bridge_at_night,briefcase,broken_heart,bug,bulb,bullettrain_front,bullettrain_side,bus,busstop,bust_in_silhouette,busts_in_silhouette,cactus,cake,calendar,calling,camel,camera,cancer,candy,capital_abcd,capricorn,car,card_index,carousel_horse,cat,cat2,cd,chart,chart_with_downwards_trend,chart_with_upwards_trend,checkered_flag,cherries,cherry_blossom,chestnut,chicken,children_crossing,chocolate_bar,christmas_tree,church,cinema,circus_tent,city_sunrise,city_sunset,cl,clap,clapper,clipboard,clock1,clock10,clock1030,clock11,clock1130,clock12,clock1230,clock130,clock2,clock230,clock3,clock330,clock4,clock430,clock5,clock530,clock6,clock630,clock7,clock730,clock8,clock830,clock9,clock930,closed_book,closed_lock_with_key,closed_umbrella,cloud,clubs,cn,cocktail,coffee,cold_sweat,collision,computer,confetti_ball,confounded,confused,congratulations,construction,construction_worker,convenience_store,cookie,cool,cop,copyright,corn,couple,couple_with_heart,couplekiss,cow,cow2,credit_card,crescent_moon,crocodile,crossed_flags,crown,cry,crying_cat_face,crystal_ball,cupid,curly_loop,currency_exchange,curry,custard,customs,cyclone,dancer,dancers,dango,dart,dash,date,de,deciduous_tree,department_store,diamond_shape_with_a_dot_inside,diamonds,disappointed,disappointed_relieved,dizzy,dizzy_face,do_not_litter,dog,dog2,dollar,dolls,dolphin,donut,door,doughnut,dragon,dragon_face,dress,dromedary_camel,droplet,dvd,e-mail,ear,ear_of_rice,earth_africa,earth_americas,earth_asia,egg,eggplant,eight,eight_pointed_black_star,eight_spoked_asterisk,electric_plug,elephant,email,end,envelope,es,euro,european_castle,european_post_office,evergreen_tree,exclamation,expressionless,eyeglasses,eyes,facepunch,factory,fallen_leaf,family,fast_forward,fax,fearful,feelsgood,feet,ferris_wheel,file_folder,finnadie,fire,fire_engine,fireworks,first_quarter_moon,first_quarter_moon_with_face,fish,fish_cake,fishing_pole_and_fish,fist,five,flags,flashlight,floppy_disk,flower_playing_cards,flushed,foggy,football,fork_and_knife,fountain,four,four_leaf_clover,fr,free,fried_shrimp,fries,frog,frowning,fu,fuelpump,full_moon,full_moon_with_face,game_die,gb,gem,gemini,ghost,gift,gift_heart,girl,globe_with_meridians,goat,goberserk,godmode,golf,grapes,green_apple,green_book,green_heart,grey_exclamation,grey_question,grimacing,grin,grinning,guardsman,guitar,gun,haircut,hamburger,hammer,hamster,hand,handbag,hankey,hash,hatched_chick,hatching_chick,headphones,hear_no_evil,heart,heart_decoration,heart_eyes,heart_eyes_cat,heartbeat,heartpulse,hearts,heavy_check_mark,heavy_division_sign,heavy_dollar_sign,heavy_exclamation_mark,heavy_minus_sign,heavy_multiplication_x,heavy_plus_sign,helicopter,herb,hibiscus,high_brightness,high_heel,hocho,honey_pot,honeybee,horse,horse_racing,hospital,hotel,hotsprings,hourglass,hourglass_flowing_sand,house,house_with_garden,hurtrealbad,hushed,ice_cream,icecream,id,ideograph_advantage,imp,inbox_tray,incoming_envelope,information_desk_person,information_source,innocent,interrobang,iphone,it,izakaya_lantern,jack_o_lantern,japan,japanese_castle,japanese_goblin,japanese_ogre,jeans,joy,joy_cat,jp,key,keycap_ten,kimono,kiss,kissing,kissing_cat,kissing_closed_eyes,kissing_face,kissing_heart,kissing_smiling_eyes,koala,koko,kr,large_blue_circle,large_blue_diamond,large_orange_diamond,last_quarter_moon,last_quarter_moon_with_face,laughing,leaves,ledger,left_luggage,left_right_arrow,leftwards_arrow_with_hook,lemon,leo,leopard,libra,light_rail,link,lips,lipstick,lock,lock_with_ink_pen,lollipop,loop,loudspeaker,love_hotel,love_letter,low_brightness,m,mag,mag_right,mahjong,mailbox,mailbox_closed,mailbox_with_mail,mailbox_with_no_mail,man,man_with_gua_pi_mao,man_with_turban,mans_shoe,maple_leaf,mask,massage,meat_on_bone,mega,melon,memo,mens,metal,metro,microphone,microscope,milky_way,minibus,minidisc,mobile_phone_off,money_with_wings,moneybag,monkey,monkey_face,monorail,mortar_board,mount_fuji,mountain_bicyclist,mountain_cableway,mountain_railway,mouse,mouse2,movie_camera,moyai,muscle,mushroom,musical_keyboard,musical_note,musical_score,mute,nail_care,name_badge,neckbeard,necktie,negative_squared_cross_mark,neutral_face,new,new_moon,new_moon_with_face,newspaper,ng,nine,no_bell,no_bicycles,no_entry,no_entry_sign,no_good,no_mobile_phones,no_mouth,no_pedestrians,no_smoking,non-potable_water,nose,notebook,notebook_with_decorative_cover,notes,nut_and_bolt,o,o2,ocean,octocat,octopus,oden,office,ok,ok_hand,ok_woman,older_man,older_woman,on,oncoming_automobile,oncoming_bus,oncoming_police_car,oncoming_taxi,one,open_file_folder,open_hands,open_mouth,ophiuchus,orange_book,outbox_tray,ox,package,page_facing_up,page_with_curl,pager,palm_tree,panda_face,paperclip,parking,part_alternation_mark,partly_sunny,passport_control,paw_prints,peach,pear,pencil,pencil2,penguin,pensive,performing_arts,persevere,person_frowning,person_with_blond_hair,person_with_pouting_face,phone,pig,pig2,pig_nose,pill,pineapple,pisces,pizza,plus1,point_down,point_left,point_right,point_up,point_up_2,police_car,poodle,poop,post_office,postal_horn,postbox,potable_water,pouch,poultry_leg,pound,pouting_cat,pray,princess,punch,purple_heart,purse,pushpin,put_litter_in_its_place,question,rabbit,rabbit2,racehorse,radio,radio_button,rage,rage1,rage2,rage3,rage4,railway_car,rainbow,raised_hand,raised_hands,raising_hand,ram,ramen,rat,recycle,red_car,red_circle,registered,relaxed,relieved,repeat,repeat_one,restroom,revolving_hearts,rewind,ribbon,rice,rice_ball,rice_cracker,rice_scene,ring,rocket,roller_coaster,rooster,rose,rotating_light,round_pushpin,rowboat,ru,rugby_football,runner,running,running_shirt_with_sash,sa,sagittarius,sailboat,sake,sandal,santa,satellite,satisfied,saxophone,school,school_satchel,scissors,scorpius,scream,scream_cat,scroll,seat,secret,see_no_evil,seedling,seven,shaved_ice,sheep,shell,ship,shipit,shirt,shit,shoe,shower,signal_strength,six,six_pointed_star,ski,skull,sleeping,sleepy,slot_machine,small_blue_diamond,small_orange_diamond,small_red_triangle,small_red_triangle_down,smile,smile_cat,smiley,smiley_cat,smiling_imp,smirk,smirk_cat,smoking,snail,snake,snowboarder,snowflake,snowman,sob,soccer,soon,sos,sound,space_invader,spades,spaghetti,sparkle,sparkler,sparkles,sparkling_heart,speak_no_evil,speaker,speech_balloon,speedboat,squirrel,star,star2,stars,station,statue_of_liberty,steam_locomotive,stew,straight_ruler,strawberry,stuck_out_tongue,stuck_out_tongue_closed_eyes,stuck_out_tongue_winking_eye,sun_with_face,sunflower,sunglasses,sunny,sunrise,sunrise_over_mountains,surfer,sushi,suspect,suspension_railway,sweat,sweat_drops,sweat_smile,sweet_potato,swimmer,symbols,syringe,tada,tanabata_tree,tangerine,taurus,taxi,tea,telephone,telephone_receiver,telescope,tennis,tent,thought_balloon,three,thumbsdown,thumbsup,ticket,tiger,tiger2,tired_face,tm,toilet,tokyo_tower,tomato,tongue,top,tophat,tractor,traffic_light,train,train2,tram,triangular_flag_on_post,triangular_ruler,trident,triumph,trolleybus,trollface,trophy,tropical_drink,tropical_fish,truck,trumpet,tshirt,tulip,turtle,tv,twisted_rightwards_arrows,two,two_hearts,two_men_holding_hands,two_women_holding_hands,u5272,u5408,u55b6,u6307,u6708,u6709,u6e80,u7121,u7533,u7981,u7a7a,uk,umbrella,unamused,underage,unlock,up,us,v,vertical_traffic_light,vhs,vibration_mode,video_camera,video_game,violin,virgo,volcano,vs,walking,waning_crescent_moon,waning_gibbous_moon,warning,watch,water_buffalo,watermelon,wave,wavy_dash,waxing_crescent_moon,waxing_gibbous_moon,wc,weary,wedding,whale,whale2,wheelchair,white_check_mark,white_circle,white_flower,white_large_square,white_medium_small_square,white_medium_square,white_small_square,white_square_button,wind_chime,wine_glass,wink,wolf,woman,womans_clothes,womans_hat,womens,worried,wrench,x,yellow_heart,yen,yum,zap,zero,zzz,parrot,middleparrot,rightparrot,aussieparrot,gothparrot,oldtimeyparrot,boredparrot,shuffleparrot,shufflefurtherparrot,congaparrot,reversecongaparrot,partyparrot,sadparrot,parrotcop,fastparrot,slowparrot,parrotdad,dealwithitparrot,fiestaparrot,chillparrot,explodyparrot,shufflepartyparrot,ice-cream-parrot,aussiecongaparrot,aussiereversecongaparrot,parrotwave1,parrotwave2,parrotwave3,parrotwave4,parrotwave5,parrotwave6,parrotwave7";
-
-	        var namedEmoji = namedEmojiString.split(/,/);
-
-	        /* A hash with the named emoji as keys */
-	        var namedMatchHash = namedEmoji.reduce(function (memo, v) {
-	            memo[v] = true;
-	            return memo;
-	        }, {});
-
-	        var emoticonsProcessed;
-	        var emojiMegaRe;
-
-	        function initEmoticonsProcessed() {
-	            /* List of emoticons used in the regular expression */
-	            var emoticons = {
-	                /* :..: */named: /:([a-z0-9A-Z_-]+):/,
-	                /* :-)  */smile: /:-?\)/g,
-	                /* :o   */open_mouth: /:o/gi,
-	                /* :-o  */scream: /:-o/gi,
-	                /* :-]  */smirk: /[:;]-?]/g,
-	                /* :-D  */grinning: /[:;]-?d/gi,
-	                /* X-D  */stuck_out_tongue_closed_eyes: /x-d/gi,
-	                /* ;-p  */stuck_out_tongue_winking_eye: /[:;]-?p/gi,
-	                /* :-[ / :-@  */rage: /:-?[\[@]/g,
-	                /* :-(  */frowning: /:-?\(/g,
-	                /* :'-( */sob: /:['’]-?\(|:&#x27;\(/g,
-	                /* :-*  */kissing_heart: /:-?\*/g,
-	                /* ;-)  */wink: /;-?\)/g,
-	                /* :-/  */pensive: /:-?\//g,
-	                /* :-s  */confounded: /:-?s/gi,
-	                /* :-|  */flushed: /:-?\|/g,
-	                /* :-$  */relaxed: /:-?\$/g,
-	                /* :-x  */mask: /:-x/gi,
-	                /* <3   */heart: /<3|&lt;3/g,
-	                /* </3  */broken_heart: /<\/3|&lt;&#x2F;3/g,
-	                /* :+1: */thumbsup: /:\+1:/g,
-	                /* :-1: */thumbsdown: /:\-1:/g
-	            };
-
-	            if (defaultConfig.ignore_emoticons) {
-	                emoticons = {
-	                    /* :..: */named: /:([a-z0-9A-Z_-]+):/,
-	                    /* :+1: */thumbsup: /:\+1:/g,
-	                    /* :-1: */thumbsdown: /:\-1:/g
-	                };
-	            }
-
-	            return Object.keys(emoticons).map(function (key) {
-	                return [emoticons[key], key];
-	            });
-	        }
-
-	        function initMegaRe() {
-	            /* The source for our mega-regex */
-	            var mega = emoticonsProcessed.map(function (v) {
-	                var re = v[0];
-	                var val = re.source || re;
-	                val = val.replace(/(^|[^\[])\^/g, '$1');
-	                return "(" + val + ")";
-	            }).join('|');
-
-	            /* The regex used to find emoji */
-	            return new RegExp(mega, "gi");
-	        }
-
-	        var defaultConfig = {
-	            blacklist: {
-	                'ids': [],
-	                'classes': ['no-emojify'],
-	                'elements': ['script', 'textarea', 'a', 'pre', 'code']
-	            },
-	            tag_type: null,
-	            only_crawl_id: null,
-	            img_dir: 'images/emoji',
-	            ignore_emoticons: false,
-	            mode: 'img'
-	        };
-
-	        /* Returns true if the given char is whitespace */
-	        function isWhitespace(s) {
-	            return s === ' ' || s === '\t' || s === '\r' || s === '\n' || s === '' || s === String.fromCharCode(160);
-	        }
-
-	        var modeToElementTagType = {
-	            'img': 'img',
-	            'sprite': 'span',
-	            'data-uri': 'span'
-	        };
-
-	        /* Given a match in a node, replace the text with an image */
-	        function insertEmojicon(args) {
-	            var emojiElement = null;
-
-	            if (args.replacer) {
-	                emojiElement = args.replacer.apply({
-	                    config: defaultConfig
-	                }, [':' + args.emojiName + ':', args.emojiName]);
-	            } else {
-	                var elementType = defaultConfig.tag_type || modeToElementTagType[defaultConfig.mode];
-	                emojiElement = args.win.document.createElement(elementType);
-
-	                if (elementType !== 'img') {
-	                    emojiElement.setAttribute('class', 'emoji emoji-' + args.emojiName);
-	                } else {
-	                    emojiElement.setAttribute('align', 'absmiddle');
-	                    emojiElement.setAttribute('alt', ':' + args.emojiName + ':');
-	                    emojiElement.setAttribute('class', 'emoji');
-	                    emojiElement.setAttribute('src', defaultConfig.img_dir + '/' + args.emojiName + '.png');
-	                }
-
-	                emojiElement.setAttribute('title', ':' + args.emojiName + ':');
-	            }
-
-	            args.node.splitText(args.match.index);
-	            args.node.nextSibling.nodeValue = args.node.nextSibling.nodeValue.substr(args.match[0].length, args.node.nextSibling.nodeValue.length);
-	            emojiElement.appendChild(args.node.splitText(args.match.index));
-	            args.node.parentNode.insertBefore(emojiElement, args.node.nextSibling);
-	        }
-
-	        /* Given an regex match, return the name of the matching emoji */
-	        function getEmojiNameForMatch(match) {
-	            /* Special case for named emoji */
-	            if (match[1] && match[2]) {
-	                var named = match[2];
-	                if (namedMatchHash[named]) {
-	                    return named;
-	                }
-	                return;
-	            }
-	            for (var i = 3; i < match.length - 1; i++) {
-	                if (match[i]) {
-	                    return emoticonsProcessed[i - 2][1];
-	                }
-	            }
-	        }
-
-	        function defaultReplacer(emoji, name) {
-	            /*jshint validthis: true */
-	            var elementType = this.config.tag_type || modeToElementTagType[this.config.mode];
-	            if (elementType !== 'img') {
-	                return "<" + elementType + " class='emoji emoji-" + name + "' title=':" + name + ":'></" + elementType + ">";
-	            } else {
-	                return "<img align='absmiddle' alt=':" + name + ":' class='emoji' src='" + this.config.img_dir + '/' + name + ".png' title=':" + name + ":' />";
-	            }
-	        }
-
-	        function Validator() {
-	            this.lastEmojiTerminatedAt = -1;
-	        }
-
-	        Validator.prototype = {
-	            validate: function validate(match, index, input) {
-	                var self = this;
-
-	                /* Validator */
-	                var emojiName = getEmojiNameForMatch(match);
-	                if (!emojiName) {
-	                    return;
-	                }
-
-	                var m = match[0];
-	                var length = m.length;
-	                // var index = match.index;
-	                // var input = match.input;
-
-	                function success() {
-	                    self.lastEmojiTerminatedAt = length + index;
-	                    return emojiName;
-	                }
-
-	                /* At the beginning? */
-	                if (index === 0) {
-	                    return success();
-	                }
-
-	                /* At the end? */
-	                if (input.length === m.length + index) {
-	                    return success();
-	                }
-
-	                var hasEmojiBefore = this.lastEmojiTerminatedAt === index;
-	                if (hasEmojiBefore) {
-	                    return success();
-	                }
-
-	                /* Has a whitespace before? */
-	                if (isWhitespace(input.charAt(index - 1))) {
-	                    return success();
-	                }
-
-	                var hasWhitespaceAfter = isWhitespace(input.charAt(m.length + index));
-	                /* Has a whitespace after? */
-	                if (hasWhitespaceAfter && hasEmojiBefore) {
-	                    return success();
-	                }
-
-	                return;
-	            }
-	        };
-
-	        function emojifyString(htmlString, replacer) {
-	            if (!htmlString) {
-	                return htmlString;
-	            }
-	            if (!replacer) {
-	                replacer = defaultReplacer;
-	            }
-
-	            emoticonsProcessed = initEmoticonsProcessed();
-	            emojiMegaRe = initMegaRe();
-
-	            var validator = new Validator();
-
-	            return htmlString.replace(emojiMegaRe, function () {
-	                var matches = Array.prototype.slice.call(arguments, 0, -2);
-	                var index = arguments[arguments.length - 2];
-	                var input = arguments[arguments.length - 1];
-	                var emojiName = validator.validate(matches, index, input);
-	                if (emojiName) {
-	                    return replacer.apply({
-	                        config: defaultConfig
-	                    }, [arguments[0], emojiName]);
-	                }
-	                /* Did not validate, return the original value */
-	                return arguments[0];
-	            });
-	        }
-
-	        function run(el, replacer) {
-
-	            // Check if an element was not passed.
-	            // This will only work in the browser
-	            if (typeof el === 'undefined') {
-	                // Check if an element was configured. If not, default to the body.
-	                if (defaultConfig.only_crawl_id) {
-	                    el = document.getElementById(defaultConfig.only_crawl_id);
-	                } else {
-	                    el = document.body;
-	                }
-	            }
-
-	            // Get the window object from the passed element.
-	            var doc = el.ownerDocument,
-	                win = doc.defaultView || doc.parentWindow;
-
-	            var treeTraverse = function treeTraverse(parent, cb) {
-	                var child;
-
-	                if (parent.hasChildNodes()) {
-	                    child = parent.firstChild;
-	                    while (child) {
-	                        if (cb(child)) {
-	                            treeTraverse(child, cb);
-	                        }
-	                        child = child.nextSibling;
-	                    }
-	                }
-	            };
-
-	            var matchAndInsertEmoji = function matchAndInsertEmoji(node) {
-	                var match;
-	                var matches = [];
-	                var validator = new Validator();
-
-	                while ((match = emojiMegaRe.exec(node.data)) !== null) {
-	                    if (validator.validate(match, match.index, match.input)) {
-	                        matches.push(match);
-	                    }
-	                }
-
-	                for (var i = matches.length; i-- > 0;) {
-	                    /* Replace the text with the emoji */
-	                    var emojiName = getEmojiNameForMatch(matches[i]);
-	                    insertEmojicon({
-	                        node: node,
-	                        match: matches[i],
-	                        emojiName: emojiName,
-	                        replacer: replacer,
-	                        win: win
-	                    });
-	                }
-	            };
-
-	            emoticonsProcessed = initEmoticonsProcessed();
-	            emojiMegaRe = initMegaRe();
-
-	            var nodes = [];
-
-	            var elementsBlacklist = new RegExp(defaultConfig.blacklist.elements.join('|'), 'i'),
-	                classesBlacklist = new RegExp(defaultConfig.blacklist.classes.join('|'), 'i');
-
-	            if (typeof win.document.createTreeWalker !== 'undefined') {
-	                var nodeIterator = win.document.createTreeWalker(el, win.NodeFilter.SHOW_TEXT | win.NodeFilter.SHOW_ELEMENT, function (node) {
-	                    if (node.nodeType !== 1) {
-	                        /* Text Node? Good! */
-	                        return win.NodeFilter.FILTER_ACCEPT;
-	                    }
-
-	                    if (node.tagName.match(elementsBlacklist) || node.tagName === "svg" || node.className.match(classesBlacklist)) {
-	                        return win.NodeFilter.FILTER_REJECT;
-	                    }
-
-	                    return win.NodeFilter.FILTER_SKIP;
-	                }, false);
-
-	                var node;
-
-	                while ((node = nodeIterator.nextNode()) !== null) {
-	                    nodes.push(node);
-	                }
-	            } else {
-	                treeTraverse(el, function (node) {
-	                    if (typeof node.tagName !== 'undefined' && node.tagName.match(elementsBlacklist) || typeof node.className !== 'undefined' && node.className.match(classesBlacklist)) {
-	                        return false;
-	                    }
-	                    if (node.nodeType === 1) {
-	                        return true;
-	                    }
-
-	                    nodes.push(node);
-	                    return true;
-	                });
-	            }
-
-	            nodes.forEach(matchAndInsertEmoji);
-	        }
-
-	        /*****ADDITIONAL FUNCTIONS FOR DIFFERENT USECASE*********************************/
-
-	        function insertEmojicon2(args) {
-	            var string = args.string;
-
-	            var emojiElementString = '<img align="absmiddle" title="' + args.emojiName + '" alt=":' + args.emojiName + ':" class="emoji" src="./src/img/emoticons/' + args.emojiName + '.png" />';
-
-	            var prevString = string.substring(0, args.match.index);
-	            var nextString = string.substring(args.match.index + args.match[0].length);
-
-	            return [prevString, emojiElementString, nextString].join("");
-	        }
-
-	        function getEmogifiedString(string, replacer) {
-
-	            emoticonsProcessed = initEmoticonsProcessed();
-	            emojiMegaRe = initMegaRe();
-
-	            var match;
-	            var matches = [];
-	            var validator = new Validator();
-
-	            while ((match = emojiMegaRe.exec(string)) !== null) {
-	                if (validator.validate(match, match.index, match.input)) {
-	                    matches.push(match);
-	                }
-	            }
-
-	            for (var i = matches.length; i-- > 0;) {
-	                /* Replace the text with the emoji */
-	                var emojiName = getEmojiNameForMatch(matches[i]);
-	                string = insertEmojicon2({
-	                    string: string,
-	                    match: matches[i],
-	                    emojiName: emojiName
-	                });
-	            }
-
-	            return string;
-	        }
-
-	        return {
-	            // Sane defaults
-	            defaultConfig: defaultConfig,
-	            emojiNames: namedEmoji,
-	            setConfig: function setConfig(newConfig) {
-	                Object.keys(defaultConfig).forEach(function (f) {
-	                    if (f in newConfig) {
-	                        defaultConfig[f] = newConfig[f];
-	                    }
-	                });
-	            },
-
-	            replace: emojifyString,
-
-	            // Main method
-	            run: run,
-
-	            getEmogifiedString: getEmogifiedString
-	        };
-	    }();
-
-	    window.emojify = emojify;
-	    return emojify;
-	});
+	};
 
 /***/ },
 /* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	 * Autolinker.js
+	 * 0.25.2
+	 *
+	 * Copyright(c) 2016 Gregory Jacobs <greg@greg-jacobs.com>
+	 * MIT License
+	 *
+	 * https://github.com/gregjacobs/Autolinker.js
+	 */
+	;(function(root, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports === 'object') {
+	    module.exports = factory();
+	  } else {
+	    root.Autolinker = factory();
+	  }
+	}(this, function() {
+	/**
+	 * @class Autolinker
+	 * @extends Object
+	 *
+	 * Utility class used to process a given string of text, and wrap the matches in
+	 * the appropriate anchor (&lt;a&gt;) tags to turn them into links.
+	 *
+	 * Any of the configuration options may be provided in an Object (map) provided
+	 * to the Autolinker constructor, which will configure how the {@link #link link()}
+	 * method will process the links.
+	 *
+	 * For example:
+	 *
+	 *     var autolinker = new Autolinker( {
+	 *         newWindow : false,
+	 *         truncate  : 30
+	 *     } );
+	 *
+	 *     var html = autolinker.link( "Joe went to www.yahoo.com" );
+	 *     // produces: 'Joe went to <a href="http://www.yahoo.com">yahoo.com</a>'
+	 *
+	 *
+	 * The {@link #static-link static link()} method may also be used to inline
+	 * options into a single call, which may be more convenient for one-off uses.
+	 * For example:
+	 *
+	 *     var html = Autolinker.link( "Joe went to www.yahoo.com", {
+	 *         newWindow : false,
+	 *         truncate  : 30
+	 *     } );
+	 *     // produces: 'Joe went to <a href="http://www.yahoo.com">yahoo.com</a>'
+	 *
+	 *
+	 * ## Custom Replacements of Links
+	 *
+	 * If the configuration options do not provide enough flexibility, a {@link #replaceFn}
+	 * may be provided to fully customize the output of Autolinker. This function is
+	 * called once for each URL/Email/Phone#/Twitter Handle/Hashtag match that is
+	 * encountered.
+	 *
+	 * For example:
+	 *
+	 *     var input = "...";  // string with URLs, Email Addresses, Phone #s, Twitter Handles, and Hashtags
+	 *
+	 *     var linkedText = Autolinker.link( input, {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             console.log( "href = ", match.getAnchorHref() );
+	 *             console.log( "text = ", match.getAnchorText() );
+	 *
+	 *             switch( match.getType() ) {
+	 *                 case 'url' :
+	 *                     console.log( "url: ", match.getUrl() );
+	 *
+	 *                     if( match.getUrl().indexOf( 'mysite.com' ) === -1 ) {
+	 *                         var tag = autolinker.getTagBuilder().build( match );  // returns an `Autolinker.HtmlTag` instance, which provides mutator methods for easy changes
+	 *                         tag.setAttr( 'rel', 'nofollow' );
+	 *                         tag.addClass( 'external-link' );
+	 *
+	 *                         return tag;
+	 *
+	 *                     } else {
+	 *                         return true;  // let Autolinker perform its normal anchor tag replacement
+	 *                     }
+	 *
+	 *                 case 'email' :
+	 *                     var email = match.getEmail();
+	 *                     console.log( "email: ", email );
+	 *
+	 *                     if( email === "my@own.address" ) {
+	 *                         return false;  // don't auto-link this particular email address; leave as-is
+	 *                     } else {
+	 *                         return;  // no return value will have Autolinker perform its normal anchor tag replacement (same as returning `true`)
+	 *                     }
+	 *
+	 *                 case 'phone' :
+	 *                     var phoneNumber = match.getPhoneNumber();
+	 *                     console.log( phoneNumber );
+	 *
+	 *                     return '<a href="http://newplace.to.link.phone.numbers.to/">' + phoneNumber + '</a>';
+	 *
+	 *                 case 'twitter' :
+	 *                     var twitterHandle = match.getTwitterHandle();
+	 *                     console.log( twitterHandle );
+	 *
+	 *                     return '<a href="http://newplace.to.link.twitter.handles.to/">' + twitterHandle + '</a>';
+	 *
+	 *                 case 'hashtag' :
+	 *                     var hashtag = match.getHashtag();
+	 *                     console.log( hashtag );
+	 *
+	 *                     return '<a href="http://newplace.to.link.hashtag.handles.to/">' + hashtag + '</a>';
+	 *             }
+	 *         }
+	 *     } );
+	 *
+	 *
+	 * The function may return the following values:
+	 *
+	 * - `true` (Boolean): Allow Autolinker to replace the match as it normally
+	 *   would.
+	 * - `false` (Boolean): Do not replace the current match at all - leave as-is.
+	 * - Any String: If a string is returned from the function, the string will be
+	 *   used directly as the replacement HTML for the match.
+	 * - An {@link Autolinker.HtmlTag} instance, which can be used to build/modify
+	 *   an HTML tag before writing out its HTML text.
+	 *
+	 * @constructor
+	 * @param {Object} [cfg] The configuration options for the Autolinker instance,
+	 *   specified in an Object (map).
+	 */
+	var Autolinker = function( cfg ) {
+		cfg = cfg || {};
+
+		this.version = Autolinker.version;
+
+		this.urls = this.normalizeUrlsCfg( cfg.urls );
+		this.email = typeof cfg.email === 'boolean' ? cfg.email : true;
+		this.twitter = typeof cfg.twitter === 'boolean' ? cfg.twitter : true;
+		this.phone = typeof cfg.phone === 'boolean' ? cfg.phone : true;
+		this.hashtag = cfg.hashtag || false;
+		this.newWindow = typeof cfg.newWindow === 'boolean' ? cfg.newWindow : true;
+		this.stripPrefix = typeof cfg.stripPrefix === 'boolean' ? cfg.stripPrefix : true;
+
+		// Validate the value of the `hashtag` cfg.
+		var hashtag = this.hashtag;
+		if( hashtag !== false && hashtag !== 'twitter' && hashtag !== 'facebook' && hashtag !== 'instagram' ) {
+			throw new Error( "invalid `hashtag` cfg - see docs" );
+		}
+
+		this.truncate = this.normalizeTruncateCfg( cfg.truncate );
+		this.className = cfg.className || '';
+		this.replaceFn = cfg.replaceFn || null;
+
+		this.htmlParser = null;
+		this.matchers = null;
+		this.tagBuilder = null;
+	};
+
+
+
+	/**
+	 * Automatically links URLs, Email addresses, Phone Numbers, Twitter handles,
+	 * and Hashtags found in the given chunk of HTML. Does not link URLs found
+	 * within HTML tags.
+	 *
+	 * For instance, if given the text: `You should go to http://www.yahoo.com`,
+	 * then the result will be `You should go to &lt;a href="http://www.yahoo.com"&gt;http://www.yahoo.com&lt;/a&gt;`
+	 *
+	 * Example:
+	 *
+	 *     var linkedText = Autolinker.link( "Go to google.com", { newWindow: false } );
+	 *     // Produces: "Go to <a href="http://google.com">google.com</a>"
+	 *
+	 * @static
+	 * @param {String} textOrHtml The HTML or text to find matches within (depending
+	 *   on if the {@link #urls}, {@link #email}, {@link #phone}, {@link #twitter},
+	 *   and {@link #hashtag} options are enabled).
+	 * @param {Object} [options] Any of the configuration options for the Autolinker
+	 *   class, specified in an Object (map). See the class description for an
+	 *   example call.
+	 * @return {String} The HTML text, with matches automatically linked.
+	 */
+	Autolinker.link = function( textOrHtml, options ) {
+		var autolinker = new Autolinker( options );
+		return autolinker.link( textOrHtml );
+	};
+
+
+	/**
+	 * @static
+	 * @property {String} version (readonly)
+	 *
+	 * The Autolinker version number in the form major.minor.patch
+	 *
+	 * Ex: 0.25.1
+	 */
+	Autolinker.version = '0.25.2';
+
+
+	Autolinker.prototype = {
+		constructor : Autolinker,  // fix constructor property
+
+		/**
+		 * @cfg {Boolean/Object} [urls=true]
+		 *
+		 * `true` if URLs should be automatically linked, `false` if they should not
+		 * be.
+		 *
+		 * This option also accepts an Object form with 3 properties, to allow for
+		 * more customization of what exactly gets linked. All default to `true`:
+		 *
+		 * @param {Boolean} schemeMatches `true` to match URLs found prefixed with a
+		 *   scheme, i.e. `http://google.com`, or `other+scheme://google.com`,
+		 *   `false` to prevent these types of matches.
+		 * @param {Boolean} wwwMatches `true` to match urls found prefixed with
+		 *   `'www.'`, i.e. `www.google.com`. `false` to prevent these types of
+		 *   matches. Note that if the URL had a prefixed scheme, and
+		 *   `schemeMatches` is true, it will still be linked.
+		 * @param {Boolean} tldMatches `true` to match URLs with known top level
+		 *   domains (.com, .net, etc.) that are not prefixed with a scheme or
+		 *   `'www.'`. This option attempts to match anything that looks like a URL
+		 *   in the given text. Ex: `google.com`, `asdf.org/?page=1`, etc. `false`
+		 *   to prevent these types of matches.
+		 */
+
+		/**
+		 * @cfg {Boolean} [email=true]
+		 *
+		 * `true` if email addresses should be automatically linked, `false` if they
+		 * should not be.
+		 */
+
+		/**
+		 * @cfg {Boolean} [twitter=true]
+		 *
+		 * `true` if Twitter handles ("@example") should be automatically linked,
+		 * `false` if they should not be.
+		 */
+
+		/**
+		 * @cfg {Boolean} [phone=true]
+		 *
+		 * `true` if Phone numbers ("(555)555-5555") should be automatically linked,
+		 * `false` if they should not be.
+		 */
+
+		/**
+		 * @cfg {Boolean/String} [hashtag=false]
+		 *
+		 * A string for the service name to have hashtags (ex: "#myHashtag")
+		 * auto-linked to. The currently-supported values are:
+		 *
+		 * - 'twitter'
+		 * - 'facebook'
+		 * - 'instagram'
+		 *
+		 * Pass `false` to skip auto-linking of hashtags.
+		 */
+
+		/**
+		 * @cfg {Boolean} [newWindow=true]
+		 *
+		 * `true` if the links should open in a new window, `false` otherwise.
+		 */
+
+		/**
+		 * @cfg {Boolean} [stripPrefix=true]
+		 *
+		 * `true` if 'http://' or 'https://' and/or the 'www.' should be stripped
+		 * from the beginning of URL links' text, `false` otherwise.
+		 */
+
+		/**
+		 * @cfg {Number/Object} [truncate=0]
+		 *
+		 * ## Number Form
+		 *
+		 * A number for how many characters matched text should be truncated to
+		 * inside the text of a link. If the matched text is over this number of
+		 * characters, it will be truncated to this length by adding a two period
+		 * ellipsis ('..') to the end of the string.
+		 *
+		 * For example: A url like 'http://www.yahoo.com/some/long/path/to/a/file'
+		 * truncated to 25 characters might look something like this:
+		 * 'yahoo.com/some/long/pat..'
+		 *
+		 * Example Usage:
+		 *
+		 *     truncate: 25
+		 *
+		 *
+		 *  Defaults to `0` for "no truncation."
+		 *
+		 *
+		 * ## Object Form
+		 *
+		 * An Object may also be provided with two properties: `length` (Number) and
+		 * `location` (String). `location` may be one of the following: 'end'
+		 * (default), 'middle', or 'smart'.
+		 *
+		 * Example Usage:
+		 *
+		 *     truncate: { length: 25, location: 'middle' }
+		 *
+		 * @cfg {Number} [truncate.length=0] How many characters to allow before
+		 *   truncation will occur. Defaults to `0` for "no truncation."
+		 * @cfg {"end"/"middle"/"smart"} [truncate.location="end"]
+		 *
+		 * - 'end' (default): will truncate up to the number of characters, and then
+		 *   add an ellipsis at the end. Ex: 'yahoo.com/some/long/pat..'
+		 * - 'middle': will truncate and add the ellipsis in the middle. Ex:
+		 *   'yahoo.com/s..th/to/a/file'
+		 * - 'smart': for URLs where the algorithm attempts to strip out unnecessary
+		 *   parts first (such as the 'www.', then URL scheme, hash, etc.),
+		 *   attempting to make the URL human-readable before looking for a good
+		 *   point to insert the ellipsis if it is still too long. Ex:
+		 *   'yahoo.com/some..to/a/file'. For more details, see
+		 *   {@link Autolinker.truncate.TruncateSmart}.
+		 */
+
+		/**
+		 * @cfg {String} className
+		 *
+		 * A CSS class name to add to the generated links. This class will be added
+		 * to all links, as well as this class plus match suffixes for styling
+		 * url/email/phone/twitter/hashtag links differently.
+		 *
+		 * For example, if this config is provided as "myLink", then:
+		 *
+		 * - URL links will have the CSS classes: "myLink myLink-url"
+		 * - Email links will have the CSS classes: "myLink myLink-email", and
+		 * - Twitter links will have the CSS classes: "myLink myLink-twitter"
+		 * - Phone links will have the CSS classes: "myLink myLink-phone"
+		 * - Hashtag links will have the CSS classes: "myLink myLink-hashtag"
+		 */
+
+		/**
+		 * @cfg {Function} replaceFn
+		 *
+		 * A function to individually process each match found in the input string.
+		 *
+		 * See the class's description for usage.
+		 *
+		 * This function is called with the following parameters:
+		 *
+		 * @cfg {Autolinker} replaceFn.autolinker The Autolinker instance, which may
+		 *   be used to retrieve child objects from (such as the instance's
+		 *   {@link #getTagBuilder tag builder}).
+		 * @cfg {Autolinker.match.Match} replaceFn.match The Match instance which
+		 *   can be used to retrieve information about the match that the `replaceFn`
+		 *   is currently processing. See {@link Autolinker.match.Match} subclasses
+		 *   for details.
+		 */
+
+
+		/**
+		 * @property {String} version (readonly)
+		 *
+		 * The Autolinker version number in the form major.minor.patch
+		 *
+		 * Ex: 0.25.1
+		 */
+
+		/**
+		 * @private
+		 * @property {Autolinker.htmlParser.HtmlParser} htmlParser
+		 *
+		 * The HtmlParser instance used to skip over HTML tags, while finding text
+		 * nodes to process. This is lazily instantiated in the {@link #getHtmlParser}
+		 * method.
+		 */
+
+		/**
+		 * @private
+		 * @property {Autolinker.matcher.Matcher[]} matchers
+		 *
+		 * The {@link Autolinker.matcher.Matcher} instances for this Autolinker
+		 * instance.
+		 *
+		 * This is lazily created in {@link #getMatchers}.
+		 */
+
+		/**
+		 * @private
+		 * @property {Autolinker.AnchorTagBuilder} tagBuilder
+		 *
+		 * The AnchorTagBuilder instance used to build match replacement anchor tags.
+		 * Note: this is lazily instantiated in the {@link #getTagBuilder} method.
+		 */
+
+
+		/**
+		 * Normalizes the {@link #urls} config into an Object with 3 properties:
+		 * `schemeMatches`, `wwwMatches`, and `tldMatches`, all Booleans.
+		 *
+		 * See {@link #urls} config for details.
+		 *
+		 * @private
+		 * @param {Boolean/Object} urls
+		 * @return {Object}
+		 */
+		normalizeUrlsCfg : function( urls ) {
+			if( urls == null ) urls = true;  // default to `true`
+
+			if( typeof urls === 'boolean' ) {
+				return { schemeMatches: urls, wwwMatches: urls, tldMatches: urls };
+
+			} else {  // object form
+				return {
+					schemeMatches : typeof urls.schemeMatches === 'boolean' ? urls.schemeMatches : true,
+					wwwMatches    : typeof urls.wwwMatches === 'boolean'    ? urls.wwwMatches    : true,
+					tldMatches    : typeof urls.tldMatches === 'boolean'    ? urls.tldMatches    : true
+				};
+			}
+		},
+
+
+		/**
+		 * Normalizes the {@link #truncate} config into an Object with 2 properties:
+		 * `length` (Number), and `location` (String).
+		 *
+		 * See {@link #truncate} config for details.
+		 *
+		 * @private
+		 * @param {Number/Object} truncate
+		 * @return {Object}
+		 */
+		normalizeTruncateCfg : function( truncate ) {
+			if( typeof truncate === 'number' ) {
+				return { length: truncate, location: 'end' };
+
+			} else {  // object, or undefined/null
+				return Autolinker.Util.defaults( truncate || {}, {
+					length   : Number.POSITIVE_INFINITY,
+					location : 'end'
+				} );
+			}
+		},
+
+
+		/**
+		 * Parses the input `textOrHtml` looking for URLs, email addresses, phone
+		 * numbers, username handles, and hashtags (depending on the configuration
+		 * of the Autolinker instance), and returns an array of {@link Autolinker.match.Match}
+		 * objects describing those matches.
+		 *
+		 * This method is used by the {@link #link} method, but can also be used to
+		 * simply do parsing of the input in order to discover what kinds of links
+		 * there are and how many.
+		 *
+		 * @param {String} textOrHtml The HTML or text to find matches within
+		 *   (depending on if the {@link #urls}, {@link #email}, {@link #phone},
+		 *   {@link #twitter}, and {@link #hashtag} options are enabled).
+		 * @return {Autolinker.match.Match[]} The array of Matches found in the
+		 *   given input `textOrHtml`.
+		 */
+		parse : function( textOrHtml ) {
+			var htmlParser = this.getHtmlParser(),
+			    htmlNodes = htmlParser.parse( textOrHtml ),
+			    anchorTagStackCount = 0,  // used to only process text around anchor tags, and any inner text/html they may have;
+			    matches = [];
+
+			// Find all matches within the `textOrHtml` (but not matches that are
+			// already nested within <a> tags)
+			for( var i = 0, len = htmlNodes.length; i < len; i++ ) {
+				var node = htmlNodes[ i ],
+				    nodeType = node.getType();
+
+				if( nodeType === 'element' && node.getTagName() === 'a' ) {  // Process HTML anchor element nodes in the input `textOrHtml` to find out when we're within an <a> tag
+					if( !node.isClosing() ) {  // it's the start <a> tag
+						anchorTagStackCount++;
+					} else {  // it's the end </a> tag
+						anchorTagStackCount = Math.max( anchorTagStackCount - 1, 0 );  // attempt to handle extraneous </a> tags by making sure the stack count never goes below 0
+					}
+
+				} else if( nodeType === 'text' && anchorTagStackCount === 0 ) {  // Process text nodes that are not within an <a> tag
+					var textNodeMatches = this.parseText( node.getText(), node.getOffset() );
+
+					matches.push.apply( matches, textNodeMatches );
+				}
+			}
+
+
+			// After we have found all matches, remove subsequent matches that
+			// overlap with a previous match. This can happen for instance with URLs,
+			// where the url 'google.com/#link' would match '#link' as a hashtag.
+			matches = this.compactMatches( matches );
+
+			// And finally, remove matches for match types that have been turned
+			// off. We needed to have all match types turned on initially so that
+			// things like hashtags could be filtered out if they were really just
+			// part of a URL match (for instance, as a named anchor).
+			matches = this.removeUnwantedMatches( matches );
+
+			return matches;
+		},
+
+
+		/**
+		 * After we have found all matches, we need to remove subsequent matches
+		 * that overlap with a previous match. This can happen for instance with
+		 * URLs, where the url 'google.com/#link' would match '#link' as a hashtag.
+		 *
+		 * @private
+		 * @param {Autolinker.match.Match[]} matches
+		 * @return {Autolinker.match.Match[]}
+		 */
+		compactMatches : function( matches ) {
+			// First, the matches need to be sorted in order of offset
+			matches.sort( function( a, b ) { return a.getOffset() - b.getOffset(); } );
+
+			for( var i = 0; i < matches.length - 1; i++ ) {
+				var match = matches[ i ],
+				    endIdx = match.getOffset() + match.getMatchedText().length;
+
+				// Remove subsequent matches that overlap with the current match
+				while( i + 1 < matches.length && matches[ i + 1 ].getOffset() <= endIdx ) {
+					matches.splice( i + 1, 1 );
+				}
+			}
+
+			return matches;
+		},
+
+
+		/**
+		 * Removes matches for matchers that were turned off in the options. For
+		 * example, if {@link #hashtag hashtags} were not to be matched, we'll
+		 * remove them from the `matches` array here.
+		 *
+		 * @private
+		 * @param {Autolinker.match.Match[]} matches The array of matches to remove
+		 *   the unwanted matches from. Note: this array is mutated for the
+		 *   removals.
+		 * @return {Autolinker.match.Match[]} The mutated input `matches` array.
+		 */
+		removeUnwantedMatches : function( matches ) {
+			var remove = Autolinker.Util.remove;
+
+			if( !this.hashtag ) remove( matches, function( match ) { return match.getType() === 'hashtag'; } );
+			if( !this.email )   remove( matches, function( match ) { return match.getType() === 'email'; } );
+			if( !this.phone )   remove( matches, function( match ) { return match.getType() === 'phone'; } );
+			if( !this.twitter ) remove( matches, function( match ) { return match.getType() === 'twitter'; } );
+			if( !this.urls.schemeMatches ) {
+				remove( matches, function( m ) { return m.getType() === 'url' && m.getUrlMatchType() === 'scheme'; } );
+			}
+			if( !this.urls.wwwMatches ) {
+				remove( matches, function( m ) { return m.getType() === 'url' && m.getUrlMatchType() === 'www'; } );
+			}
+			if( !this.urls.tldMatches ) {
+				remove( matches, function( m ) { return m.getType() === 'url' && m.getUrlMatchType() === 'tld'; } );
+			}
+
+			return matches;
+		},
+
+
+		/**
+		 * Parses the input `text` looking for URLs, email addresses, phone
+		 * numbers, username handles, and hashtags (depending on the configuration
+		 * of the Autolinker instance), and returns an array of {@link Autolinker.match.Match}
+		 * objects describing those matches.
+		 *
+		 * This method processes a **non-HTML string**, and is used to parse and
+		 * match within the text nodes of an HTML string. This method is used
+		 * internally by {@link #parse}.
+		 *
+		 * @private
+		 * @param {String} text The text to find matches within (depending on if the
+		 *   {@link #urls}, {@link #email}, {@link #phone}, {@link #twitter}, and
+		 *   {@link #hashtag} options are enabled). This must be a non-HTML string.
+		 * @param {Number} [offset=0] The offset of the text node within the
+		 *   original string. This is used when parsing with the {@link #parse}
+		 *   method to generate correct offsets within the {@link Autolinker.match.Match}
+		 *   instances, but may be omitted if calling this method publicly.
+		 * @return {Autolinker.match.Match[]} The array of Matches found in the
+		 *   given input `text`.
+		 */
+		parseText : function( text, offset ) {
+			offset = offset || 0;
+			var matchers = this.getMatchers(),
+			    matches = [];
+
+			for( var i = 0, numMatchers = matchers.length; i < numMatchers; i++ ) {
+				var textMatches = matchers[ i ].parseMatches( text );
+
+				// Correct the offset of each of the matches. They are originally
+				// the offset of the match within the provided text node, but we
+				// need to correct them to be relative to the original HTML input
+				// string (i.e. the one provided to #parse).
+				for( var j = 0, numTextMatches = textMatches.length; j < numTextMatches; j++ ) {
+					textMatches[ j ].setOffset( offset + textMatches[ j ].getOffset() );
+				}
+
+				matches.push.apply( matches, textMatches );
+			}
+			return matches;
+		},
+
+
+		/**
+		 * Automatically links URLs, Email addresses, Phone numbers, Twitter
+		 * handles, and Hashtags found in the given chunk of HTML. Does not link
+		 * URLs found within HTML tags.
+		 *
+		 * For instance, if given the text: `You should go to http://www.yahoo.com`,
+		 * then the result will be `You should go to
+		 * &lt;a href="http://www.yahoo.com"&gt;http://www.yahoo.com&lt;/a&gt;`
+		 *
+		 * This method finds the text around any HTML elements in the input
+		 * `textOrHtml`, which will be the text that is processed. Any original HTML
+		 * elements will be left as-is, as well as the text that is already wrapped
+		 * in anchor (&lt;a&gt;) tags.
+		 *
+		 * @param {String} textOrHtml The HTML or text to autolink matches within
+		 *   (depending on if the {@link #urls}, {@link #email}, {@link #phone},
+		 *   {@link #twitter}, and {@link #hashtag} options are enabled).
+		 * @return {String} The HTML, with matches automatically linked.
+		 */
+		link : function( textOrHtml ) {
+			if( !textOrHtml ) { return ""; }  // handle `null` and `undefined`
+
+			var matches = this.parse( textOrHtml ),
+				newHtml = [],
+				lastIndex = 0;
+
+			for( var i = 0, len = matches.length; i < len; i++ ) {
+				var match = matches[ i ];
+
+				newHtml.push( textOrHtml.substring( lastIndex, match.getOffset() ) );
+				newHtml.push( this.createMatchReturnVal( match ) );
+
+				lastIndex = match.getOffset() + match.getMatchedText().length;
+			}
+			newHtml.push( textOrHtml.substring( lastIndex ) );  // handle the text after the last match
+
+			return newHtml.join( '' );
+		},
+
+
+		/**
+		 * Creates the return string value for a given match in the input string.
+		 *
+		 * This method handles the {@link #replaceFn}, if one was provided.
+		 *
+		 * @private
+		 * @param {Autolinker.match.Match} match The Match object that represents
+		 *   the match.
+		 * @return {String} The string that the `match` should be replaced with.
+		 *   This is usually the anchor tag string, but may be the `matchStr` itself
+		 *   if the match is not to be replaced.
+		 */
+		createMatchReturnVal : function( match ) {
+			// Handle a custom `replaceFn` being provided
+			var replaceFnResult;
+			if( this.replaceFn ) {
+				replaceFnResult = this.replaceFn.call( this, this, match );  // Autolinker instance is the context, and the first arg
+			}
+
+			if( typeof replaceFnResult === 'string' ) {
+				return replaceFnResult;  // `replaceFn` returned a string, use that
+
+			} else if( replaceFnResult === false ) {
+				return match.getMatchedText();  // no replacement for the match
+
+			} else if( replaceFnResult instanceof Autolinker.HtmlTag ) {
+				return replaceFnResult.toAnchorString();
+
+			} else {  // replaceFnResult === true, or no/unknown return value from function
+				// Perform Autolinker's default anchor tag generation
+				var anchorTag = match.buildTag();  // returns an Autolinker.HtmlTag instance
+
+				return anchorTag.toAnchorString();
+			}
+		},
+
+
+		/**
+		 * Lazily instantiates and returns the {@link #htmlParser} instance for this
+		 * Autolinker instance.
+		 *
+		 * @protected
+		 * @return {Autolinker.htmlParser.HtmlParser}
+		 */
+		getHtmlParser : function() {
+			var htmlParser = this.htmlParser;
+
+			if( !htmlParser ) {
+				htmlParser = this.htmlParser = new Autolinker.htmlParser.HtmlParser();
+			}
+
+			return htmlParser;
+		},
+
+
+		/**
+		 * Lazily instantiates and returns the {@link Autolinker.matcher.Matcher}
+		 * instances for this Autolinker instance.
+		 *
+		 * @protected
+		 * @return {Autolinker.matcher.Matcher[]}
+		 */
+		getMatchers : function() {
+			if( !this.matchers ) {
+				var matchersNs = Autolinker.matcher,
+				    tagBuilder = this.getTagBuilder();
+
+				var matchers = [
+					new matchersNs.Hashtag( { tagBuilder: tagBuilder, serviceName: this.hashtag } ),
+					new matchersNs.Email( { tagBuilder: tagBuilder } ),
+					new matchersNs.Phone( { tagBuilder: tagBuilder } ),
+					new matchersNs.Twitter( { tagBuilder: tagBuilder } ),
+					new matchersNs.Url( { tagBuilder: tagBuilder, stripPrefix: this.stripPrefix } )
+				];
+
+				return ( this.matchers = matchers );
+
+			} else {
+				return this.matchers;
+			}
+		},
+
+
+		/**
+		 * Returns the {@link #tagBuilder} instance for this Autolinker instance, lazily instantiating it
+		 * if it does not yet exist.
+		 *
+		 * This method may be used in a {@link #replaceFn} to generate the {@link Autolinker.HtmlTag HtmlTag} instance that
+		 * Autolinker would normally generate, and then allow for modifications before returning it. For example:
+		 *
+		 *     var html = Autolinker.link( "Test google.com", {
+		 *         replaceFn : function( autolinker, match ) {
+		 *             var tag = autolinker.getTagBuilder().build( match );  // returns an {@link Autolinker.HtmlTag} instance
+		 *             tag.setAttr( 'rel', 'nofollow' );
+		 *
+		 *             return tag;
+		 *         }
+		 *     } );
+		 *
+		 *     // generated html:
+		 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
+		 *
+		 * @return {Autolinker.AnchorTagBuilder}
+		 */
+		getTagBuilder : function() {
+			var tagBuilder = this.tagBuilder;
+
+			if( !tagBuilder ) {
+				tagBuilder = this.tagBuilder = new Autolinker.AnchorTagBuilder( {
+					newWindow   : this.newWindow,
+					truncate    : this.truncate,
+					className   : this.className
+				} );
+			}
+
+			return tagBuilder;
+		}
+
+	};
+
+
+	// Autolinker Namespaces
+
+	Autolinker.match = {};
+	Autolinker.matcher = {};
+	Autolinker.htmlParser = {};
+	Autolinker.truncate = {};
+
+	/*global Autolinker */
+	/*jshint eqnull:true, boss:true */
+	/**
+	 * @class Autolinker.Util
+	 * @singleton
+	 *
+	 * A few utility methods for Autolinker.
+	 */
+	Autolinker.Util = {
+
+		/**
+		 * @property {Function} abstractMethod
+		 *
+		 * A function object which represents an abstract method.
+		 */
+		abstractMethod : function() { throw "abstract"; },
+
+
+		/**
+		 * @private
+		 * @property {RegExp} trimRegex
+		 *
+		 * The regular expression used to trim the leading and trailing whitespace
+		 * from a string.
+		 */
+		trimRegex : /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+
+
+		/**
+		 * Assigns (shallow copies) the properties of `src` onto `dest`.
+		 *
+		 * @param {Object} dest The destination object.
+		 * @param {Object} src The source object.
+		 * @return {Object} The destination object (`dest`)
+		 */
+		assign : function( dest, src ) {
+			for( var prop in src ) {
+				if( src.hasOwnProperty( prop ) ) {
+					dest[ prop ] = src[ prop ];
+				}
+			}
+
+			return dest;
+		},
+
+
+		/**
+		 * Assigns (shallow copies) the properties of `src` onto `dest`, if the
+		 * corresponding property on `dest` === `undefined`.
+		 *
+		 * @param {Object} dest The destination object.
+		 * @param {Object} src The source object.
+		 * @return {Object} The destination object (`dest`)
+		 */
+		defaults : function( dest, src ) {
+			for( var prop in src ) {
+				if( src.hasOwnProperty( prop ) && dest[ prop ] === undefined ) {
+					dest[ prop ] = src[ prop ];
+				}
+			}
+
+			return dest;
+		},
+
+
+		/**
+		 * Extends `superclass` to create a new subclass, adding the `protoProps` to the new subclass's prototype.
+		 *
+		 * @param {Function} superclass The constructor function for the superclass.
+		 * @param {Object} protoProps The methods/properties to add to the subclass's prototype. This may contain the
+		 *   special property `constructor`, which will be used as the new subclass's constructor function.
+		 * @return {Function} The new subclass function.
+		 */
+		extend : function( superclass, protoProps ) {
+			var superclassProto = superclass.prototype;
+
+			var F = function() {};
+			F.prototype = superclassProto;
+
+			var subclass;
+			if( protoProps.hasOwnProperty( 'constructor' ) ) {
+				subclass = protoProps.constructor;
+			} else {
+				subclass = function() { superclassProto.constructor.apply( this, arguments ); };
+			}
+
+			var subclassProto = subclass.prototype = new F();  // set up prototype chain
+			subclassProto.constructor = subclass;  // fix constructor property
+			subclassProto.superclass = superclassProto;
+
+			delete protoProps.constructor;  // don't re-assign constructor property to the prototype, since a new function may have been created (`subclass`), which is now already there
+			Autolinker.Util.assign( subclassProto, protoProps );
+
+			return subclass;
+		},
+
+
+		/**
+		 * Truncates the `str` at `len - ellipsisChars.length`, and adds the `ellipsisChars` to the
+		 * end of the string (by default, two periods: '..'). If the `str` length does not exceed
+		 * `len`, the string will be returned unchanged.
+		 *
+		 * @param {String} str The string to truncate and add an ellipsis to.
+		 * @param {Number} truncateLen The length to truncate the string at.
+		 * @param {String} [ellipsisChars=..] The ellipsis character(s) to add to the end of `str`
+		 *   when truncated. Defaults to '..'
+		 */
+		ellipsis : function( str, truncateLen, ellipsisChars ) {
+			if( str.length > truncateLen ) {
+				ellipsisChars = ( ellipsisChars == null ) ? '..' : ellipsisChars;
+				str = str.substring( 0, truncateLen - ellipsisChars.length ) + ellipsisChars;
+			}
+			return str;
+		},
+
+
+		/**
+		 * Supports `Array.prototype.indexOf()` functionality for old IE (IE8 and below).
+		 *
+		 * @param {Array} arr The array to find an element of.
+		 * @param {*} element The element to find in the array, and return the index of.
+		 * @return {Number} The index of the `element`, or -1 if it was not found.
+		 */
+		indexOf : function( arr, element ) {
+			if( Array.prototype.indexOf ) {
+				return arr.indexOf( element );
+
+			} else {
+				for( var i = 0, len = arr.length; i < len; i++ ) {
+					if( arr[ i ] === element ) return i;
+				}
+				return -1;
+			}
+		},
+
+
+		/**
+		 * Removes array elements based on a filtering function. Mutates the input
+		 * array.
+		 *
+		 * Using this instead of the ES5 Array.prototype.filter() function, to allow
+		 * Autolinker compatibility with IE8, and also to prevent creating many new
+		 * arrays in memory for filtering.
+		 *
+		 * @param {Array} arr The array to remove elements from. This array is
+		 *   mutated.
+		 * @param {Function} fn A function which should return `true` to
+		 *   remove an element.
+		 * @return {Array} The mutated input `arr`.
+		 */
+		remove : function( arr, fn ) {
+			for( var i = arr.length - 1; i >= 0; i-- ) {
+				if( fn( arr[ i ] ) === true ) {
+					arr.splice( i, 1 );
+				}
+			}
+		},
+
+
+		/**
+		 * Performs the functionality of what modern browsers do when `String.prototype.split()` is called
+		 * with a regular expression that contains capturing parenthesis.
+		 *
+		 * For example:
+		 *
+		 *     // Modern browsers:
+		 *     "a,b,c".split( /(,)/ );  // --> [ 'a', ',', 'b', ',', 'c' ]
+		 *
+		 *     // Old IE (including IE8):
+		 *     "a,b,c".split( /(,)/ );  // --> [ 'a', 'b', 'c' ]
+		 *
+		 * This method emulates the functionality of modern browsers for the old IE case.
+		 *
+		 * @param {String} str The string to split.
+		 * @param {RegExp} splitRegex The regular expression to split the input `str` on. The splitting
+		 *   character(s) will be spliced into the array, as in the "modern browsers" example in the
+		 *   description of this method.
+		 *   Note #1: the supplied regular expression **must** have the 'g' flag specified.
+		 *   Note #2: for simplicity's sake, the regular expression does not need
+		 *   to contain capturing parenthesis - it will be assumed that any match has them.
+		 * @return {String[]} The split array of strings, with the splitting character(s) included.
+		 */
+		splitAndCapture : function( str, splitRegex ) {
+			if( !splitRegex.global ) throw new Error( "`splitRegex` must have the 'g' flag set" );
+
+			var result = [],
+			    lastIdx = 0,
+			    match;
+
+			while( match = splitRegex.exec( str ) ) {
+				result.push( str.substring( lastIdx, match.index ) );
+				result.push( match[ 0 ] );  // push the splitting char(s)
+
+				lastIdx = match.index + match[ 0 ].length;
+			}
+			result.push( str.substring( lastIdx ) );
+
+			return result;
+		},
+
+
+		/**
+		 * Trims the leading and trailing whitespace from a string.
+		 *
+		 * @param {String} str The string to trim.
+		 * @return {String}
+		 */
+		trim : function( str ) {
+			return str.replace( this.trimRegex, '' );
+		}
+
+	};
+	/*global Autolinker */
+	/*jshint boss:true */
+	/**
+	 * @class Autolinker.HtmlTag
+	 * @extends Object
+	 *
+	 * Represents an HTML tag, which can be used to easily build/modify HTML tags programmatically.
+	 *
+	 * Autolinker uses this abstraction to create HTML tags, and then write them out as strings. You may also use
+	 * this class in your code, especially within a {@link Autolinker#replaceFn replaceFn}.
+	 *
+	 * ## Examples
+	 *
+	 * Example instantiation:
+	 *
+	 *     var tag = new Autolinker.HtmlTag( {
+	 *         tagName : 'a',
+	 *         attrs   : { 'href': 'http://google.com', 'class': 'external-link' },
+	 *         innerHtml : 'Google'
+	 *     } );
+	 *
+	 *     tag.toAnchorString();  // <a href="http://google.com" class="external-link">Google</a>
+	 *
+	 *     // Individual accessor methods
+	 *     tag.getTagName();                 // 'a'
+	 *     tag.getAttr( 'href' );            // 'http://google.com'
+	 *     tag.hasClass( 'external-link' );  // true
+	 *
+	 *
+	 * Using mutator methods (which may be used in combination with instantiation config properties):
+	 *
+	 *     var tag = new Autolinker.HtmlTag();
+	 *     tag.setTagName( 'a' );
+	 *     tag.setAttr( 'href', 'http://google.com' );
+	 *     tag.addClass( 'external-link' );
+	 *     tag.setInnerHtml( 'Google' );
+	 *
+	 *     tag.getTagName();                 // 'a'
+	 *     tag.getAttr( 'href' );            // 'http://google.com'
+	 *     tag.hasClass( 'external-link' );  // true
+	 *
+	 *     tag.toAnchorString();  // <a href="http://google.com" class="external-link">Google</a>
+	 *
+	 *
+	 * ## Example use within a {@link Autolinker#replaceFn replaceFn}
+	 *
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = match.buildTag();  // returns an {@link Autolinker.HtmlTag} instance, configured with the Match's href and anchor text
+	 *             tag.setAttr( 'rel', 'nofollow' );
+	 *
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *
+	 *     // generated html:
+	 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
+	 *
+	 *
+	 * ## Example use with a new tag for the replacement
+	 *
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = new Autolinker.HtmlTag( {
+	 *                 tagName : 'button',
+	 *                 attrs   : { 'title': 'Load URL: ' + match.getAnchorHref() },
+	 *                 innerHtml : 'Load URL: ' + match.getAnchorText()
+	 *             } );
+	 *
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *
+	 *     // generated html:
+	 *     //   Test <button title="Load URL: http://google.com">Load URL: google.com</button>
+	 */
+	Autolinker.HtmlTag = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @cfg {String} tagName
+		 *
+		 * The tag name. Ex: 'a', 'button', etc.
+		 *
+		 * Not required at instantiation time, but should be set using {@link #setTagName} before {@link #toAnchorString}
+		 * is executed.
+		 */
+
+		/**
+		 * @cfg {Object.<String, String>} attrs
+		 *
+		 * An key/value Object (map) of attributes to create the tag with. The keys are the attribute names, and the
+		 * values are the attribute values.
+		 */
+
+		/**
+		 * @cfg {String} innerHtml
+		 *
+		 * The inner HTML for the tag.
+		 *
+		 * Note the camel case name on `innerHtml`. Acronyms are camelCased in this utility (such as not to run into the acronym
+		 * naming inconsistency that the DOM developers created with `XMLHttpRequest`). You may alternatively use {@link #innerHTML}
+		 * if you prefer, but this one is recommended.
+		 */
+
+		/**
+		 * @cfg {String} innerHTML
+		 *
+		 * Alias of {@link #innerHtml}, accepted for consistency with the browser DOM api, but prefer the camelCased version
+		 * for acronym names.
+		 */
+
+
+		/**
+		 * @protected
+		 * @property {RegExp} whitespaceRegex
+		 *
+		 * Regular expression used to match whitespace in a string of CSS classes.
+		 */
+		whitespaceRegex : /\s+/,
+
+
+		/**
+		 * @constructor
+		 * @param {Object} [cfg] The configuration properties for this class, in an Object (map)
+		 */
+		constructor : function( cfg ) {
+			Autolinker.Util.assign( this, cfg );
+
+			this.innerHtml = this.innerHtml || this.innerHTML;  // accept either the camelCased form or the fully capitalized acronym
+		},
+
+
+		/**
+		 * Sets the tag name that will be used to generate the tag with.
+		 *
+		 * @param {String} tagName
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setTagName : function( tagName ) {
+			this.tagName = tagName;
+			return this;
+		},
+
+
+		/**
+		 * Retrieves the tag name.
+		 *
+		 * @return {String}
+		 */
+		getTagName : function() {
+			return this.tagName || "";
+		},
+
+
+		/**
+		 * Sets an attribute on the HtmlTag.
+		 *
+		 * @param {String} attrName The attribute name to set.
+		 * @param {String} attrValue The attribute value to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setAttr : function( attrName, attrValue ) {
+			var tagAttrs = this.getAttrs();
+			tagAttrs[ attrName ] = attrValue;
+
+			return this;
+		},
+
+
+		/**
+		 * Retrieves an attribute from the HtmlTag. If the attribute does not exist, returns `undefined`.
+		 *
+		 * @param {String} attrName The attribute name to retrieve.
+		 * @return {String} The attribute's value, or `undefined` if it does not exist on the HtmlTag.
+		 */
+		getAttr : function( attrName ) {
+			return this.getAttrs()[ attrName ];
+		},
+
+
+		/**
+		 * Sets one or more attributes on the HtmlTag.
+		 *
+		 * @param {Object.<String, String>} attrs A key/value Object (map) of the attributes to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setAttrs : function( attrs ) {
+			var tagAttrs = this.getAttrs();
+			Autolinker.Util.assign( tagAttrs, attrs );
+
+			return this;
+		},
+
+
+		/**
+		 * Retrieves the attributes Object (map) for the HtmlTag.
+		 *
+		 * @return {Object.<String, String>} A key/value object of the attributes for the HtmlTag.
+		 */
+		getAttrs : function() {
+			return this.attrs || ( this.attrs = {} );
+		},
+
+
+		/**
+		 * Sets the provided `cssClass`, overwriting any current CSS classes on the HtmlTag.
+		 *
+		 * @param {String} cssClass One or more space-separated CSS classes to set (overwrite).
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setClass : function( cssClass ) {
+			return this.setAttr( 'class', cssClass );
+		},
+
+
+		/**
+		 * Convenience method to add one or more CSS classes to the HtmlTag. Will not add duplicate CSS classes.
+		 *
+		 * @param {String} cssClass One or more space-separated CSS classes to add.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		addClass : function( cssClass ) {
+			var classAttr = this.getClass(),
+			    whitespaceRegex = this.whitespaceRegex,
+			    indexOf = Autolinker.Util.indexOf,  // to support IE8 and below
+			    classes = ( !classAttr ) ? [] : classAttr.split( whitespaceRegex ),
+			    newClasses = cssClass.split( whitespaceRegex ),
+			    newClass;
+
+			while( newClass = newClasses.shift() ) {
+				if( indexOf( classes, newClass ) === -1 ) {
+					classes.push( newClass );
+				}
+			}
+
+			this.getAttrs()[ 'class' ] = classes.join( " " );
+			return this;
+		},
+
+
+		/**
+		 * Convenience method to remove one or more CSS classes from the HtmlTag.
+		 *
+		 * @param {String} cssClass One or more space-separated CSS classes to remove.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		removeClass : function( cssClass ) {
+			var classAttr = this.getClass(),
+			    whitespaceRegex = this.whitespaceRegex,
+			    indexOf = Autolinker.Util.indexOf,  // to support IE8 and below
+			    classes = ( !classAttr ) ? [] : classAttr.split( whitespaceRegex ),
+			    removeClasses = cssClass.split( whitespaceRegex ),
+			    removeClass;
+
+			while( classes.length && ( removeClass = removeClasses.shift() ) ) {
+				var idx = indexOf( classes, removeClass );
+				if( idx !== -1 ) {
+					classes.splice( idx, 1 );
+				}
+			}
+
+			this.getAttrs()[ 'class' ] = classes.join( " " );
+			return this;
+		},
+
+
+		/**
+		 * Convenience method to retrieve the CSS class(es) for the HtmlTag, which will each be separated by spaces when
+		 * there are multiple.
+		 *
+		 * @return {String}
+		 */
+		getClass : function() {
+			return this.getAttrs()[ 'class' ] || "";
+		},
+
+
+		/**
+		 * Convenience method to check if the tag has a CSS class or not.
+		 *
+		 * @param {String} cssClass The CSS class to check for.
+		 * @return {Boolean} `true` if the HtmlTag has the CSS class, `false` otherwise.
+		 */
+		hasClass : function( cssClass ) {
+			return ( ' ' + this.getClass() + ' ' ).indexOf( ' ' + cssClass + ' ' ) !== -1;
+		},
+
+
+		/**
+		 * Sets the inner HTML for the tag.
+		 *
+		 * @param {String} html The inner HTML to set.
+		 * @return {Autolinker.HtmlTag} This HtmlTag instance, so that method calls may be chained.
+		 */
+		setInnerHtml : function( html ) {
+			this.innerHtml = html;
+
+			return this;
+		},
+
+
+		/**
+		 * Retrieves the inner HTML for the tag.
+		 *
+		 * @return {String}
+		 */
+		getInnerHtml : function() {
+			return this.innerHtml || "";
+		},
+
+
+		/**
+		 * Override of superclass method used to generate the HTML string for the tag.
+		 *
+		 * @return {String}
+		 */
+		toAnchorString : function() {
+			var tagName = this.getTagName(),
+			    attrsStr = this.buildAttrsStr();
+
+			attrsStr = ( attrsStr ) ? ' ' + attrsStr : '';  // prepend a space if there are actually attributes
+
+			return [ '<', tagName, attrsStr, '>', this.getInnerHtml(), '</', tagName, '>' ].join( "" );
+		},
+
+
+		/**
+		 * Support method for {@link #toAnchorString}, returns the string space-separated key="value" pairs, used to populate
+		 * the stringified HtmlTag.
+		 *
+		 * @protected
+		 * @return {String} Example return: `attr1="value1" attr2="value2"`
+		 */
+		buildAttrsStr : function() {
+			if( !this.attrs ) return "";  // no `attrs` Object (map) has been set, return empty string
+
+			var attrs = this.getAttrs(),
+			    attrsArr = [];
+
+			for( var prop in attrs ) {
+				if( attrs.hasOwnProperty( prop ) ) {
+					attrsArr.push( prop + '="' + attrs[ prop ] + '"' );
+				}
+			}
+			return attrsArr.join( " " );
+		}
+
+	} );
+
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.RegexLib
+	 * @singleton
+	 *
+	 * Builds and stores a library of the common regular expressions used by the
+	 * Autolinker utility.
+	 *
+	 * Other regular expressions may exist ad-hoc, but these are generally the
+	 * regular expressions that are shared between source files.
+	 */
+	Autolinker.RegexLib = (function() {
+
+		/**
+		 * The string form of a regular expression that would match all of the
+		 * alphabetic ("letter") chars in the unicode character set when placed in a
+		 * RegExp character class (`[]`). This includes all international alphabetic
+		 * characters.
+		 *
+		 * These would be the characters matched by unicode regex engines `\p{L}`
+		 * escape ("all letters").
+		 *
+		 * Taken from the XRegExp library: http://xregexp.com/
+		 * Specifically: http://xregexp.com/v/3.0.0/unicode-categories.js
+		 *
+		 * @private
+		 * @type {String}
+		 */
+		var alphaCharsStr = 'A-Za-z\\xAA\\xB5\\xBA\\xC0-\\xD6\\xD8-\\xF6\\xF8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E\u066F\u0671-\u06D3\u06D5\u06E5\u06E6\u06EE\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B4\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC\u09DD\u09DF-\u09E1\u09F0\u09F1\u0A05-\u0A0A\u0A0F\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32\u0A33\u0A35\u0A36\u0A38\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32\u0B33\u0B35-\u0B39\u0B3D\u0B5C\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99\u0B9A\u0B9C\u0B9E\u0B9F\u0BA3\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0\u0CE1\u0CF1\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32\u0E33\u0E40-\u0E46\u0E81\u0E82\u0E84\u0E87\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA\u0EAB\u0EAD-\u0EB0\u0EB2\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16F1-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005\u3006\u3031-\u3035\u303B\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FD5\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AD\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40\uFB41\uFB43\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC';
+
+		/**
+		 * The string form of a regular expression that would match all of the
+		 * decimal number chars in the unicode character set when placed in a RegExp
+		 * character class (`[]`).
+		 *
+		 * These would be the characters matched by unicode regex engines `\p{Nd}`
+		 * escape ("all decimal numbers")
+		 *
+		 * Taken from the XRegExp library: http://xregexp.com/
+		 * Specifically: http://xregexp.com/v/3.0.0/unicode-categories.js
+		 *
+		 * @private
+		 * @type {String}
+		 */
+		var decimalNumbersStr = '0-9\u0660-\u0669\u06F0-\u06F9\u07C0-\u07C9\u0966-\u096F\u09E6-\u09EF\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0BE6-\u0BEF\u0C66-\u0C6F\u0CE6-\u0CEF\u0D66-\u0D6F\u0DE6-\u0DEF\u0E50-\u0E59\u0ED0-\u0ED9\u0F20-\u0F29\u1040-\u1049\u1090-\u1099\u17E0-\u17E9\u1810-\u1819\u1946-\u194F\u19D0-\u19D9\u1A80-\u1A89\u1A90-\u1A99\u1B50-\u1B59\u1BB0-\u1BB9\u1C40-\u1C49\u1C50-\u1C59\uA620-\uA629\uA8D0-\uA8D9\uA900-\uA909\uA9D0-\uA9D9\uA9F0-\uA9F9\uAA50-\uAA59\uABF0-\uABF9\uFF10-\uFF19';
+
+
+		// See documentation below
+		var alphaNumericCharsStr = alphaCharsStr + decimalNumbersStr;
+
+
+		// See documentation below
+		var domainNameRegex = new RegExp( '[' + alphaNumericCharsStr + '.\\-]*[' + alphaNumericCharsStr + '\\-]' );
+
+
+		// See documentation below
+		var tldRegex = /(?:international|construction|contractors|enterprises|photography|productions|foundation|immobilien|industries|management|properties|technology|christmas|community|directory|education|equipment|institute|marketing|solutions|vacations|bargains|boutique|builders|catering|cleaning|clothing|computer|democrat|diamonds|graphics|holdings|lighting|partners|plumbing|supplies|training|ventures|academy|careers|company|cruises|domains|exposed|flights|florist|gallery|guitars|holiday|kitchen|neustar|okinawa|recipes|rentals|reviews|shiksha|singles|support|systems|agency|berlin|camera|center|coffee|condos|dating|estate|events|expert|futbol|kaufen|luxury|maison|monash|museum|nagoya|photos|repair|report|social|supply|tattoo|tienda|travel|viajes|villas|vision|voting|voyage|actor|build|cards|cheap|codes|dance|email|glass|house|mango|ninja|parts|photo|press|shoes|solar|today|tokyo|tools|watch|works|aero|arpa|asia|best|bike|blue|buzz|camp|club|cool|coop|farm|fish|gift|guru|info|jobs|kiwi|kred|land|limo|link|menu|mobi|moda|name|pics|pink|post|qpon|rich|ruhr|sexy|tips|vote|voto|wang|wien|wiki|zone|bar|bid|biz|cab|cat|ceo|com|edu|gov|int|kim|mil|net|onl|org|pro|pub|red|tel|uno|wed|xxx|xyz|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cw|cx|cy|cz|de|dj|dk|dm|do|dz|ec|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mm|mn|mo|mp|mq|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|om|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sx|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|za|zm|zw)\b/;
+
+
+		return {
+
+			/**
+			 * The string form of a regular expression that would match all of the
+			 * letters and decimal number chars in the unicode character set when placed
+			 * in a RegExp character class (`[]`).
+			 *
+			 * These would be the characters matched by unicode regex engines `[\p{L}\p{Nd}]`
+			 * escape ("all letters and decimal numbers")
+			 *
+			 * @property {String} alphaNumericCharsStr
+			 */
+			alphaNumericCharsStr : alphaNumericCharsStr,
+
+			/**
+			 * A regular expression to match domain names of a URL or email address.
+			 * Ex: 'google', 'yahoo', 'some-other-company', etc.
+			 *
+			 * @property {RegExp} domainNameRegex
+			 */
+			domainNameRegex : domainNameRegex,
+
+			/**
+			 * A regular expression to match top level domains (TLDs) for a URL or
+			 * email address. Ex: 'com', 'org', 'net', etc.
+			 *
+			 * @property {RegExp} tldRegex
+			 */
+			tldRegex : tldRegex
+
+		};
+
+
+	}() );
+	/*global Autolinker */
+	/*jshint sub:true */
+	/**
+	 * @protected
+	 * @class Autolinker.AnchorTagBuilder
+	 * @extends Object
+	 *
+	 * Builds anchor (&lt;a&gt;) tags for the Autolinker utility when a match is
+	 * found.
+	 *
+	 * Normally this class is instantiated, configured, and used internally by an
+	 * {@link Autolinker} instance, but may actually be retrieved in a {@link Autolinker#replaceFn replaceFn}
+	 * to create {@link Autolinker.HtmlTag HtmlTag} instances which may be modified
+	 * before returning from the {@link Autolinker#replaceFn replaceFn}. For
+	 * example:
+	 *
+	 *     var html = Autolinker.link( "Test google.com", {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             var tag = autolinker.getTagBuilder().build( match );  // returns an {@link Autolinker.HtmlTag} instance
+	 *             tag.setAttr( 'rel', 'nofollow' );
+	 *
+	 *             return tag;
+	 *         }
+	 *     } );
+	 *
+	 *     // generated html:
+	 *     //   Test <a href="http://google.com" target="_blank" rel="nofollow">google.com</a>
+	 */
+	Autolinker.AnchorTagBuilder = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @cfg {Boolean} newWindow
+		 * @inheritdoc Autolinker#newWindow
+		 */
+
+		/**
+		 * @cfg {Object} truncate
+		 * @inheritdoc Autolinker#truncate
+		 */
+
+		/**
+		 * @cfg {String} className
+		 * @inheritdoc Autolinker#className
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} [cfg] The configuration options for the AnchorTagBuilder instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.Util.assign( this, cfg );
+		},
+
+
+		/**
+		 * Generates the actual anchor (&lt;a&gt;) tag to use in place of the
+		 * matched text, via its `match` object.
+		 *
+		 * @param {Autolinker.match.Match} match The Match instance to generate an
+		 *   anchor tag from.
+		 * @return {Autolinker.HtmlTag} The HtmlTag instance for the anchor tag.
+		 */
+		build : function( match ) {
+			return new Autolinker.HtmlTag( {
+				tagName   : 'a',
+				attrs     : this.createAttrs( match.getType(), match.getAnchorHref() ),
+				innerHtml : this.processAnchorText( match.getAnchorText() )
+			} );
+		},
+
+
+		/**
+		 * Creates the Object (map) of the HTML attributes for the anchor (&lt;a&gt;)
+		 *   tag being generated.
+		 *
+		 * @protected
+		 * @param {"url"/"email"/"phone"/"twitter"/"hashtag"} matchType The type of
+		 *   match that an anchor tag is being generated for.
+		 * @param {String} anchorHref The href for the anchor tag.
+		 * @return {Object} A key/value Object (map) of the anchor tag's attributes.
+		 */
+		createAttrs : function( matchType, anchorHref ) {
+			var attrs = {
+				'href' : anchorHref  // we'll always have the `href` attribute
+			};
+
+			var cssClass = this.createCssClass( matchType );
+			if( cssClass ) {
+				attrs[ 'class' ] = cssClass;
+			}
+			if( this.newWindow ) {
+				attrs[ 'target' ] = "_blank";
+				attrs[ 'rel' ] = "noopener noreferrer";
+			}
+
+			return attrs;
+		},
+
+
+		/**
+		 * Creates the CSS class that will be used for a given anchor tag, based on
+		 * the `matchType` and the {@link #className} config.
+		 *
+		 * @private
+		 * @param {"url"/"email"/"phone"/"twitter"/"hashtag"} matchType The type of
+		 *   match that an anchor tag is being generated for.
+		 * @return {String} The CSS class string for the link. Example return:
+		 *   "myLink myLink-url". If no {@link #className} was configured, returns
+		 *   an empty string.
+		 */
+		createCssClass : function( matchType ) {
+			var className = this.className;
+
+			if( !className )
+				return "";
+			else
+				return className + " " + className + "-" + matchType;  // ex: "myLink myLink-url", "myLink myLink-email", "myLink myLink-phone", "myLink myLink-twitter", or "myLink myLink-hashtag"
+		},
+
+
+		/**
+		 * Processes the `anchorText` by truncating the text according to the
+		 * {@link #truncate} config.
+		 *
+		 * @private
+		 * @param {String} anchorText The anchor tag's text (i.e. what will be
+		 *   displayed).
+		 * @return {String} The processed `anchorText`.
+		 */
+		processAnchorText : function( anchorText ) {
+			anchorText = this.doTruncate( anchorText );
+
+			return anchorText;
+		},
+
+
+		/**
+		 * Performs the truncation of the `anchorText` based on the {@link #truncate}
+		 * option. If the `anchorText` is longer than the length specified by the
+		 * {@link #truncate} option, the truncation is performed based on the
+		 * `location` property. See {@link #truncate} for details.
+		 *
+		 * @private
+		 * @param {String} anchorText The anchor tag's text (i.e. what will be
+		 *   displayed).
+		 * @return {String} The truncated anchor text.
+		 */
+		doTruncate : function( anchorText ) {
+			var truncate = this.truncate;
+			if( !truncate || !truncate.length ) return anchorText;
+
+			var truncateLength = truncate.length,
+				truncateLocation = truncate.location;
+
+			if( truncateLocation === 'smart' ) {
+				return Autolinker.truncate.TruncateSmart( anchorText, truncateLength, '..' );
+
+			} else if( truncateLocation === 'middle' ) {
+				return Autolinker.truncate.TruncateMiddle( anchorText, truncateLength, '..' );
+
+			} else {
+				return Autolinker.truncate.TruncateEnd( anchorText, truncateLength, '..' );
+			}
+		}
+
+	} );
+
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.htmlParser.HtmlParser
+	 * @extends Object
+	 *
+	 * An HTML parser implementation which simply walks an HTML string and returns an array of
+	 * {@link Autolinker.htmlParser.HtmlNode HtmlNodes} that represent the basic HTML structure of the input string.
+	 *
+	 * Autolinker uses this to only link URLs/emails/Twitter handles within text nodes, effectively ignoring / "walking
+	 * around" HTML tags.
+	 */
+	Autolinker.htmlParser.HtmlParser = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @private
+		 * @property {RegExp} htmlRegex
+		 *
+		 * The regular expression used to pull out HTML tags from a string. Handles namespaced HTML tags and
+		 * attribute names, as specified by http://www.w3.org/TR/html-markup/syntax.html.
+		 *
+		 * Capturing groups:
+		 *
+		 * 1. The "!DOCTYPE" tag name, if a tag is a &lt;!DOCTYPE&gt; tag.
+		 * 2. If it is an end tag, this group will have the '/'.
+		 * 3. If it is a comment tag, this group will hold the comment text (i.e.
+		 *    the text inside the `&lt;!--` and `--&gt;`.
+		 * 4. The tag name for all tags (other than the &lt;!DOCTYPE&gt; tag)
+		 */
+		htmlRegex : (function() {
+			var commentTagRegex = /!--([\s\S]+?)--/,
+			    tagNameRegex = /[0-9a-zA-Z][0-9a-zA-Z:]*/,
+			    attrNameRegex = /[^\s\0"'>\/=\x01-\x1F\x7F]+/,   // the unicode range accounts for excluding control chars, and the delete char
+			    attrValueRegex = /(?:"[^"]*?"|'[^']*?'|[^'"=<>`\s]+)/, // double quoted, single quoted, or unquoted attribute values
+			    nameEqualsValueRegex = attrNameRegex.source + '(?:\\s*=\\s*' + attrValueRegex.source + ')?';  // optional '=[value]'
+
+			return new RegExp( [
+				// for <!DOCTYPE> tag. Ex: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">)
+				'(?:',
+					'<(!DOCTYPE)',  // *** Capturing Group 1 - If it's a doctype tag
+
+						// Zero or more attributes following the tag name
+						'(?:',
+							'\\s+',  // one or more whitespace chars before an attribute
+
+							// Either:
+							// A. attr="value", or
+							// B. "value" alone (To cover example doctype tag: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">)
+							'(?:', nameEqualsValueRegex, '|', attrValueRegex.source + ')',
+						')*',
+					'>',
+				')',
+
+				'|',
+
+				// All other HTML tags (i.e. tags that are not <!DOCTYPE>)
+				'(?:',
+					'<(/)?',  // Beginning of a tag or comment. Either '<' for a start tag, or '</' for an end tag.
+					          // *** Capturing Group 2: The slash or an empty string. Slash ('/') for end tag, empty string for start or self-closing tag.
+
+						'(?:',
+							commentTagRegex.source,  // *** Capturing Group 3 - A Comment Tag's Text
+
+							'|',
+
+							'(?:',
+
+								// *** Capturing Group 4 - The tag name
+								'(' + tagNameRegex.source + ')',
+
+								// Zero or more attributes following the tag name
+								'(?:',
+									'\\s*',                // any number of whitespace chars before an attribute
+									nameEqualsValueRegex,  // attr="value" (with optional ="value" part)
+								')*',
+
+								'\\s*/?',  // any trailing spaces and optional '/' before the closing '>'
+
+							')',
+						')',
+					'>',
+				')'
+			].join( "" ), 'gi' );
+		} )(),
+
+		/**
+		 * @private
+		 * @property {RegExp} htmlCharacterEntitiesRegex
+		 *
+		 * The regular expression that matches common HTML character entities.
+		 *
+		 * Ignoring &amp; as it could be part of a query string -- handling it separately.
+		 */
+		htmlCharacterEntitiesRegex: /(&nbsp;|&#160;|&lt;|&#60;|&gt;|&#62;|&quot;|&#34;|&#39;)/gi,
+
+
+		/**
+		 * Parses an HTML string and returns a simple array of {@link Autolinker.htmlParser.HtmlNode HtmlNodes}
+		 * to represent the HTML structure of the input string.
+		 *
+		 * @param {String} html The HTML to parse.
+		 * @return {Autolinker.htmlParser.HtmlNode[]}
+		 */
+		parse : function( html ) {
+			var htmlRegex = this.htmlRegex,
+			    currentResult,
+			    lastIndex = 0,
+			    textAndEntityNodes,
+			    nodes = [];  // will be the result of the method
+
+			while( ( currentResult = htmlRegex.exec( html ) ) !== null ) {
+				var tagText = currentResult[ 0 ],
+				    commentText = currentResult[ 3 ], // if we've matched a comment
+				    tagName = currentResult[ 1 ] || currentResult[ 4 ],  // The <!DOCTYPE> tag (ex: "!DOCTYPE"), or another tag (ex: "a" or "img")
+				    isClosingTag = !!currentResult[ 2 ],
+				    offset = currentResult.index,
+				    inBetweenTagsText = html.substring( lastIndex, offset );
+
+				// Push TextNodes and EntityNodes for any text found between tags
+				if( inBetweenTagsText ) {
+					textAndEntityNodes = this.parseTextAndEntityNodes( lastIndex, inBetweenTagsText );
+					nodes.push.apply( nodes, textAndEntityNodes );
+				}
+
+				// Push the CommentNode or ElementNode
+				if( commentText ) {
+					nodes.push( this.createCommentNode( offset, tagText, commentText ) );
+				} else {
+					nodes.push( this.createElementNode( offset, tagText, tagName, isClosingTag ) );
+				}
+
+				lastIndex = offset + tagText.length;
+			}
+
+			// Process any remaining text after the last HTML element. Will process all of the text if there were no HTML elements.
+			if( lastIndex < html.length ) {
+				var text = html.substring( lastIndex );
+
+				// Push TextNodes and EntityNodes for any text found between tags
+				if( text ) {
+					textAndEntityNodes = this.parseTextAndEntityNodes( lastIndex, text );
+					nodes.push.apply( nodes, textAndEntityNodes );
+				}
+			}
+
+			return nodes;
+		},
+
+
+		/**
+		 * Parses text and HTML entity nodes from a given string. The input string
+		 * should not have any HTML tags (elements) within it.
+		 *
+		 * @private
+		 * @param {Number} offset The offset of the text node match within the
+		 *   original HTML string.
+		 * @param {String} text The string of text to parse. This is from an HTML
+		 *   text node.
+		 * @return {Autolinker.htmlParser.HtmlNode[]} An array of HtmlNodes to
+		 *   represent the {@link Autolinker.htmlParser.TextNode TextNodes} and
+		 *   {@link Autolinker.htmlParser.EntityNode EntityNodes} found.
+		 */
+		parseTextAndEntityNodes : function( offset, text ) {
+			var nodes = [],
+			    textAndEntityTokens = Autolinker.Util.splitAndCapture( text, this.htmlCharacterEntitiesRegex );  // split at HTML entities, but include the HTML entities in the results array
+
+			// Every even numbered token is a TextNode, and every odd numbered token is an EntityNode
+			// For example: an input `text` of "Test &quot;this&quot; today" would turn into the
+			//   `textAndEntityTokens`: [ 'Test ', '&quot;', 'this', '&quot;', ' today' ]
+			for( var i = 0, len = textAndEntityTokens.length; i < len; i += 2 ) {
+				var textToken = textAndEntityTokens[ i ],
+				    entityToken = textAndEntityTokens[ i + 1 ];
+
+				if( textToken ) {
+					nodes.push( this.createTextNode( offset, textToken ) );
+					offset += textToken.length;
+				}
+				if( entityToken ) {
+					nodes.push( this.createEntityNode( offset, entityToken ) );
+					offset += entityToken.length;
+				}
+			}
+			return nodes;
+		},
+
+
+		/**
+		 * Factory method to create an {@link Autolinker.htmlParser.CommentNode CommentNode}.
+		 *
+		 * @private
+		 * @param {Number} offset The offset of the match within the original HTML
+		 *   string.
+		 * @param {String} tagText The full text of the tag (comment) that was
+		 *   matched, including its &lt;!-- and --&gt;.
+		 * @param {String} commentText The full text of the comment that was matched.
+		 */
+		createCommentNode : function( offset, tagText, commentText ) {
+			return new Autolinker.htmlParser.CommentNode( {
+				offset : offset,
+				text   : tagText,
+				comment: Autolinker.Util.trim( commentText )
+			} );
+		},
+
+
+		/**
+		 * Factory method to create an {@link Autolinker.htmlParser.ElementNode ElementNode}.
+		 *
+		 * @private
+		 * @param {Number} offset The offset of the match within the original HTML
+		 *   string.
+		 * @param {String} tagText The full text of the tag (element) that was
+		 *   matched, including its attributes.
+		 * @param {String} tagName The name of the tag. Ex: An &lt;img&gt; tag would
+		 *   be passed to this method as "img".
+		 * @param {Boolean} isClosingTag `true` if it's a closing tag, false
+		 *   otherwise.
+		 * @return {Autolinker.htmlParser.ElementNode}
+		 */
+		createElementNode : function( offset, tagText, tagName, isClosingTag ) {
+			return new Autolinker.htmlParser.ElementNode( {
+				offset  : offset,
+				text    : tagText,
+				tagName : tagName.toLowerCase(),
+				closing : isClosingTag
+			} );
+		},
+
+
+		/**
+		 * Factory method to create a {@link Autolinker.htmlParser.EntityNode EntityNode}.
+		 *
+		 * @private
+		 * @param {Number} offset The offset of the match within the original HTML
+		 *   string.
+		 * @param {String} text The text that was matched for the HTML entity (such
+		 *   as '&amp;nbsp;').
+		 * @return {Autolinker.htmlParser.EntityNode}
+		 */
+		createEntityNode : function( offset, text ) {
+			return new Autolinker.htmlParser.EntityNode( { offset: offset, text: text } );
+		},
+
+
+		/**
+		 * Factory method to create a {@link Autolinker.htmlParser.TextNode TextNode}.
+		 *
+		 * @private
+		 * @param {Number} offset The offset of the match within the original HTML
+		 *   string.
+		 * @param {String} text The text that was matched.
+		 * @return {Autolinker.htmlParser.TextNode}
+		 */
+		createTextNode : function( offset, text ) {
+			return new Autolinker.htmlParser.TextNode( { offset: offset, text: text } );
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @abstract
+	 * @class Autolinker.htmlParser.HtmlNode
+	 *
+	 * Represents an HTML node found in an input string. An HTML node is one of the
+	 * following:
+	 *
+	 * 1. An {@link Autolinker.htmlParser.ElementNode ElementNode}, which represents
+	 *    HTML tags.
+	 * 2. A {@link Autolinker.htmlParser.CommentNode CommentNode}, which represents
+	 *    HTML comments.
+	 * 3. A {@link Autolinker.htmlParser.TextNode TextNode}, which represents text
+	 *    outside or within HTML tags.
+	 * 4. A {@link Autolinker.htmlParser.EntityNode EntityNode}, which represents
+	 *    one of the known HTML entities that Autolinker looks for. This includes
+	 *    common ones such as &amp;quot; and &amp;nbsp;
+	 */
+	Autolinker.htmlParser.HtmlNode = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @cfg {Number} offset (required)
+		 *
+		 * The offset of the HTML node in the original text that was parsed.
+		 */
+		offset : undefined,
+
+		/**
+		 * @cfg {String} text (required)
+		 *
+		 * The text that was matched for the HtmlNode.
+		 *
+		 * - In the case of an {@link Autolinker.htmlParser.ElementNode ElementNode},
+		 *   this will be the tag's text.
+		 * - In the case of an {@link Autolinker.htmlParser.CommentNode CommentNode},
+		 *   this will be the comment's text.
+		 * - In the case of a {@link Autolinker.htmlParser.TextNode TextNode}, this
+		 *   will be the text itself.
+		 * - In the case of a {@link Autolinker.htmlParser.EntityNode EntityNode},
+		 *   this will be the text of the HTML entity.
+		 */
+		text : undefined,
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match instance,
+		 * specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.Util.assign( this, cfg );
+
+			if( this.offset == null ) throw new Error( '`offset` cfg required' );
+			if( this.text == null ) throw new Error( '`text` cfg required' );
+		},
+
+
+		/**
+		 * Returns a string name for the type of node that this class represents.
+		 *
+		 * @abstract
+		 * @return {String}
+		 */
+		getType : Autolinker.Util.abstractMethod,
+
+
+		/**
+		 * Retrieves the {@link #offset} of the HtmlNode. This is the offset of the
+		 * HTML node in the original string that was parsed.
+		 *
+		 * @return {Number}
+		 */
+		getOffset : function() {
+			return this.offset;
+		},
+
+
+		/**
+		 * Retrieves the {@link #text} for the HtmlNode.
+		 *
+		 * @return {String}
+		 */
+		getText : function() {
+			return this.text;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.htmlParser.CommentNode
+	 * @extends Autolinker.htmlParser.HtmlNode
+	 *
+	 * Represents an HTML comment node that has been parsed by the
+	 * {@link Autolinker.htmlParser.HtmlParser}.
+	 *
+	 * See this class's superclass ({@link Autolinker.htmlParser.HtmlNode}) for more
+	 * details.
+	 */
+	Autolinker.htmlParser.CommentNode = Autolinker.Util.extend( Autolinker.htmlParser.HtmlNode, {
+
+		/**
+		 * @cfg {String} comment (required)
+		 *
+		 * The text inside the comment tag. This text is stripped of any leading or
+		 * trailing whitespace.
+		 */
+		comment : '',
+
+
+		/**
+		 * Returns a string name for the type of node that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'comment';
+		},
+
+
+		/**
+		 * Returns the comment inside the comment tag.
+		 *
+		 * @return {String}
+		 */
+		getComment : function() {
+			return this.comment;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.htmlParser.ElementNode
+	 * @extends Autolinker.htmlParser.HtmlNode
+	 *
+	 * Represents an HTML element node that has been parsed by the {@link Autolinker.htmlParser.HtmlParser}.
+	 *
+	 * See this class's superclass ({@link Autolinker.htmlParser.HtmlNode}) for more
+	 * details.
+	 */
+	Autolinker.htmlParser.ElementNode = Autolinker.Util.extend( Autolinker.htmlParser.HtmlNode, {
+
+		/**
+		 * @cfg {String} tagName (required)
+		 *
+		 * The name of the tag that was matched.
+		 */
+		tagName : '',
+
+		/**
+		 * @cfg {Boolean} closing (required)
+		 *
+		 * `true` if the element (tag) is a closing tag, `false` if its an opening
+		 * tag.
+		 */
+		closing : false,
+
+
+		/**
+		 * Returns a string name for the type of node that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'element';
+		},
+
+
+		/**
+		 * Returns the HTML element's (tag's) name. Ex: for an &lt;img&gt; tag,
+		 * returns "img".
+		 *
+		 * @return {String}
+		 */
+		getTagName : function() {
+			return this.tagName;
+		},
+
+
+		/**
+		 * Determines if the HTML element (tag) is a closing tag. Ex: &lt;div&gt;
+		 * returns `false`, while &lt;/div&gt; returns `true`.
+		 *
+		 * @return {Boolean}
+		 */
+		isClosing : function() {
+			return this.closing;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.htmlParser.EntityNode
+	 * @extends Autolinker.htmlParser.HtmlNode
+	 *
+	 * Represents a known HTML entity node that has been parsed by the {@link Autolinker.htmlParser.HtmlParser}.
+	 * Ex: '&amp;nbsp;', or '&amp#160;' (which will be retrievable from the {@link #getText}
+	 * method.
+	 *
+	 * Note that this class will only be returned from the HtmlParser for the set of
+	 * checked HTML entity nodes  defined by the {@link Autolinker.htmlParser.HtmlParser#htmlCharacterEntitiesRegex}.
+	 *
+	 * See this class's superclass ({@link Autolinker.htmlParser.HtmlNode}) for more
+	 * details.
+	 */
+	Autolinker.htmlParser.EntityNode = Autolinker.Util.extend( Autolinker.htmlParser.HtmlNode, {
+
+		/**
+		 * Returns a string name for the type of node that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'entity';
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.htmlParser.TextNode
+	 * @extends Autolinker.htmlParser.HtmlNode
+	 *
+	 * Represents a text node that has been parsed by the {@link Autolinker.htmlParser.HtmlParser}.
+	 *
+	 * See this class's superclass ({@link Autolinker.htmlParser.HtmlNode}) for more
+	 * details.
+	 */
+	Autolinker.htmlParser.TextNode = Autolinker.Util.extend( Autolinker.htmlParser.HtmlNode, {
+
+		/**
+		 * Returns a string name for the type of node that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'text';
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @abstract
+	 * @class Autolinker.match.Match
+	 *
+	 * Represents a match found in an input string which should be Autolinked. A Match object is what is provided in a
+	 * {@link Autolinker#replaceFn replaceFn}, and may be used to query for details about the match.
+	 *
+	 * For example:
+	 *
+	 *     var input = "...";  // string with URLs, Email Addresses, and Twitter Handles
+	 *
+	 *     var linkedText = Autolinker.link( input, {
+	 *         replaceFn : function( autolinker, match ) {
+	 *             console.log( "href = ", match.getAnchorHref() );
+	 *             console.log( "text = ", match.getAnchorText() );
+	 *
+	 *             switch( match.getType() ) {
+	 *                 case 'url' :
+	 *                     console.log( "url: ", match.getUrl() );
+	 *
+	 *                 case 'email' :
+	 *                     console.log( "email: ", match.getEmail() );
+	 *
+	 *                 case 'twitter' :
+	 *                     console.log( "twitter: ", match.getTwitterHandle() );
+	 *             }
+	 *         }
+	 *     } );
+	 *
+	 * See the {@link Autolinker} class for more details on using the {@link Autolinker#replaceFn replaceFn}.
+	 */
+	Autolinker.match.Match = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @cfg {Autolinker.AnchorTagBuilder} tagBuilder (required)
+		 *
+		 * Reference to the AnchorTagBuilder instance to use to generate an anchor
+		 * tag for the Match.
+		 */
+
+		/**
+		 * @cfg {String} matchedText (required)
+		 *
+		 * The original text that was matched by the {@link Autolinker.matcher.Matcher}.
+		 */
+
+		/**
+		 * @cfg {Number} offset (required)
+		 *
+		 * The offset of where the match was made in the input string.
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			if( cfg.tagBuilder == null ) throw new Error( '`tagBuilder` cfg required' );
+			if( cfg.matchedText == null ) throw new Error( '`matchedText` cfg required' );
+			if( cfg.offset == null ) throw new Error( '`offset` cfg required' );
+
+			this.tagBuilder = cfg.tagBuilder;
+			this.matchedText = cfg.matchedText;
+			this.offset = cfg.offset;
+		},
+
+
+		/**
+		 * Returns a string name for the type of match that this class represents.
+		 *
+		 * @abstract
+		 * @return {String}
+		 */
+		getType : Autolinker.Util.abstractMethod,
+
+
+		/**
+		 * Returns the original text that was matched.
+		 *
+		 * @return {String}
+		 */
+		getMatchedText : function() {
+			return this.matchedText;
+		},
+
+
+		/**
+		 * Sets the {@link #offset} of where the match was made in the input string.
+		 *
+		 * A {@link Autolinker.matcher.Matcher} will be fed only HTML text nodes,
+		 * and will therefore set an original offset that is relative to the HTML
+		 * text node itself. However, we want this offset to be relative to the full
+		 * HTML input string, and thus if using {@link Autolinker#parse} (rather
+		 * than calling a {@link Autolinker.matcher.Matcher} directly), then this
+		 * offset is corrected after the Matcher itself has done its job.
+		 *
+		 * @param {Number} offset
+		 */
+		setOffset : function( offset ) {
+			this.offset = offset;
+		},
+
+
+		/**
+		 * Returns the offset of where the match was made in the input string. This
+		 * is the 0-based index of the match.
+		 *
+		 * @return {Number}
+		 */
+		getOffset : function() {
+			return this.offset;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @abstract
+		 * @return {String}
+		 */
+		getAnchorHref : Autolinker.Util.abstractMethod,
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @abstract
+		 * @return {String}
+		 */
+		getAnchorText : Autolinker.Util.abstractMethod,
+
+
+		/**
+		 * Builds and returns an {@link Autolinker.HtmlTag} instance based on the
+		 * Match.
+		 *
+		 * This can be used to easily generate anchor tags from matches, and either
+		 * return their HTML string, or modify them before doing so.
+		 *
+		 * Example Usage:
+		 *
+		 *     var tag = match.buildTag();
+		 *     tag.addClass( 'cordova-link' );
+		 *     tag.setAttr( 'target', '_system' );
+		 *
+		 *     tag.toAnchorString();  // <a href="http://google.com" class="cordova-link" target="_system">Google</a>
+		 */
+		buildTag : function() {
+			return this.tagBuilder.build( this );
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.match.Email
+	 * @extends Autolinker.match.Match
+	 *
+	 * Represents a Email match found in an input string which should be Autolinked.
+	 *
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
+	 */
+	Autolinker.match.Email = Autolinker.Util.extend( Autolinker.match.Match, {
+
+		/**
+		 * @cfg {String} email (required)
+		 *
+		 * The email address that was matched.
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.match.Match.prototype.constructor.call( this, cfg );
+
+			if( !cfg.email ) throw new Error( '`email` cfg required' );
+
+			this.email = cfg.email;
+		},
+
+
+		/**
+		 * Returns a string name for the type of match that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'email';
+		},
+
+
+		/**
+		 * Returns the email address that was matched.
+		 *
+		 * @return {String}
+		 */
+		getEmail : function() {
+			return this.email;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorHref : function() {
+			return 'mailto:' + this.email;
+		},
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorText : function() {
+			return this.email;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.match.Hashtag
+	 * @extends Autolinker.match.Match
+	 *
+	 * Represents a Hashtag match found in an input string which should be
+	 * Autolinked.
+	 *
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more
+	 * details.
+	 */
+	Autolinker.match.Hashtag = Autolinker.Util.extend( Autolinker.match.Match, {
+
+		/**
+		 * @cfg {String} serviceName
+		 *
+		 * The service to point hashtag matches to. See {@link Autolinker#hashtag}
+		 * for available values.
+		 */
+
+		/**
+		 * @cfg {String} hashtag (required)
+		 *
+		 * The Hashtag that was matched, without the '#'.
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.match.Match.prototype.constructor.call( this, cfg );
+
+			// TODO: if( !serviceName ) throw new Error( '`serviceName` cfg required' );
+			if( !cfg.hashtag ) throw new Error( '`hashtag` cfg required' );
+
+			this.serviceName = cfg.serviceName;
+			this.hashtag = cfg.hashtag;
+		},
+
+
+		/**
+		 * Returns the type of match that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'hashtag';
+		},
+
+
+		/**
+		 * Returns the configured {@link #serviceName} to point the Hashtag to.
+		 * Ex: 'facebook', 'twitter'.
+		 *
+		 * @return {String}
+		 */
+		getServiceName : function() {
+			return this.serviceName;
+		},
+
+
+		/**
+		 * Returns the matched hashtag, without the '#' character.
+		 *
+		 * @return {String}
+		 */
+		getHashtag : function() {
+			return this.hashtag;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorHref : function() {
+			var serviceName = this.serviceName,
+			    hashtag = this.hashtag;
+
+			switch( serviceName ) {
+				case 'twitter' :
+					return 'https://twitter.com/hashtag/' + hashtag;
+				case 'facebook' :
+					return 'https://www.facebook.com/hashtag/' + hashtag;
+				case 'instagram' :
+					return 'https://instagram.com/explore/tags/' + hashtag;
+
+				default :  // Shouldn't happen because Autolinker's constructor should block any invalid values, but just in case.
+					throw new Error( 'Unknown service name to point hashtag to: ', serviceName );
+			}
+		},
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorText : function() {
+			return '#' + this.hashtag;
+		}
+
+	} );
+
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.match.Phone
+	 * @extends Autolinker.match.Match
+	 *
+	 * Represents a Phone number match found in an input string which should be
+	 * Autolinked.
+	 *
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more
+	 * details.
+	 */
+	Autolinker.match.Phone = Autolinker.Util.extend( Autolinker.match.Match, {
+
+		/**
+		 * @protected
+		 * @property {String} number (required)
+		 *
+		 * The phone number that was matched, without any delimiter characters.
+		 *
+		 * Note: This is a string to allow for prefixed 0's.
+		 */
+
+		/**
+		 * @protected
+		 * @property  {Boolean} plusSign (required)
+		 *
+		 * `true` if the matched phone number started with a '+' sign. We'll include
+		 * it in the `tel:` URL if so, as this is needed for international numbers.
+		 *
+		 * Ex: '+1 (123) 456 7879'
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.match.Match.prototype.constructor.call( this, cfg );
+
+			if( !cfg.number ) throw new Error( '`number` cfg required' );
+			if( cfg.plusSign == null ) throw new Error( '`plusSign` cfg required' );
+
+			this.number = cfg.number;
+			this.plusSign = cfg.plusSign;
+		},
+
+
+		/**
+		 * Returns a string name for the type of match that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'phone';
+		},
+
+
+		/**
+		 * Returns the phone number that was matched as a string, without any
+		 * delimiter characters.
+		 *
+		 * Note: This is a string to allow for prefixed 0's.
+		 *
+		 * @return {String}
+		 */
+		getNumber: function() {
+			return this.number;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorHref : function() {
+			return 'tel:' + ( this.plusSign ? '+' : '' ) + this.number;
+		},
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorText : function() {
+			return this.matchedText;
+		}
+
+	} );
+
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.match.Twitter
+	 * @extends Autolinker.match.Match
+	 *
+	 * Represents a Twitter match found in an input string which should be Autolinked.
+	 *
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
+	 */
+	Autolinker.match.Twitter = Autolinker.Util.extend( Autolinker.match.Match, {
+
+		/**
+		 * @cfg {String} twitterHandle (required)
+		 *
+		 * The Twitter handle that was matched, without the '@' character.
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg) {
+			Autolinker.match.Match.prototype.constructor.call( this, cfg );
+
+			if( !cfg.twitterHandle ) throw new Error( '`twitterHandle` cfg required' );
+
+			this.twitterHandle = cfg.twitterHandle;
+		},
+
+
+		/**
+		 * Returns the type of match that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'twitter';
+		},
+
+
+		/**
+		 * Returns the twitter handle, without the '@' character.
+		 *
+		 * @return {String}
+		 */
+		getTwitterHandle : function() {
+			return this.twitterHandle;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorHref : function() {
+			return 'https://twitter.com/' + this.twitterHandle;
+		},
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorText : function() {
+			return '@' + this.twitterHandle;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.match.Url
+	 * @extends Autolinker.match.Match
+	 *
+	 * Represents a Url match found in an input string which should be Autolinked.
+	 *
+	 * See this class's superclass ({@link Autolinker.match.Match}) for more details.
+	 */
+	Autolinker.match.Url = Autolinker.Util.extend( Autolinker.match.Match, {
+
+		/**
+		 * @cfg {String} url (required)
+		 *
+		 * The url that was matched.
+		 */
+
+		/**
+		 * @cfg {"scheme"/"www"/"tld"} urlMatchType (required)
+		 *
+		 * The type of URL match that this class represents. This helps to determine
+		 * if the match was made in the original text with a prefixed scheme (ex:
+		 * 'http://www.google.com'), a prefixed 'www' (ex: 'www.google.com'), or
+		 * was matched by a known top-level domain (ex: 'google.com').
+		 */
+
+		/**
+		 * @cfg {Boolean} protocolUrlMatch (required)
+		 *
+		 * `true` if the URL is a match which already has a protocol (i.e.
+		 * 'http://'), `false` if the match was from a 'www' or known TLD match.
+		 */
+
+		/**
+		 * @cfg {Boolean} protocolRelativeMatch (required)
+		 *
+		 * `true` if the URL is a protocol-relative match. A protocol-relative match
+		 * is a URL that starts with '//', and will be either http:// or https://
+		 * based on the protocol that the site is loaded under.
+		 */
+
+		/**
+		 * @cfg {Boolean} stripPrefix (required)
+		 * @inheritdoc Autolinker#cfg-stripPrefix
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.match.Match.prototype.constructor.call( this, cfg );
+
+			if( cfg.urlMatchType !== 'scheme' && cfg.urlMatchType !== 'www' && cfg.urlMatchType !== 'tld' ) throw new Error( '`urlMatchType` cfg must be one of: "scheme", "www", or "tld"' );
+			if( !cfg.url ) throw new Error( '`url` cfg required' );
+			if( cfg.protocolUrlMatch == null ) throw new Error( '`protocolUrlMatch` cfg required' );
+			if( cfg.protocolRelativeMatch == null ) throw new Error( '`protocolRelativeMatch` cfg required' );
+			if( cfg.stripPrefix == null ) throw new Error( '`stripPrefix` cfg required' );
+
+			this.urlMatchType = cfg.urlMatchType;
+			this.url = cfg.url;
+			this.protocolUrlMatch = cfg.protocolUrlMatch;
+			this.protocolRelativeMatch = cfg.protocolRelativeMatch;
+			this.stripPrefix = cfg.stripPrefix;
+		},
+
+
+		/**
+		 * @private
+		 * @property {RegExp} urlPrefixRegex
+		 *
+		 * A regular expression used to remove the 'http://' or 'https://' and/or the 'www.' from URLs.
+		 */
+		urlPrefixRegex: /^(https?:\/\/)?(www\.)?/i,
+
+		/**
+		 * @private
+		 * @property {RegExp} protocolRelativeRegex
+		 *
+		 * The regular expression used to remove the protocol-relative '//' from the {@link #url} string, for purposes
+		 * of {@link #getAnchorText}. A protocol-relative URL is, for example, "//yahoo.com"
+		 */
+		protocolRelativeRegex : /^\/\//,
+
+		/**
+		 * @private
+		 * @property {Boolean} protocolPrepended
+		 *
+		 * Will be set to `true` if the 'http://' protocol has been prepended to the {@link #url} (because the
+		 * {@link #url} did not have a protocol)
+		 */
+		protocolPrepended : false,
+
+
+		/**
+		 * Returns a string name for the type of match that this class represents.
+		 *
+		 * @return {String}
+		 */
+		getType : function() {
+			return 'url';
+		},
+
+
+		/**
+		 * Returns a string name for the type of URL match that this class
+		 * represents.
+		 *
+		 * This helps to determine if the match was made in the original text with a
+		 * prefixed scheme (ex: 'http://www.google.com'), a prefixed 'www' (ex:
+		 * 'www.google.com'), or was matched by a known top-level domain (ex:
+		 * 'google.com').
+		 *
+		 * @return {"scheme"/"www"/"tld"}
+		 */
+		getUrlMatchType : function() {
+			return this.urlMatchType;
+		},
+
+
+		/**
+		 * Returns the url that was matched, assuming the protocol to be 'http://' if the original
+		 * match was missing a protocol.
+		 *
+		 * @return {String}
+		 */
+		getUrl : function() {
+			var url = this.url;
+
+			// if the url string doesn't begin with a protocol, assume 'http://'
+			if( !this.protocolRelativeMatch && !this.protocolUrlMatch && !this.protocolPrepended ) {
+				url = this.url = 'http://' + url;
+
+				this.protocolPrepended = true;
+			}
+
+			return url;
+		},
+
+
+		/**
+		 * Returns the anchor href that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorHref : function() {
+			var url = this.getUrl();
+
+			return url.replace( /&amp;/g, '&' );  // any &amp;'s in the URL should be converted back to '&' if they were displayed as &amp; in the source html
+		},
+
+
+		/**
+		 * Returns the anchor text that should be generated for the match.
+		 *
+		 * @return {String}
+		 */
+		getAnchorText : function() {
+			var anchorText = this.getMatchedText();
+
+			if( this.protocolRelativeMatch ) {
+				// Strip off any protocol-relative '//' from the anchor text
+				anchorText = this.stripProtocolRelativePrefix( anchorText );
+			}
+			if( this.stripPrefix ) {
+				anchorText = this.stripUrlPrefix( anchorText );
+			}
+			anchorText = this.removeTrailingSlash( anchorText );  // remove trailing slash, if there is one
+
+			return anchorText;
+		},
+
+
+		// ---------------------------------------
+
+		// Utility Functionality
+
+		/**
+		 * Strips the URL prefix (such as "http://" or "https://") from the given text.
+		 *
+		 * @private
+		 * @param {String} text The text of the anchor that is being generated, for which to strip off the
+		 *   url prefix (such as stripping off "http://")
+		 * @return {String} The `anchorText`, with the prefix stripped.
+		 */
+		stripUrlPrefix : function( text ) {
+			return text.replace( this.urlPrefixRegex, '' );
+		},
+
+
+		/**
+		 * Strips any protocol-relative '//' from the anchor text.
+		 *
+		 * @private
+		 * @param {String} text The text of the anchor that is being generated, for which to strip off the
+		 *   protocol-relative prefix (such as stripping off "//")
+		 * @return {String} The `anchorText`, with the protocol-relative prefix stripped.
+		 */
+		stripProtocolRelativePrefix : function( text ) {
+			return text.replace( this.protocolRelativeRegex, '' );
+		},
+
+
+		/**
+		 * Removes any trailing slash from the given `anchorText`, in preparation for the text to be displayed.
+		 *
+		 * @private
+		 * @param {String} anchorText The text of the anchor that is being generated, for which to remove any trailing
+		 *   slash ('/') that may exist.
+		 * @return {String} The `anchorText`, with the trailing slash removed.
+		 */
+		removeTrailingSlash : function( anchorText ) {
+			if( anchorText.charAt( anchorText.length - 1 ) === '/' ) {
+				anchorText = anchorText.slice( 0, -1 );
+			}
+			return anchorText;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @abstract
+	 * @class Autolinker.matcher.Matcher
+	 *
+	 * An abstract class and interface for individual matchers to find matches in
+	 * an input string with linkified versions of them.
+	 *
+	 * Note that Matchers do not take HTML into account - they must be fed the text
+	 * nodes of any HTML string, which is handled by {@link Autolinker#parse}.
+	 */
+	Autolinker.matcher.Matcher = Autolinker.Util.extend( Object, {
+
+		/**
+		 * @cfg {Autolinker.AnchorTagBuilder} tagBuilder (required)
+		 *
+		 * Reference to the AnchorTagBuilder instance to use to generate HTML tags
+		 * for {@link Autolinker.match.Match Matches}.
+		 */
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Matcher
+		 *   instance, specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			if( !cfg.tagBuilder ) throw new Error( '`tagBuilder` cfg required' );
+
+			this.tagBuilder = cfg.tagBuilder;
+		},
+
+
+		/**
+		 * Parses the input `text` and returns the array of {@link Autolinker.match.Match Matches}
+		 * for the matcher.
+		 *
+		 * @abstract
+		 * @param {String} text The text to scan and replace matches in.
+		 * @return {Autolinker.match.Match[]}
+		 */
+		parseMatches : Autolinker.Util.abstractMethod
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.matcher.Email
+	 * @extends Autolinker.matcher.Matcher
+	 *
+	 * Matcher to find email matches in an input string.
+	 *
+	 * See this class's superclass ({@link Autolinker.matcher.Matcher}) for more details.
+	 */
+	Autolinker.matcher.Email = Autolinker.Util.extend( Autolinker.matcher.Matcher, {
+
+		/**
+		 * The regular expression to match email addresses. Example match:
+		 *
+		 *     person@place.com
+		 *
+		 * @private
+		 * @property {RegExp} matcherRegex
+		 */
+		matcherRegex : (function() {
+			var alphaNumericChars = Autolinker.RegexLib.alphaNumericCharsStr,
+			    emailRegex = new RegExp( '[' + alphaNumericChars + '\\-;:&=+$.,]+@' ),  // something@ for email addresses (a.k.a. local-part)
+				domainNameRegex = Autolinker.RegexLib.domainNameRegex,
+				tldRegex = Autolinker.RegexLib.tldRegex;  // match our known top level domains (TLDs)
+
+			return new RegExp( [
+				emailRegex.source,
+				domainNameRegex.source,
+				'\\.', tldRegex.source   // '.com', '.net', etc
+			].join( "" ), 'gi' );
+		} )(),
+
+
+		/**
+		 * @inheritdoc
+		 */
+		parseMatches : function( text ) {
+			var matcherRegex = this.matcherRegex,
+			    tagBuilder = this.tagBuilder,
+			    matches = [],
+			    match;
+
+			while( ( match = matcherRegex.exec( text ) ) !== null ) {
+				var matchedText = match[ 0 ];
+
+				matches.push( new Autolinker.match.Email( {
+					tagBuilder  : tagBuilder,
+					matchedText : matchedText,
+					offset      : match.index,
+					email       : matchedText
+				} ) );
+			}
+
+			return matches;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.matcher.Hashtag
+	 * @extends Autolinker.matcher.Matcher
+	 *
+	 * Matcher to find Hashtag matches in an input string.
+	 */
+	Autolinker.matcher.Hashtag = Autolinker.Util.extend( Autolinker.matcher.Matcher, {
+
+		/**
+		 * @cfg {String} serviceName
+		 *
+		 * The service to point hashtag matches to. See {@link Autolinker#hashtag}
+		 * for available values.
+		 */
+
+
+		/**
+		 * The regular expression to match Hashtags. Example match:
+		 *
+		 *     #asdf
+		 *
+		 * @private
+		 * @property {RegExp} matcherRegex
+		 */
+		matcherRegex : new RegExp( '#[_' + Autolinker.RegexLib.alphaNumericCharsStr + ']{1,139}', 'g' ),
+
+		/**
+		 * The regular expression to use to check the character before a username match to
+		 * make sure we didn't accidentally match an email address.
+		 *
+		 * For example, the string "asdf@asdf.com" should not match "@asdf" as a username.
+		 *
+		 * @private
+		 * @property {RegExp} nonWordCharRegex
+		 */
+		nonWordCharRegex : new RegExp( '[^' + Autolinker.RegexLib.alphaNumericCharsStr + ']' ),
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match instance,
+		 *   specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.matcher.Matcher.prototype.constructor.call( this, cfg );
+
+			this.serviceName = cfg.serviceName;
+		},
+
+
+		/**
+		 * @inheritdoc
+		 */
+		parseMatches : function( text ) {
+			var matcherRegex = this.matcherRegex,
+			    nonWordCharRegex = this.nonWordCharRegex,
+			    serviceName = this.serviceName,
+			    tagBuilder = this.tagBuilder,
+			    matches = [],
+			    match;
+
+			while( ( match = matcherRegex.exec( text ) ) !== null ) {
+				var offset = match.index,
+				    prevChar = text.charAt( offset - 1 );
+
+				// If we found the match at the beginning of the string, or we found the match
+				// and there is a whitespace char in front of it (meaning it is not a '#' char
+				// in the middle of a word), then it is a hashtag match.
+				if( offset === 0 || nonWordCharRegex.test( prevChar ) ) {
+					var matchedText = match[ 0 ],
+					    hashtag = match[ 0 ].slice( 1 );  // strip off the '#' character at the beginning
+
+					matches.push( new Autolinker.match.Hashtag( {
+						tagBuilder  : tagBuilder,
+						matchedText : matchedText,
+						offset      : offset,
+						serviceName : serviceName,
+						hashtag     : hashtag
+					} ) );
+				}
+			}
+
+			return matches;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.matcher.Phone
+	 * @extends Autolinker.matcher.Matcher
+	 *
+	 * Matcher to find Phone number matches in an input string.
+	 *
+	 * See this class's superclass ({@link Autolinker.matcher.Matcher}) for more
+	 * details.
+	 */
+	Autolinker.matcher.Phone = Autolinker.Util.extend( Autolinker.matcher.Matcher, {
+
+		/**
+		 * The regular expression to match Phone numbers. Example match:
+		 *
+		 *     (123) 456-7890
+		 *
+		 * This regular expression has the following capturing groups:
+		 *
+		 * 1. The prefixed '+' sign, if there is one.
+		 *
+		 * @private
+		 * @property {RegExp} matcherRegex
+		 */
+		matcherRegex : /(?:(\+)?\d{1,3}[-\040.])?\(?\d{3}\)?[-\040.]?\d{3}[-\040.]\d{4}/g,  // ex: (123) 456-7890, 123 456 7890, 123-456-7890, etc.
+
+		/**
+		 * @inheritdoc
+		 */
+		parseMatches : function( text ) {
+			var matcherRegex = this.matcherRegex,
+			    tagBuilder = this.tagBuilder,
+			    matches = [],
+			    match;
+
+			while( ( match = matcherRegex.exec( text ) ) !== null ) {
+				// Remove non-numeric values from phone number string
+				var matchedText = match[ 0 ],
+				    cleanNumber = matchedText.replace( /\D/g, '' ),  // strip out non-digit characters
+				    plusSign = !!match[ 1 ];  // match[ 1 ] is the prefixed plus sign, if there is one
+
+				matches.push( new Autolinker.match.Phone( {
+					tagBuilder  : tagBuilder,
+					matchedText : matchedText,
+					offset      : match.index,
+					number      : cleanNumber,
+					plusSign    : plusSign
+				} ) );
+			}
+
+			return matches;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.matcher.Twitter
+	 * @extends Autolinker.matcher.Matcher
+	 *
+	 * Matcher to find/replace username matches in an input string.
+	 */
+	Autolinker.matcher.Twitter = Autolinker.Util.extend( Autolinker.matcher.Matcher, {
+
+		/**
+		 * The regular expression to match username handles. Example match:
+		 *
+		 *     @asdf
+		 *
+		 * @private
+		 * @property {RegExp} matcherRegex
+		 */
+		matcherRegex : new RegExp( '@[_' + Autolinker.RegexLib.alphaNumericCharsStr + ']{1,20}', 'g' ),
+
+		/**
+		 * The regular expression to use to check the character before a username match to
+		 * make sure we didn't accidentally match an email address.
+		 *
+		 * For example, the string "asdf@asdf.com" should not match "@asdf" as a username.
+		 *
+		 * @private
+		 * @property {RegExp} nonWordCharRegex
+		 */
+		nonWordCharRegex : new RegExp( '[^' + Autolinker.RegexLib.alphaNumericCharsStr + ']' ),
+
+
+		/**
+		 * @inheritdoc
+		 */
+		parseMatches : function( text ) {
+			var matcherRegex = this.matcherRegex,
+			    nonWordCharRegex = this.nonWordCharRegex,
+			    tagBuilder = this.tagBuilder,
+			    matches = [],
+			    match;
+
+			while( ( match = matcherRegex.exec( text ) ) !== null ) {
+				var offset = match.index,
+				    prevChar = text.charAt( offset - 1 );
+
+				// If we found the match at the beginning of the string, or we found the match
+				// and there is a whitespace char in front of it (meaning it is not an email
+				// address), then it is a username match.
+				if( offset === 0 || nonWordCharRegex.test( prevChar ) ) {
+					var matchedText = match[ 0 ],
+					    twitterHandle = match[ 0 ].slice( 1 );  // strip off the '@' character at the beginning
+
+					matches.push( new Autolinker.match.Twitter( {
+						tagBuilder    : tagBuilder,
+						matchedText   : matchedText,
+						offset        : offset,
+						twitterHandle : twitterHandle
+					} ) );
+				}
+			}
+
+			return matches;
+		}
+
+	} );
+	/*global Autolinker */
+	/**
+	 * @class Autolinker.matcher.Url
+	 * @extends Autolinker.matcher.Matcher
+	 *
+	 * Matcher to find URL matches in an input string.
+	 *
+	 * See this class's superclass ({@link Autolinker.matcher.Matcher}) for more details.
+	 */
+	Autolinker.matcher.Url = Autolinker.Util.extend( Autolinker.matcher.Matcher, {
+
+		/**
+		 * @cfg {Boolean} stripPrefix (required)
+		 * @inheritdoc Autolinker#stripPrefix
+		 */
+
+
+		/**
+		 * @private
+		 * @property {RegExp} matcherRegex
+		 *
+		 * The regular expression to match URLs with an optional scheme, port
+		 * number, path, query string, and hash anchor.
+		 *
+		 * Example matches:
+		 *
+		 *     http://google.com
+		 *     www.google.com
+		 *     google.com/path/to/file?q1=1&q2=2#myAnchor
+		 *
+		 *
+		 * This regular expression will have the following capturing groups:
+		 *
+		 * 1.  Group that matches a scheme-prefixed URL (i.e. 'http://google.com').
+		 *     This is used to match scheme URLs with just a single word, such as
+		 *     'http://localhost', where we won't double check that the domain name
+		 *     has at least one dot ('.') in it.
+		 * 2.  Group that matches a 'www.' prefixed URL. This is only matched if the
+		 *     'www.' text was not prefixed by a scheme (i.e.: not prefixed by
+		 *     'http://', 'ftp:', etc.)
+		 * 3.  A protocol-relative ('//') match for the case of a 'www.' prefixed
+		 *     URL. Will be an empty string if it is not a protocol-relative match.
+		 *     We need to know the character before the '//' in order to determine
+		 *     if it is a valid match or the // was in a string we don't want to
+		 *     auto-link.
+		 * 4.  Group that matches a known TLD (top level domain), when a scheme
+		 *     or 'www.'-prefixed domain is not matched.
+		 * 5.  A protocol-relative ('//') match for the case of a known TLD prefixed
+		 *     URL. Will be an empty string if it is not a protocol-relative match.
+		 *     See #3 for more info.
+		 */
+		matcherRegex : (function() {
+			var schemeRegex = /(?:[A-Za-z][-.+A-Za-z0-9]*:(?![A-Za-z][-.+A-Za-z0-9]*:\/\/)(?!\d+\/?)(?:\/\/)?)/,  // match protocol, allow in format "http://" or "mailto:". However, do not match the first part of something like 'link:http://www.google.com' (i.e. don't match "link:"). Also, make sure we don't interpret 'google.com:8000' as if 'google.com' was a protocol here (i.e. ignore a trailing port number in this regex)
+			    wwwRegex = /(?:www\.)/,                  // starting with 'www.'
+			    domainNameRegex = Autolinker.RegexLib.domainNameRegex,
+			    tldRegex = Autolinker.RegexLib.tldRegex,  // match our known top level domains (TLDs)
+			    alphaNumericCharsStr = Autolinker.RegexLib.alphaNumericCharsStr,
+
+			    // Allow optional path, query string, and hash anchor, not ending in the following characters: "?!:,.;"
+			    // http://blog.codinghorror.com/the-problem-with-urls/
+			    urlSuffixRegex = new RegExp( '[' + alphaNumericCharsStr + '\\-+&@#/%=~_()|\'$*\\[\\]?!:,.;]*[' + alphaNumericCharsStr + '\\-+&@#/%=~_()|\'$*\\[\\]]' );
+
+			return new RegExp( [
+				'(?:', // parens to cover match for scheme (optional), and domain
+					'(',  // *** Capturing group $1, for a scheme-prefixed url (ex: http://google.com)
+						schemeRegex.source,
+						domainNameRegex.source,
+					')',
+
+					'|',
+
+					'(',  // *** Capturing group $2, for a 'www.' prefixed url (ex: www.google.com)
+						'(//)?',  // *** Capturing group $3 for an optional protocol-relative URL. Must be at the beginning of the string or start with a non-word character (handled later)
+						wwwRegex.source,
+						domainNameRegex.source,
+					')',
+
+					'|',
+
+					'(',  // *** Capturing group $4, for known a TLD url (ex: google.com)
+						'(//)?',  // *** Capturing group $5 for an optional protocol-relative URL. Must be at the beginning of the string or start with a non-word character (handled later)
+						domainNameRegex.source + '\\.',
+						tldRegex.source,
+					')',
+				')',
+
+				'(?:' + urlSuffixRegex.source + ')?'  // match for path, query string, and/or hash anchor - optional
+			].join( "" ), 'gi' );
+		} )(),
+
+
+		/**
+		 * A regular expression to use to check the character before a protocol-relative
+		 * URL match. We don't want to match a protocol-relative URL if it is part
+		 * of another word.
+		 *
+		 * For example, we want to match something like "Go to: //google.com",
+		 * but we don't want to match something like "abc//google.com"
+		 *
+		 * This regular expression is used to test the character before the '//'.
+		 *
+		 * @private
+		 * @type {RegExp} wordCharRegExp
+		 */
+		wordCharRegExp : /\w/,
+
+
+		/**
+		 * The regular expression to match opening parenthesis in a URL match.
+		 *
+		 * This is to determine if we have unbalanced parenthesis in the URL, and to
+		 * drop the final parenthesis that was matched if so.
+		 *
+		 * Ex: The text "(check out: wikipedia.com/something_(disambiguation))"
+		 * should only autolink the inner "wikipedia.com/something_(disambiguation)"
+		 * part, so if we find that we have unbalanced parenthesis, we will drop the
+		 * last one for the match.
+		 *
+		 * @private
+		 * @property {RegExp}
+		 */
+		openParensRe : /\(/g,
+
+		/**
+		 * The regular expression to match closing parenthesis in a URL match. See
+		 * {@link #openParensRe} for more information.
+		 *
+		 * @private
+		 * @property {RegExp}
+		 */
+		closeParensRe : /\)/g,
+
+
+		/**
+		 * @constructor
+		 * @param {Object} cfg The configuration properties for the Match instance,
+		 *   specified in an Object (map).
+		 */
+		constructor : function( cfg ) {
+			Autolinker.matcher.Matcher.prototype.constructor.call( this, cfg );
+
+			this.stripPrefix = cfg.stripPrefix;
+
+			if( this.stripPrefix == null ) throw new Error( '`stripPrefix` cfg required' );
+		},
+
+
+		/**
+		 * @inheritdoc
+		 */
+		parseMatches : function( text ) {
+			var matcherRegex = this.matcherRegex,
+			    stripPrefix = this.stripPrefix,
+			    tagBuilder = this.tagBuilder,
+			    matches = [],
+			    match;
+
+			while( ( match = matcherRegex.exec( text ) ) !== null ) {
+				var matchStr = match[ 0 ],
+				    schemeUrlMatch = match[ 1 ],
+				    wwwUrlMatch = match[ 2 ],
+				    wwwProtocolRelativeMatch = match[ 3 ],
+				    //tldUrlMatch = match[ 4 ],  -- not needed at the moment
+				    tldProtocolRelativeMatch = match[ 5 ],
+				    offset = match.index,
+				    protocolRelativeMatch = wwwProtocolRelativeMatch || tldProtocolRelativeMatch,
+					prevChar = text.charAt( offset - 1 );
+
+				if( !Autolinker.matcher.UrlMatchValidator.isValid( matchStr, schemeUrlMatch ) ) {
+					continue;
+				}
+
+				// If the match is preceded by an '@' character, then it is either
+				// an email address or a username. Skip these types of matches.
+				if( offset > 0 && prevChar === '@' ) {
+					continue;
+				}
+
+				// If it's a protocol-relative '//' match, but the character before the '//'
+				// was a word character (i.e. a letter/number), then we found the '//' in the
+				// middle of another word (such as "asdf//asdf.com"). In this case, skip the
+				// match.
+				if( offset > 0 && protocolRelativeMatch && this.wordCharRegExp.test( prevChar ) ) {
+					continue;
+				}
+
+				// Handle a closing parenthesis at the end of the match, and exclude
+				// it if there is not a matching open parenthesis in the match
+				// itself.
+				if( this.matchHasUnbalancedClosingParen( matchStr ) ) {
+					matchStr = matchStr.substr( 0, matchStr.length - 1 );  // remove the trailing ")"
+				} else {
+					// Handle an invalid character after the TLD
+					var pos = this.matchHasInvalidCharAfterTld( matchStr, schemeUrlMatch );
+					if( pos > -1 ) {
+						matchStr = matchStr.substr( 0, pos ); // remove the trailing invalid chars
+					}
+				}
+
+				var urlMatchType = schemeUrlMatch ? 'scheme' : ( wwwUrlMatch ? 'www' : 'tld' ),
+				    protocolUrlMatch = !!schemeUrlMatch;
+
+				matches.push( new Autolinker.match.Url( {
+					tagBuilder            : tagBuilder,
+					matchedText           : matchStr,
+					offset                : offset,
+					urlMatchType          : urlMatchType,
+					url                   : matchStr,
+					protocolUrlMatch      : protocolUrlMatch,
+					protocolRelativeMatch : !!protocolRelativeMatch,
+					stripPrefix           : stripPrefix
+				} ) );
+			}
+
+			return matches;
+		},
+
+
+		/**
+		 * Determines if a match found has an unmatched closing parenthesis. If so,
+		 * this parenthesis will be removed from the match itself, and appended
+		 * after the generated anchor tag.
+		 *
+		 * A match may have an extra closing parenthesis at the end of the match
+		 * because the regular expression must include parenthesis for URLs such as
+		 * "wikipedia.com/something_(disambiguation)", which should be auto-linked.
+		 *
+		 * However, an extra parenthesis *will* be included when the URL itself is
+		 * wrapped in parenthesis, such as in the case of "(wikipedia.com/something_(disambiguation))".
+		 * In this case, the last closing parenthesis should *not* be part of the
+		 * URL itself, and this method will return `true`.
+		 *
+		 * @private
+		 * @param {String} matchStr The full match string from the {@link #matcherRegex}.
+		 * @return {Boolean} `true` if there is an unbalanced closing parenthesis at
+		 *   the end of the `matchStr`, `false` otherwise.
+		 */
+		matchHasUnbalancedClosingParen : function( matchStr ) {
+			var lastChar = matchStr.charAt( matchStr.length - 1 );
+
+			if( lastChar === ')' ) {
+				var openParensMatch = matchStr.match( this.openParensRe ),
+				    closeParensMatch = matchStr.match( this.closeParensRe ),
+				    numOpenParens = ( openParensMatch && openParensMatch.length ) || 0,
+				    numCloseParens = ( closeParensMatch && closeParensMatch.length ) || 0;
+
+				if( numOpenParens < numCloseParens ) {
+					return true;
+				}
+			}
+
+			return false;
+		},
+
+
+		/**
+		 * Determine if there's an invalid character after the TLD in a URL. Valid
+		 * characters after TLD are ':/?#'. Exclude scheme matched URLs from this
+		 * check.
+		 *
+		 * @private
+		 * @param {String} urlMatch The matched URL, if there was one. Will be an
+		 *   empty string if the match is not a URL match.
+		 * @param {String} schemeUrlMatch The match URL string for a scheme
+		 *   match. Ex: 'http://yahoo.com'. This is used to match something like
+		 *   'http://localhost', where we won't double check that the domain name
+		 *   has at least one '.' in it.
+		 * @return {Number} the position where the invalid character was found. If
+		 *   no such character was found, returns -1
+		 */
+		matchHasInvalidCharAfterTld : function( urlMatch, schemeUrlMatch ) {
+			if( !urlMatch ) {
+				return -1;
+			}
+
+			var offset = 0;
+			if ( schemeUrlMatch ) {
+				offset = urlMatch.indexOf(':');
+				urlMatch = urlMatch.slice(offset);
+			}
+
+			var re = /^((.?\/\/)?[A-Za-z0-9\u00C0-\u017F\.\-]*[A-Za-z0-9\u00C0-\u017F\-]\.[A-Za-z]+)/;
+			var res = re.exec( urlMatch );
+			if ( res === null ) {
+				return -1;
+			}
+
+			offset += res[1].length;
+			urlMatch = urlMatch.slice(res[1].length);
+			if (/^[^.A-Za-z:\/?#]/.test(urlMatch)) {
+				return offset;
+			}
+
+			return -1;
+		}
+
+	} );
+	/*global Autolinker */
+	/*jshint scripturl:true */
+	/**
+	 * @private
+	 * @class Autolinker.matcher.UrlMatchValidator
+	 * @singleton
+	 *
+	 * Used by Autolinker to filter out false URL positives from the
+	 * {@link Autolinker.matcher.Url UrlMatcher}.
+	 *
+	 * Due to the limitations of regular expressions (including the missing feature
+	 * of look-behinds in JS regular expressions), we cannot always determine the
+	 * validity of a given match. This class applies a bit of additional logic to
+	 * filter out any false positives that have been matched by the
+	 * {@link Autolinker.matcher.Url UrlMatcher}.
+	 */
+	Autolinker.matcher.UrlMatchValidator = {
+
+		/**
+		 * Regex to test for a full protocol, with the two trailing slashes. Ex: 'http://'
+		 *
+		 * @private
+		 * @property {RegExp} hasFullProtocolRegex
+		 */
+		hasFullProtocolRegex : /^[A-Za-z][-.+A-Za-z0-9]*:\/\//,
+
+		/**
+		 * Regex to find the URI scheme, such as 'mailto:'.
+		 *
+		 * This is used to filter out 'javascript:' and 'vbscript:' schemes.
+		 *
+		 * @private
+		 * @property {RegExp} uriSchemeRegex
+		 */
+		uriSchemeRegex : /^[A-Za-z][-.+A-Za-z0-9]*:/,
+
+		/**
+		 * Regex to determine if at least one word char exists after the protocol (i.e. after the ':')
+		 *
+		 * @private
+		 * @property {RegExp} hasWordCharAfterProtocolRegex
+		 */
+		hasWordCharAfterProtocolRegex : /:[^\s]*?[A-Za-z\u00C0-\u017F]/,
+
+
+		/**
+		 * Determines if a given URL match found by the {@link Autolinker.matcher.Url UrlMatcher}
+		 * is valid. Will return `false` for:
+		 *
+		 * 1) URL matches which do not have at least have one period ('.') in the
+		 *    domain name (effectively skipping over matches like "abc:def").
+		 *    However, URL matches with a protocol will be allowed (ex: 'http://localhost')
+		 * 2) URL matches which do not have at least one word character in the
+		 *    domain name (effectively skipping over matches like "git:1.0").
+		 * 3) A protocol-relative url match (a URL beginning with '//') whose
+		 *    previous character is a word character (effectively skipping over
+		 *    strings like "abc//google.com")
+		 *
+		 * Otherwise, returns `true`.
+		 *
+		 * @param {String} urlMatch The matched URL, if there was one. Will be an
+		 *   empty string if the match is not a URL match.
+		 * @param {String} protocolUrlMatch The match URL string for a protocol
+		 *   match. Ex: 'http://yahoo.com'. This is used to match something like
+		 *   'http://localhost', where we won't double check that the domain name
+		 *   has at least one '.' in it.
+		 * @return {Boolean} `true` if the match given is valid and should be
+		 *   processed, or `false` if the match is invalid and/or should just not be
+		 *   processed.
+		 */
+		isValid : function( urlMatch, protocolUrlMatch ) {
+			if(
+				( protocolUrlMatch && !this.isValidUriScheme( protocolUrlMatch ) ) ||
+				this.urlMatchDoesNotHaveProtocolOrDot( urlMatch, protocolUrlMatch ) ||    // At least one period ('.') must exist in the URL match for us to consider it an actual URL, *unless* it was a full protocol match (like 'http://localhost')
+				this.urlMatchDoesNotHaveAtLeastOneWordChar( urlMatch, protocolUrlMatch )  // At least one letter character must exist in the domain name after a protocol match. Ex: skip over something like "git:1.0"
+			) {
+				return false;
+			}
+
+			return true;
+		},
+
+
+		/**
+		 * Determines if the URI scheme is a valid scheme to be autolinked. Returns
+		 * `false` if the scheme is 'javascript:' or 'vbscript:'
+		 *
+		 * @private
+		 * @param {String} uriSchemeMatch The match URL string for a full URI scheme
+		 *   match. Ex: 'http://yahoo.com' or 'mailto:a@a.com'.
+		 * @return {Boolean} `true` if the scheme is a valid one, `false` otherwise.
+		 */
+		isValidUriScheme : function( uriSchemeMatch ) {
+			var uriScheme = uriSchemeMatch.match( this.uriSchemeRegex )[ 0 ].toLowerCase();
+
+			return ( uriScheme !== 'javascript:' && uriScheme !== 'vbscript:' );
+		},
+
+
+		/**
+		 * Determines if a URL match does not have either:
+		 *
+		 * a) a full protocol (i.e. 'http://'), or
+		 * b) at least one dot ('.') in the domain name (for a non-full-protocol
+		 *    match).
+		 *
+		 * Either situation is considered an invalid URL (ex: 'git:d' does not have
+		 * either the '://' part, or at least one dot in the domain name. If the
+		 * match was 'git:abc.com', we would consider this valid.)
+		 *
+		 * @private
+		 * @param {String} urlMatch The matched URL, if there was one. Will be an
+		 *   empty string if the match is not a URL match.
+		 * @param {String} protocolUrlMatch The match URL string for a protocol
+		 *   match. Ex: 'http://yahoo.com'. This is used to match something like
+		 *   'http://localhost', where we won't double check that the domain name
+		 *   has at least one '.' in it.
+		 * @return {Boolean} `true` if the URL match does not have a full protocol,
+		 *   or at least one dot ('.') in a non-full-protocol match.
+		 */
+		urlMatchDoesNotHaveProtocolOrDot : function( urlMatch, protocolUrlMatch ) {
+			return ( !!urlMatch && ( !protocolUrlMatch || !this.hasFullProtocolRegex.test( protocolUrlMatch ) ) && urlMatch.indexOf( '.' ) === -1 );
+		},
+
+
+		/**
+		 * Determines if a URL match does not have at least one word character after
+		 * the protocol (i.e. in the domain name).
+		 *
+		 * At least one letter character must exist in the domain name after a
+		 * protocol match. Ex: skip over something like "git:1.0"
+		 *
+		 * @private
+		 * @param {String} urlMatch The matched URL, if there was one. Will be an
+		 *   empty string if the match is not a URL match.
+		 * @param {String} protocolUrlMatch The match URL string for a protocol
+		 *   match. Ex: 'http://yahoo.com'. This is used to know whether or not we
+		 *   have a protocol in the URL string, in order to check for a word
+		 *   character after the protocol separator (':').
+		 * @return {Boolean} `true` if the URL match does not have at least one word
+		 *   character in it after the protocol, `false` otherwise.
+		 */
+		urlMatchDoesNotHaveAtLeastOneWordChar : function( urlMatch, protocolUrlMatch ) {
+			if( urlMatch && protocolUrlMatch ) {
+				return !this.hasWordCharAfterProtocolRegex.test( urlMatch );
+			} else {
+				return false;
+			}
+		}
+
+	};
+	/*global Autolinker */
+	/**
+	 * A truncation feature where the ellipsis will be placed at the end of the URL.
+	 *
+	 * @param {String} anchorText
+	 * @param {Number} truncateLen The maximum length of the truncated output URL string.
+	 * @param {String} ellipsisChars The characters to place within the url, e.g. "..".
+	 * @return {String} The truncated URL.
+	 */
+	Autolinker.truncate.TruncateEnd = function(anchorText, truncateLen, ellipsisChars){
+		return Autolinker.Util.ellipsis( anchorText, truncateLen, ellipsisChars );
+	};
+
+	/*global Autolinker */
+	/**
+	 * Date: 2015-10-05
+	 * Author: Kasper Søfren <soefritz@gmail.com> (https://github.com/kafoso)
+	 *
+	 * A truncation feature, where the ellipsis will be placed in the dead-center of the URL.
+	 *
+	 * @param {String} url             A URL.
+	 * @param {Number} truncateLen     The maximum length of the truncated output URL string.
+	 * @param {String} ellipsisChars   The characters to place within the url, e.g. "..".
+	 * @return {String} The truncated URL.
+	 */
+	Autolinker.truncate.TruncateMiddle = function(url, truncateLen, ellipsisChars){
+	  if (url.length <= truncateLen) {
+	    return url;
+	  }
+	  var availableLength = truncateLen - ellipsisChars.length;
+	  var end = "";
+	  if (availableLength > 0) {
+	    end = url.substr((-1)*Math.floor(availableLength/2));
+	  }
+	  return (url.substr(0, Math.ceil(availableLength/2)) + ellipsisChars + end).substr(0, truncateLen);
+	};
+
+	/*global Autolinker */
+	/**
+	 * Date: 2015-10-05
+	 * Author: Kasper Søfren <soefritz@gmail.com> (https://github.com/kafoso)
+	 *
+	 * A truncation feature, where the ellipsis will be placed at a section within
+	 * the URL making it still somewhat human readable.
+	 *
+	 * @param {String} url						 A URL.
+	 * @param {Number} truncateLen		 The maximum length of the truncated output URL string.
+	 * @param {String} ellipsisChars	 The characters to place within the url, e.g. "..".
+	 * @return {String} The truncated URL.
+	 */
+	Autolinker.truncate.TruncateSmart = function(url, truncateLen, ellipsisChars){
+		var parse_url = function(url){ // Functionality inspired by PHP function of same name
+			var urlObj = {};
+			var urlSub = url;
+			var match = urlSub.match(/^([a-z]+):\/\//i);
+			if (match) {
+				urlObj.scheme = match[1];
+				urlSub = urlSub.substr(match[0].length);
+			}
+			match = urlSub.match(/^(.*?)(?=(\?|#|\/|$))/i);
+			if (match) {
+				urlObj.host = match[1];
+				urlSub = urlSub.substr(match[0].length);
+			}
+			match = urlSub.match(/^\/(.*?)(?=(\?|#|$))/i);
+			if (match) {
+				urlObj.path = match[1];
+				urlSub = urlSub.substr(match[0].length);
+			}
+			match = urlSub.match(/^\?(.*?)(?=(#|$))/i);
+			if (match) {
+				urlObj.query = match[1];
+				urlSub = urlSub.substr(match[0].length);
+			}
+			match = urlSub.match(/^#(.*?)$/i);
+			if (match) {
+				urlObj.fragment = match[1];
+				//urlSub = urlSub.substr(match[0].length);  -- not used. Uncomment if adding another block.
+			}
+			return urlObj;
+		};
+
+		var buildUrl = function(urlObj){
+			var url = "";
+			if (urlObj.scheme && urlObj.host) {
+				url += urlObj.scheme + "://";
+			}
+			if (urlObj.host) {
+				url += urlObj.host;
+			}
+			if (urlObj.path) {
+				url += "/" + urlObj.path;
+			}
+			if (urlObj.query) {
+				url += "?" + urlObj.query;
+			}
+			if (urlObj.fragment) {
+				url += "#" + urlObj.fragment;
+			}
+			return url;
+		};
+
+		var buildSegment = function(segment, remainingAvailableLength){
+			var remainingAvailableLengthHalf = remainingAvailableLength/ 2,
+					startOffset = Math.ceil(remainingAvailableLengthHalf),
+					endOffset = (-1)*Math.floor(remainingAvailableLengthHalf),
+					end = "";
+			if (endOffset < 0) {
+				end = segment.substr(endOffset);
+			}
+			return segment.substr(0, startOffset) + ellipsisChars + end;
+		};
+		if (url.length <= truncateLen) {
+			return url;
+		}
+		var availableLength = truncateLen - ellipsisChars.length;
+		var urlObj = parse_url(url);
+		// Clean up the URL
+		if (urlObj.query) {
+			var matchQuery = urlObj.query.match(/^(.*?)(?=(\?|\#))(.*?)$/i);
+			if (matchQuery) {
+				// Malformed URL; two or more "?". Removed any content behind the 2nd.
+				urlObj.query = urlObj.query.substr(0, matchQuery[1].length);
+				url = buildUrl(urlObj);
+			}
+		}
+		if (url.length <= truncateLen) {
+			return url;
+		}
+		if (urlObj.host) {
+			urlObj.host = urlObj.host.replace(/^www\./, "");
+			url = buildUrl(urlObj);
+		}
+		if (url.length <= truncateLen) {
+			return url;
+		}
+		// Process and build the URL
+		var str = "";
+		if (urlObj.host) {
+			str += urlObj.host;
+		}
+		if (str.length >= availableLength) {
+			if (urlObj.host.length == truncateLen) {
+				return (urlObj.host.substr(0, (truncateLen - ellipsisChars.length)) + ellipsisChars).substr(0, truncateLen);
+			}
+			return buildSegment(str, availableLength).substr(0, truncateLen);
+		}
+		var pathAndQuery = "";
+		if (urlObj.path) {
+			pathAndQuery += "/" + urlObj.path;
+		}
+		if (urlObj.query) {
+			pathAndQuery += "?" + urlObj.query;
+		}
+		if (pathAndQuery) {
+			if ((str+pathAndQuery).length >= availableLength) {
+				if ((str+pathAndQuery).length == truncateLen) {
+					return (str + pathAndQuery).substr(0, truncateLen);
+				}
+				var remainingAvailableLength = availableLength - str.length;
+				return (str + buildSegment(pathAndQuery, remainingAvailableLength)).substr(0, truncateLen);
+			} else {
+				str += pathAndQuery;
+			}
+		}
+		if (urlObj.fragment) {
+			var fragment = "#"+urlObj.fragment;
+			if ((str+fragment).length >= availableLength) {
+				if ((str+fragment).length == truncateLen) {
+					return (str + fragment).substr(0, truncateLen);
+				}
+				var remainingAvailableLength2 = availableLength - str.length;
+				return (str + buildSegment(fragment, remainingAvailableLength2)).substr(0, truncateLen);
+			} else {
+				str += fragment;
+			}
+		}
+		if (urlObj.scheme && urlObj.host) {
+			var scheme = urlObj.scheme + "://";
+			if ((str+scheme).length < availableLength) {
+				return (scheme + str).substr(0, truncateLen);
+			}
+		}
+		if (str.length <= truncateLen) {
+			return str;
+		}
+		var end = "";
+		if (availableLength > 0) {
+			end = str.substr((-1)*Math.floor(availableLength/2));
+		}
+		return (str.substr(0, Math.ceil(availableLength/2)) + ellipsisChars + end).substr(0, truncateLen);
+	};
+
+	return Autolinker;
+	}));
+
+
+/***/ },
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -49882,7 +53292,7 @@
 
 	var _reactRedux = __webpack_require__(160);
 
-	var _classnames = __webpack_require__(305);
+	var _classnames = __webpack_require__(306);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -49890,11 +53300,11 @@
 
 	var _popover2 = _interopRequireDefault(_popover);
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
-	var _emoticons = __webpack_require__(324);
+	var _emoticons = __webpack_require__(308);
 
-	var _emoticon = __webpack_require__(307);
+	var _emoticon = __webpack_require__(309);
 
 	var _emoticon2 = _interopRequireDefault(_emoticon);
 
@@ -50026,7 +53436,7 @@
 	exports.default = EmoticonPopover;
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -50080,7 +53490,7 @@
 
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -50155,16 +53565,30 @@
 	}
 
 /***/ },
-/* 307 */
+/* 308 */
+/***/ function(module, exports) {
+
+	"use strict";Object.defineProperty(exports,"__esModule",{value:true});var EmoticonGroupDetails=exports.EmoticonGroupDetails={"people":{"bowtie":{"name":"bowtie","alternate-name":"classy, bow, face, formal, fashion, suit, magic, circus"},"smile":{"name":"smile","alternate-name":"happy, cheerful, face, joy, funny, haha, laugh, like"},//"simple_smile": {
+	//    "name": "simple_smile",
+	//    "alternate-name": "smile, guy, happy, cheerful, smiling"
+	//},
+	"laughing":{"name":"laughing","alternate-name":"lol, funny, happy, joy, satisfied, haha, face, glad"},"blush":{"name":"blush","alternate-name":"face, smile, happy, flushed, crush, embarrassed, shy, joy"},"smiley":{"name":"smiley","alternate-name":"funny, face, happy, joy, haha"},"relaxed":{"name":"relaxed","alternate-name":"face, blush, massage, happiness"},"smirk":{"name":"smirk","alternate-name":"face, smile, mean, prank, smug, sarcasm"},"heart_eyes":{"name":"heart_eyes","alternate-name":"heart, love, face, like, affection, valentines, infatuation, crush"},"kissing_heart":{"name":"kissing_heart","alternate-name":"heart, kiss, face, love, like, affection, valentines, infatuation"},"kissing_closed_eyes":{"name":"kissing_closed_eyes","alternate-name":"face, love, like, affection, valentines, infatuation"},"flushed":{"name":"flushed","alternate-name":"flustered, embarassed, face, blush, shy, flattered"},"relieved":{"name":"relieved","alternate-name":"face, relaxed, phew, massage, happiness"},"satisfied":{"name":"satisfied","alternate-name":"contented"},"grin":{"name":"grin","alternate-name":"happy, smile, face, joy"},"wink":{"name":"wink","alternate-name":"flirt, face, happy, mischievous, secret"},"stuck_out_tongue_winking_eye":{"name":"stuck_out_tongue_winking_eye","alternate-name":"face, prank, childish, playful, mischievous, smile"},"stuck_out_tongue_closed_eyes":{"name":"stuck_out_tongue_closed_eyes","alternate-name":"face, prank, playful, mischievous, smile"},"grinning":{"name":"grinning","alternate-name":"smiling, face, smile, happy, joy"},"kissing":{"name":"kissing","alternate-name":"love, like, face, 3, valentines, infatuation"},"kissing_smiling_eyes":{"name":"kissing_smiling_eyes","alternate-name":"smooch, face, affection, valentines, infatuation"},"stuck_out_tongue":{"name":"stuck_out_tongue","alternate-name":"face, prank, childish, playful, mischievous, smile"},"sleeping":{"name":"sleeping","alternate-name":"asleep, face, tired, sleepy, night, zzz"},"worried":{"name":"worried","alternate-name":"frustrated, scared, face, concern, nervous"},"frowning":{"name":"frowning","alternate-name":"face, aw, what"},"anguished":{"name":"anguished","alternate-name":"face, stunned, nervous"},"open_mouth":{"name":"open_mouth","alternate-name":"face, surprise, impressed, wow"},"grimacing":{"name":"grimacing","alternate-name":"face, grimace, teeth"},"confused":{"name":"confused","alternate-name":"baffled, puzzled, face, indifference, huh, weird, hmmm"},"hushed":{"name":"hushed","alternate-name":"face, woo, shh, conceal, hide"},"expressionless":{"name":"expressionless","alternate-name":"deadpan, face, indifferent, -_-, meh"},"unamused":{"name":"unamused","alternate-name":"sarcasm, indifference, bored, straight face, serious"},"sweat_smile":{"name":"sweat_smile","alternate-name":"happy, relief, face, hot, laugh"},"sweat":{"name":"sweat","alternate-name":"worried, stressed, face, hot, sad, tired, exercise"},"disappointed_relieved":{"name":"disappointed_relieved","alternate-name":"face, phew, sweat, nervous"},"weary":{"name":"weary","alternate-name":"tired, face, sleepy, sad, frustrated, upset"},"pensive":{"name":"pensive","alternate-name":"face, sad, depressed, okay, upset"},"disappointed":{"name":"disappointed","alternate-name":"sad, lonely, face, upset, depressed"},"confounded":{"name":"confounded","alternate-name":"face, confused, sick, unwell, oops"},"fearful":{"name":"fearful","alternate-name":"scared, afraid, nervous, scared, face, terrified, oops, huh"},"cold_sweat":{"name":"cold_sweat","alternate-name":"scared, frightened, nervous, scared, face"},"persevere":{"name":"persevere","alternate-name":"face, sick, no, upset, oops"},"cry":{"name":"cry","alternate-name":"sad, unhappy, tear, face, tears, depressed, upset"},"sob":{"name":"sob","alternate-name":"sad, unhappy, face, cry, tears, upset, depressed"},"joy":{"name":"joy","alternate-name":"happy, happytears, face, cry, tears, weep, haha"},"astonished":{"name":"astonished","alternate-name":"face, xox, surprised, poisoned"},"scream":{"name":"scream","alternate-name":"halloween, scary, scared, terrified, face, munch, omg"},"neckbeard":{"name":"neckbeard","alternate-name":"nerd, geek, nerdy, face, custom_"},"tired_face":{"name":"tired_face","alternate-name":"sick, whine, upset, frustrated"},"angry":{"name":"angry","alternate-name":"mad, face, annoyed, frustrated"},"rage":{"name":"rage","alternate-name":"furious, angry, mad, hate, despise"},"triumph":{"name":"triumph","alternate-name":"face, gas, phew, proud, pride"},"sleepy":{"name":"sleepy","alternate-name":"tired, zzz, face, rest, nap"},"yum":{"name":"yum","alternate-name":"delicious, happy, joy, tongue, smile, face, silly, yummy"},"mask":{"name":"mask","alternate-name":"face, sick, ill, disease"},"sunglasses":{"name":"sunglasses","alternate-name":"shades, face, cool, smile, summer, beach"},"dizzy_face":{"name":"dizzy_face","alternate-name":"ko, spent, unconscious, xox"},"imp":{"name":"imp","alternate-name":"devil, angry, horns"},"smiling_imp":{"name":"smiling_imp","alternate-name":"devil, horns"},"neutral_face":{"name":"neutral_face","alternate-name":"indifference, meh"},"no_mouth":{"name":"no_mouth","alternate-name":"face, hellokitty, silent"},"innocent":{"name":"innocent","alternate-name":"angel, face, heaven, halo"},"alien":{"name":"alien","alternate-name":"extraterrestrial, UFO, paul, weird, outer_space"},"yellow_heart":{"name":"yellow_heart","alternate-name":"heart, love, like, affection, valentines"},"blue_heart":{"name":"blue_heart","alternate-name":"heart, love, like, affection, valentines"},"purple_heart":{"name":"purple_heart","alternate-name":"heart, love, like, affection, valentines"},"heart":{"name":"heart","alternate-name":"heart, love, like, valentines"},"green_heart":{"name":"green_heart","alternate-name":"heart, love, like, affection, valentines"},"broken_heart":{"name":"broken_heart","alternate-name":"heart, heartbreak, sad, sorry, break"},"heartbeat":{"name":"heartbeat","alternate-name":"heart, love, like, affection, valentines, pink"},"heartpulse":{"name":"heartpulse","alternate-name":"heart, like, love, affection, valentines, pink"},"two_hearts":{"name":"two_hearts","alternate-name":"heart, love, like, affection, valentines"},"revolving_hearts":{"name":"revolving_hearts","alternate-name":"heart, love, like, affection, valentines"},"cupid":{"name":"cupid","alternate-name":"love, like, heart, affection, valentines"},"sparkling_heart":{"name":"sparkling_heart","alternate-name":"heart, love, like, affection, valentines"},"sparkles":{"name":"sparkles","alternate-name":"stars, shine, shiny, cool, awesome, good, magic"},"star":{"name":"star","alternate-name":"night, yellow"},"star2":{"name":"star2","alternate-name":"night, sparkle, awesome, good, magic"},"dizzy":{"name":"dizzy","alternate-name":"star, sparkle, shoot, magic"},"boom":{"name":"boom","alternate-name":"explosion, bomb, explode, collision, blown"},"collision":{"name":"collision","alternate-name":"accident, fight, boom"},"anger":{"name":"anger","alternate-name":"angry, mad"},"exclamation":{"name":"exclamation","alternate-name":"heavy_exclamation_mark, danger, surprise, punctuation, wow, warning"},"question":{"name":"question","alternate-name":"doubt, confused"},"grey_exclamation":{"name":"grey_exclamation","alternate-name":"surprise, punctuation, gray, wow, warning"},"grey_question":{"name":"grey_question","alternate-name":"doubts, gray, huh"},"zzz":{"name":"zzz","alternate-name":"sleep, bored, sleepy, tired"},"dash":{"name":"dash","alternate-name":"wind, air, fast, shoo, fart, smoke, puff"},"sweat_drops":{"name":"sweat_drops","alternate-name":"water, drip, oops"},"notes":{"name":"notes","alternate-name":"music, score"},"musical_note":{"name":"musical_note","alternate-name":"music, score, tone, sound"},"fire":{"name":"fire","alternate-name":"hot, cook, flame"},"hankey":{"name":"hankey","alternate-name":"poop, shitface, fail, turd"},"poop":{"name":"poop","alternate-name":"shit, turd"},"shit":{"name":"shit","alternate-name":"poop"},"+1":{"name":"+1","alternate-name":"thumbsup, yes, awesome, good, agree, accept, cool, hand, like"},"thumbsup":{"name":"thumbsup","alternate-name":"like"},"-1":{"name":"-1","alternate-name":"thumbsdown, no, dislike, hand"},"thumbsdown":{"name":"thumbsdown","alternate-name":"dislike"},"ok_hand":{"name":"ok_hand","alternate-name":"fingers, limbs, perfect"},"punch":{"name":"punch","alternate-name":"pound"},"facepunch":{"name":"facepunch","alternate-name":"angry, violence, fist, hit, attack, hand"},"fist":{"name":"fist","alternate-name":"fingers, hand, grasp"},"v":{"name":"v","alternate-name":"peace, deuces, fingers, ohyeah, hand, victory, two"},"wave":{"name":"wave","alternate-name":"hi, hello, bye, hands, gesture, goodbye, solong, farewell, palm"},"hand":{"name":"hand","alternate-name":"stop, fingers, highfive, palm, ban, raised_hand"},"raised_hand":{"name":"raised_hand","alternate-name":"stop"},"open_hands":{"name":"open_hands","alternate-name":"fingers, butterfly"},"point_up":{"name":"point_up","alternate-name":"hand, fingers, direction"},"point_down":{"name":"point_down","alternate-name":"fingers, hand, direction"},"point_left":{"name":"point_left","alternate-name":"direction, fingers, hand"},"point_right":{"name":"point_right","alternate-name":"fingers, hand, direction"},"raised_hands":{"name":"raised_hands","alternate-name":"gesture, hooray, yea, celebration"},"pray":{"name":"pray","alternate-name":"please, hope, wish, namaste, highfive"},"point_up_2":{"name":"point_up_2","alternate-name":"fingers, hand, direction"},"clap":{"name":"clap","alternate-name":"hands, praise, applause, congrats, yay"},"muscle":{"name":"muscle","alternate-name":"arm, flex, hand, summer, strong"},"metal":{"name":"metal","alternate-name":"fingers, rocknroll, concert, band, custom_"},"fu":{"name":"fu","alternate-name":"fuck, finger, dislike, thumbsdown, disapprove, no, custom_"},"runner":{"name":"runner","alternate-name":"sport, man, walking, exercise, race, running"},"running":{"name":"running","alternate-name":"sport"},"couple":{"name":"couple","alternate-name":"pair, people, human, love, date, dating, like, affection, valentines, marriage"},"family":{"name":"family","alternate-name":"home, parents, child, mom, dad, father, mother, people, human"},"two_men_holding_hands":{"name":"two_men_holding_hands","alternate-name":"gay, pair, couple, love, like, bromance, friendship, people, human"},"two_women_holding_hands":{"name":"two_women_holding_hands","alternate-name":"gay, pair, friendship, couple, love, like, female, people, human, lesbian"},"dancer":{"name":"dancer","alternate-name":"party, female, girl, woman, fun"},"dancers":{"name":"dancers","alternate-name":"party, female, bunny, women, girls"},"ok_woman":{"name":"ok_woman","alternate-name":"women, girl, female, pink, human"},"no_good":{"name":"no_good","alternate-name":"female, girl, woman, nope"},"information_desk_person":{"name":"information_desk_person","alternate-name":"female, girl, woman, human"},"raising_hand":{"name":"raising_hand","alternate-name":"female, girl, woman"},"bride_with_veil":{"name":"bride_with_veil","alternate-name":"couple, marriage, wedding"},"person_with_pouting_face":{"name":"person_with_pouting_face","alternate-name":"female, girl, woman"},"person_frowning":{"name":"person_frowning","alternate-name":"female, girl, woman, sad, depressed, discouraged, unhappy"},"bow":{"name":"bow","alternate-name":"man, male, boy"},"couplekiss":{"name":"couplekiss","alternate-name":"pair, valentines, love, like, dating, marriage"},"couple_with_heart":{"name":"couple_with_heart","alternate-name":"heart, pair, love, like, affection, human, dating, valentines, marriage"},"massage":{"name":"massage","alternate-name":"female, girl, woman, head"},"haircut":{"name":"haircut","alternate-name":"female, girl, woman"},"nail_care":{"name":"nail_care","alternate-name":"manicure, beauty, finger, fashion"},"boy":{"name":"boy","alternate-name":"man, male, guy, teenager"},"girl":{"name":"girl","alternate-name":"female, woman, teenager"},"woman":{"name":"woman","alternate-name":"female, girls, lady"},"man":{"name":"man","alternate-name":"guy, mustache, father, dad, classy, sir, moustache"},"baby":{"name":"baby","alternate-name":"infant, child, boy, girl, toddler"},"older_woman":{"name":"older_woman","alternate-name":"grandma, granny, female, women, girl, lady"},"older_man":{"name":"older_man","alternate-name":"grandpa, grandad, human, male, men"},"person_with_blond_hair":{"name":"person_with_blond_hair","alternate-name":"man, male, boy, blonde, guy"},"man_with_gua_pi_mao":{"name":"man_with_gua_pi_mao","alternate-name":"male, boy"},"man_with_turban":{"name":"man_with_turban","alternate-name":"male, indian, hinduism, arabs"},"construction_worker":{"name":"construction_worker","alternate-name":"male, human, wip, guy, build"},"cop":{"name":"cop","alternate-name":"police, policeman, man, law, legal, enforcement, arrest, 911"},"angel":{"name":"angel","alternate-name":"heaven, wings, halo"},"princess":{"name":"princess","alternate-name":"girl, woman, female, blond, crown, royal, queen"},"smiley_cat":{"name":"smiley_cat","alternate-name":"animal, happy, cats"},"smile_cat":{"name":"smile_cat","alternate-name":"animal, happy, cats"},"heart_eyes_cat":{"name":"heart_eyes_cat","alternate-name":"heart, animal, love, like, affection, cats, valentines"},"kissing_cat":{"name":"kissing_cat","alternate-name":"animal, love, cats"},"smirk_cat":{"name":"smirk_cat","alternate-name":"animal, cats"},"scream_cat":{"name":"scream_cat","alternate-name":"animal, cats, munch, scared"},"crying_cat_face":{"name":"crying_cat_face","alternate-name":"animal, sad, tears, weep, cats, upset"},"joy_cat":{"name":"joy_cat","alternate-name":"animal, happy, cats, haha, tears"},"pouting_cat":{"name":"pouting_cat","alternate-name":"animal, sad, unhappy, angry, cats"},"japanese_ogre":{"name":"japanese_ogre","alternate-name":"namahage, monster, red, mask, halloween, scary, creepy, devil, demon"},"japanese_goblin":{"name":"japanese_goblin","alternate-name":"tengu, red, evil, mask, monster, scary, creepy"},"see_no_evil":{"name":"see_no_evil","alternate-name":"monkey, animal, nature, haha"},"hear_no_evil":{"name":"hear_no_evil","alternate-name":"animal, monkey, nature"},"speak_no_evil":{"name":"speak_no_evil","alternate-name":"monkey, animal, nature, omg"},"guardsman":{"name":"guardsman","alternate-name":"uk, gb, british, male, guy, royal"},"skull":{"name":"skull","alternate-name":"scary, halloween, dead, skeleton, creepy"},"feet":{"name":"feet","alternate-name":"animal, tracking, footprints, dog, cat, pet, paw_prints"},"lips":{"name":"lips","alternate-name":"mouth, kiss"},"kiss":{"name":"kiss","alternate-name":"face, lips, love, like, affection, valentines"},"droplet":{"name":"droplet","alternate-name":"water, drip, faucet, spring"},"ear":{"name":"ear","alternate-name":"face, hear, sound, listen"},"eyes":{"name":"eyes","alternate-name":"eye-rolling, look, watch, stalk, peek, see"},"nose":{"name":"nose","alternate-name":"smell, sniff"},"tongue":{"name":"tongue","alternate-name":"mouth, playful"},"love_letter":{"name":"love_letter","alternate-name":"email, like, affection, envelope, valentines"},"bust_in_silhouette":{"name":"bust_in_silhouette","alternate-name":"user, person, human"},"busts_in_silhouette":{"name":"busts_in_silhouette","alternate-name":"user, person, human, group, team"},"speech_balloon":{"name":"speech_balloon","alternate-name":"bubble, words, message, talk, chatting"},"thought_balloon":{"name":"thought_balloon","alternate-name":"bubble, cloud, speech, thinking"},"feelsgood":{"name":"feelsgood","alternate-name":"doom, oldschool"},"finnadie":{"name":"finnadie","alternate-name":"doom, oldschool"},"goberserk":{"name":"goberserk","alternate-name":"doom, rage, bloody, hurt"},"godmode":{"name":"godmode","alternate-name":"doom, oldschool"},"hurtrealbad":{"name":"hurtrealbad","alternate-name":"mad, injured, doom, oldschool, custom_"},"rage1":{"name":"rage1","alternate-name":"angry, mad, hate, despise"},"rage2":{"name":"rage2","alternate-name":"angry, mad, hate, despise"},"rage3":{"name":"rage3","alternate-name":"angry, mad, hate, despise"},"rage4":{"name":"rage4","alternate-name":"angry, mad, hate, despise"},"suspect":{"name":"suspect","alternate-name":"mad, custom_"},"trollface":{"name":"trollface","alternate-name":"internet, meme, custom_"}},"nature":{"sunny":{"name":"sunny","alternate-name":"weather, sun, nature, brightness, summer, beach, spring"},"umbrella":{"name":"umbrella","alternate-name":"water, rain, rainy, weather, spring"},"cloud":{"name":"cloud","alternate-name":"weather, sky"},"snowflake":{"name":"snowflake","alternate-name":"winter, season, cold, weather, christmas, xmas"},"snowman":{"name":"snowman","alternate-name":"winter, season, cold, weather, christmas, xmas, frozen"},"zap":{"name":"zap","alternate-name":"weather, lightning, thunder, lightning bolt, fast"},"cyclone":{"name":"cyclone","alternate-name":"weather, swirl, blue, cloud"},"foggy":{"name":"foggy","alternate-name":"weather, fog, photo, mountain"},"ocean":{"name":"ocean","alternate-name":"waves, sea, water, wave, nature, tsunami, disaster"},"cat":{"name":"cat","alternate-name":"animal, meow, nature, pet"},"dog":{"name":"dog","alternate-name":"animal, friend, nature, woof, puppy, pet, faithful"},"mouse":{"name":"mouse","alternate-name":"animal, nature, cheese"},"hamster":{"name":"hamster","alternate-name":"animal, nature"},"rabbit":{"name":"rabbit","alternate-name":"animal, nature, pet, spring, magic"},"wolf":{"name":"wolf","alternate-name":"animal, dog, animal, nature, wild, audrey, lulu, audrey and lulu"},"frog":{"name":"frog","alternate-name":"animal, nature, croak"},"tiger":{"name":"tiger","alternate-name":"animal, cat, danger, wild, nature, roar"},"koala":{"name":"koala","alternate-name":"animal, nature"},"bear":{"name":"bear","alternate-name":"animal, nature, wild"},"pig":{"name":"pig","alternate-name":"animal, oink, nature"},"pig_nose":{"name":"pig_nose","alternate-name":"animal, oink"},"cow":{"name":"cow","alternate-name":"animal, beef, ox, nature, moo, milk"},"boar":{"name":"boar","alternate-name":"animal, nature"},"monkey_face":{"name":"monkey_face","alternate-name":"animal, nature, circus, ape"},"monkey":{"name":"monkey","alternate-name":"animal, nature, banana, circus, ape"},"horse":{"name":"horse","alternate-name":"animal, brown, nature, unicorn"},"racehorse":{"name":"racehorse","alternate-name":"animal, gamble, luck"},"camel":{"name":"camel","alternate-name":"animal, nature, hot, desert, hump"},"sheep":{"name":"sheep","alternate-name":"animal, nature, wool, shipit"},"elephant":{"name":"elephant","alternate-name":"animal, nature, nose, thailand, circus"},"panda_face":{"name":"panda_face","alternate-name":"animal, nature"},"snake":{"name":"snake","alternate-name":"animal, serpent, animal, evil, nature, hiss"},"bird":{"name":"bird","alternate-name":"animal, nature, fly, tweet, spring"},"baby_chick":{"name":"baby_chick","alternate-name":"animal, bird, chicken"},"hatched_chick":{"name":"hatched_chick","alternate-name":"animal, bird, chicken, baby"},"hatching_chick":{"name":"hatching_chick","alternate-name":"animal, bird, egg, chicken, egg, born, baby, bird"},"chicken":{"name":"chicken","alternate-name":"animal, bird, cluck, nature"},"penguin":{"name":"penguin","alternate-name":"animal, bird, nature"},"turtle":{"name":"turtle","alternate-name":"animal, tortoise, slow, nature"},"bug":{"name":"bug","alternate-name":"animal, insect, nature, worm"},"honeybee":{"name":"honeybee","alternate-name":"animal"},"ant":{"name":"ant","alternate-name":"animal, insect, nature, bug"},"beetle":{"name":"beetle","alternate-name":"animal, insect, nature, bug"},"snail":{"name":"snail","alternate-name":"animal, slow, shell"},"octopus":{"name":"octopus","alternate-name":"animal, creature, ocean, sea, nature, beach"},"tropical_fish":{"name":"tropical_fish","alternate-name":"animal, swim, ocean, beach, nemo"},"fish":{"name":"fish","alternate-name":"animal, food, nature"},"whale":{"name":"whale","alternate-name":"animal, nature, sea, ocean"},"whale2":{"name":"whale2","alternate-name":"animal, nature, sea, ocean"},"dolphin":{"name":"dolphin","alternate-name":"animal, nature, fish, sea, ocean, flipper, fins, beach"},"cow2":{"name":"cow2","alternate-name":"animal, beef, ox, nature, moo, milk"},"ram":{"name":"ram","alternate-name":"animal, sheep, nature"},"rat":{"name":"rat","alternate-name":"animal, mouse, rodent"},"water_buffalo":{"name":"water_buffalo","alternate-name":"animal, nature, ox, cow"},"tiger2":{"name":"tiger2","alternate-name":"animal, nature, roar"},"rabbit2":{"name":"rabbit2","alternate-name":"animal, bunny, nature, pet, magic, spring"},"dragon":{"name":"dragon","alternate-name":"animal, myth, nature, chinese, green"},"goat":{"name":"goat","alternate-name":"animal, nature"},"rooster":{"name":"rooster","alternate-name":"animal, chicken, nature"},"dog2":{"name":"dog2","alternate-name":"animal, nature, friend, doge, pet, faithful"},"pig2":{"name":"pig2","alternate-name":"animal, nature"},"mouse2":{"name":"mouse2","alternate-name":"animal, nature, rodent"},"ox":{"name":"ox","alternate-name":"animal, cow, beef"},"dragon_face":{"name":"dragon_face","alternate-name":"animal, myth, nature, chinese, green"},"blowfish":{"name":"blowfish","alternate-name":"animal, nature, food, sea, ocean"},"crocodile":{"name":"crocodile","alternate-name":"animal, alligator, nature, reptile"},"dromedary_camel":{"name":"dromedary_camel","alternate-name":"animal, hot, desert, hump"},"leopard":{"name":"leopard","alternate-name":"animal, nature"},"cat2":{"name":"cat2","alternate-name":"animal, kitty, kitten, meow, pet, cats"},"poodle":{"name":"poodle","alternate-name":"animal, dog, 101, nature, pet"},"paw_prints":{"name":"paw_prints","alternate-name":"animal"},"bouquet":{"name":"bouquet","alternate-name":"flowers, nature, spring"},"cherry_blossom":{"name":"cherry_blossom","alternate-name":"floral, nature, plant, spring, flower"},"tulip":{"name":"tulip","alternate-name":"floral, flowers, plant, nature, summer, spring"},"four_leaf_clover":{"name":"four_leaf_clover","alternate-name":"vegetable, plant, nature, lucky"},"rose":{"name":"rose","alternate-name":"floral, flowers, valentines, love, spring"},"sunflower":{"name":"sunflower","alternate-name":"floral, nature, plant, fall"},"hibiscus":{"name":"hibiscus","alternate-name":"floral, plant, vegetable, flowers, beach"},"maple_leaf":{"name":"maple_leaf","alternate-name":"nature, plant, vegetable, canada, fall"},"leaves":{"name":"leaves","alternate-name":"nature, plant, tree, vegetable, grass, lawn, spring"},"fallen_leaf":{"name":"fallen_leaf","alternate-name":"nature, plant, vegetable, leaves"},"herb":{"name":"herb","alternate-name":"vegetable, plant, medicine, weed, grass, lawn"},"mushroom":{"name":"mushroom","alternate-name":"plant, vegetable"},"cactus":{"name":"cactus","alternate-name":"vegetable, plant, nature"},"palm_tree":{"name":"palm_tree","alternate-name":"plant, vegetable, nature, summer, beach"},"evergreen_tree":{"name":"evergreen_tree","alternate-name":"plant, nature"},"deciduous_tree":{"name":"deciduous_tree","alternate-name":"plant, nature"},"chestnut":{"name":"chestnut","alternate-name":"food, squirrel"},"seedling":{"name":"seedling","alternate-name":"plant, nature, grass, lawn, spring"},"blossom":{"name":"blossom","alternate-name":"nature, flowers, yellow"},"ear_of_rice":{"name":"ear_of_rice","alternate-name":"nature, plant"},"shell":{"name":"shell","alternate-name":"nature, sea, beach"},"globe_with_meridians":{"name":"globe_with_meridians","alternate-name":"earth, international, world, internet, interweb, i18n"},"sun_with_face":{"name":"sun_with_face","alternate-name":"nature, morning, sky"},"full_moon_with_face":{"name":"full_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"new_moon_with_face":{"name":"new_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"new_moon":{"name":"new_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waxing_crescent_moon":{"name":"waxing_crescent_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"first_quarter_moon":{"name":"first_quarter_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waxing_gibbous_moon":{"name":"waxing_gibbous_moon"},"full_moon":{"name":"full_moon","alternate-name":"nature, yellow, twilight, planet, space, night, evening, sleep"},"waning_gibbous_moon":{"name":"waning_gibbous_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep, waxing_gibbous_moon"},"last_quarter_moon":{"name":"last_quarter_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waning_crescent_moon":{"name":"waning_crescent_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"last_quarter_moon_with_face":{"name":"last_quarter_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"first_quarter_moon_with_face":{"name":"first_quarter_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"crescent_moon":{"name":"crescent_moon","alternate-name":"night, sleep, sky, evening, magic"},"earth_africa":{"name":"earth_africa","alternate-name":"europe, emea, globe, world, international"},"earth_americas":{"name":"earth_americas","alternate-name":"globe, world, USA, international"},"earth_asia":{"name":"earth_asia","alternate-name":"globe, world, east, international"},"volcano":{"name":"volcano","alternate-name":"photo, nature, disaster"},"milky_way":{"name":"milky_way","alternate-name":"photo, space, stars"},"partly_sunny":{"name":"partly_sunny","alternate-name":"weather, nature, cloudy, morning, fall, spring"},"octocat":{"name":"octocat","alternate-name":"github, animal, octopus, custom_"},"squirrel":{"name":"squirrel","alternate-name":"animal"}},"objects":{"bamboo":{"name":"bamboo","alternate-name":"plant, nature, vegetable, panda"},"gift_heart":{"name":"gift_heart","alternate-name":"heart, love, valentines"},"dolls":{"name":"dolls","alternate-name":"japanese, toy, kimono"},"school_satchel":{"name":"school_satchel","alternate-name":"student, education, bag"},"mortar_board":{"name":"mortar_board","alternate-name":"edu, university, school, college, degree, graduation, cap, hat, legal, learn, education"},"flags":{"name":"flags","alternate-name":"fish, japanese, koinobori, carp, banner"},"fireworks":{"name":"fireworks","alternate-name":"photo, festival, carnival, congratulations"},"sparkler":{"name":"sparkler","alternate-name":"stars, night, shine"},"wind_chime":{"name":"wind_chime","alternate-name":"nature, ding, spring, bell"},"rice_scene":{"name":"rice_scene","alternate-name":"photo, japan, asia, tsukimi"},"jack_o_lantern":{"name":"jack_o_lantern","alternate-name":"halloween, light, pumpkin, creepy, fall"},"ghost":{"name":"ghost","alternate-name":"boom, halloween, spooky, scary"},"santa":{"name":"santa","alternate-name":"christmas, festival, man, male, xmas, father christmas"},"christmas_tree":{"name":"christmas_tree","alternate-name":"festival, vacation, december, xmas, celebration"},"gift":{"name":"gift","alternate-name":"present, birthday, christmas, xmas"},"bell":{"name":"bell","alternate-name":"sound, notification, christmas, xmas, chime"},"no_bell":{"name":"no_bell","alternate-name":"sound, volume, mute, quiet, silent"},"tanabata_tree":{"name":"tanabata_tree","alternate-name":"plant, nature, branch, summer"},"tada":{"name":"tada","alternate-name":"party, contulations, birthday, magic, circus"},"confetti_ball":{"name":"confetti_ball","alternate-name":"celebration, festival, party, birthday, circus"},"balloon":{"name":"balloon","alternate-name":"party, celebration, birthday, circus"},"crystal_ball":{"name":"crystal_ball","alternate-name":"disco, party, magic, circus, fortune_teller"},"cd":{"name":"cd","alternate-name":"technology, dvd, disk, disc, 90s"},"dvd":{"name":"dvd","alternate-name":"cd, disk, disc"},"floppy_disk":{"name":"floppy_disk","alternate-name":"oldschool, technology, save, 90s, 80s"},"camera":{"name":"camera","alternate-name":"gadgets, photo"},"video_camera":{"name":"video_camera","alternate-name":"film, record"},"movie_camera":{"name":"movie_camera","alternate-name":"film, record"},"computer":{"name":"computer","alternate-name":"tech, laptop, screen, display, monitor"},"tv":{"name":"tv","alternate-name":"television, technology, program, oldschool, show"},"iphone":{"name":"iphone","alternate-name":"technology, apple, gadgets, dial"},"phone":{"name":"phone","alternate-name":"technology, communication, dial, telephone"},"telephone":{"name":"telephone","alternate-name":"calling"},"telephone_receiver":{"name":"telephone_receiver","alternate-name":"technology, communication, dial"},"pager":{"name":"pager","alternate-name":"bbcall, oldschool, 90s"},"fax":{"name":"fax","alternate-name":"communication, technology"},"minidisc":{"name":"minidisc","alternate-name":"technology, record, data, disk, 90s"},"vhs":{"name":"vhs","alternate-name":"record, video, oldschool, 90s, 80s"},"sound":{"name":"sound","alternate-name":"loud, noise, volume, speaker, broadcast"},"speaker":{"name":"speaker","alternate-name":"sound, volume, silence, broadcast"},"mute":{"name":"mute","alternate-name":"sound, volume, silence, quiet"},"loudspeaker":{"name":"loudspeaker","alternate-name":"volume, sound"},"mega":{"name":"mega","alternate-name":"sound, speaker, volume"},"hourglass":{"name":"hourglass","alternate-name":"time, clock, oldschool, limit, exam, quiz, test"},"hourglass_flowing_sand":{"name":"hourglass_flowing_sand","alternate-name":"oldschool, time, countdown"},"alarm_clock":{"name":"alarm_clock","alternate-name":"time, wake"},"watch":{"name":"watch","alternate-name":"clock, time, accessories"},"radio":{"name":"radio","alternate-name":"communication, music, podcast, program"},"satellite":{"name":"satellite","alternate-name":"communication, future, radio, space"},"loop":{"name":"loop","alternate-name":"tape, cassette"},"mag":{"name":"mag","alternate-name":"magnifying, glass, search, zoom, find, detective"},"mag_right":{"name":"mag_right","alternate-name":"magnifying, glass, search, zoom, find, detective"},"unlock":{"name":"unlock","alternate-name":"privacy, security"},"lock":{"name":"lock","alternate-name":"security, password, padlock"},"lock_with_ink_pen":{"name":"lock_with_ink_pen","alternate-name":"security, secret"},"closed_lock_with_key":{"name":"closed_lock_with_key","alternate-name":"security, privacy"},"key":{"name":"key","alternate-name":"lock, door, password"},"bulb":{"name":"bulb","alternate-name":"light, electricity, idea"},"flashlight":{"name":"flashlight","alternate-name":"dark, camping, sight, night"},"high_brightness":{"name":"high_brightness","alternate-name":"sun, light"},"low_brightness":{"name":"low_brightness","alternate-name":"sun, afternoon, warm, summer"},"electric_plug":{"name":"electric_plug","alternate-name":"charger, power"},"battery":{"name":"battery","alternate-name":"power, energy, sustain"},"calling":{"name":"calling","alternate-name":"iphone, incoming"},"email":{"name":"email","alternate-name":"envelope, letter, postal, inbox, communication"},"mailbox":{"name":"mailbox","alternate-name":"email, inbox, communication"},"postbox":{"name":"postbox","alternate-name":"email, letter, envelope"},"bath":{"name":"bath","alternate-name":"clean, shower, bathroom"},"bathtub":{"name":"bathtub","alternate-name":"clean, shower, bathroom"},"shower":{"name":"shower","alternate-name":"water, clean, bathroom"},"toilet":{"name":"toilet","alternate-name":"restroom, wc, washroom, bathroom, potty"},"wrench":{"name":"wrench","alternate-name":"tools, diy, ikea, fix, maintainer"},"nut_and_bolt":{"name":"nut_and_bolt","alternate-name":"tools, handy, fix"},"hammer":{"name":"hammer","alternate-name":"tools, verdict, judge, done, law, legal, ruling, gavel"},"seat":{"name":"seat","alternate-name":"sit, airplane, transport, bus, flight, fly"},"moneybag":{"name":"moneybag","alternate-name":"dollar, payment, coins, sale"},"yen":{"name":"yen","alternate-name":"bill cash currency money, money, sales, japanese, dollar, currency"},"dollar":{"name":"dollar","alternate-name":"bill cash currency money, money, sales, bill, currency"},"pound":{"name":"pound","alternate-name":"bill cash currency money, british, sterling, money, sales, bills, uk, england, currency"},"euro":{"name":"euro","alternate-name":"bill cash currency money, money, sales, dollar, currency"},"credit_card":{"name":"credit_card","alternate-name":"money, sales, dollar, bill, payment, shopping"},"money_with_wings":{"name":"money_with_wings","alternate-name":"money, dollar, bills, payment, sale"},"e-mail":{"name":"e-mail","alternate-name":"mail, send, communication, inbox, email"},"inbox_tray":{"name":"inbox_tray","alternate-name":"email, documents"},"outbox_tray":{"name":"outbox_tray","alternate-name":"inbox, email"},"envelope":{"name":"envelope","alternate-name":"message"},"incoming_envelope":{"name":"incoming_envelope","alternate-name":"email, inbox"},"postal_horn":{"name":"postal_horn","alternate-name":"instrument, music"},"mailbox_closed":{"name":"mailbox_closed","alternate-name":"email, communication, inbox"},"mailbox_with_mail":{"name":"mailbox_with_mail","alternate-name":"email, inbox, communication"},"mailbox_with_no_mail":{"name":"mailbox_with_no_mail","alternate-name":"email, inbox"},"package":{"name":"package","alternate-name":"box, mail, gift, cardboard, moving"},"door":{"name":"door","alternate-name":"house, entry, exit"},"smoking":{"name":"smoking","alternate-name":"smoke, kills, tobacco, cigarette, joint"},"bomb":{"name":"bomb","alternate-name":"boom, explode, explosion, terrorism"},"gun":{"name":"gun","alternate-name":"violence, weapon, pistol, revolver"},"hocho":{"name":"hocho","alternate-name":"knife, blade, cutlery, kitchen, weapon"},"pill":{"name":"pill","alternate-name":"health, medicine, doctor, pharmacy, drug"},"syringe":{"name":"syringe","alternate-name":"health, hospital, drugs, blood, medicine, needle, doctor, nurse"},"page_facing_up":{"name":"page_facing_up","alternate-name":"documents, office, paper, information"},"page_with_curl":{"name":"page_with_curl","alternate-name":"documents, office, paper"},"bookmark_tabs":{"name":"bookmark_tabs","alternate-name":"favorite, save, order, tidy"},"bar_chart":{"name":"bar_chart","alternate-name":"graph, presentation, stats"},"chart_with_upwards_trend":{"name":"chart_with_upwards_trend","alternate-name":"graph, presenetation, stats, recovery, business, economics, money, sales, good, success"},"chart_with_downwards_trend":{"name":"chart_with_downwards_trend","alternate-name":"graph, presentation, stats, recession, business, economics, money, sales, bad, failure"},"scroll":{"name":"scroll","alternate-name":"documents, ancient, history, paper"},"clipboard":{"name":"clipboard","alternate-name":"stationery, documents"},"calendar":{"name":"calendar","alternate-name":"schedule, date, planning"},"date":{"name":"date","alternate-name":"calendar, schedule"},"card_index":{"name":"card_index","alternate-name":"business, stationery"},"file_folder":{"name":"file_folder","alternate-name":"documents, business, office"},"open_file_folder":{"name":"open_file_folder","alternate-name":"documents, load"},"scissors":{"name":"scissors","alternate-name":"stationery, cut"},"pushpin":{"name":"pushpin","alternate-name":"stationery, mark, here"},"paperclip":{"name":"paperclip","alternate-name":"documents, stationery"},"black_nib":{"name":"black_nib","alternate-name":"pen, stationery, writing, write"},"pencil2":{"name":"pencil2","alternate-name":"stationery, write, paper, writing, school, study"},"straight_ruler":{"name":"straight_ruler","alternate-name":"stationery, calculate, length, math, school, drawing, architect, sketch"},"triangular_ruler":{"name":"triangular_ruler","alternate-name":"stationery, math, architect, sketch"},"closed_book":{"name":"closed_book","alternate-name":"read, library, knowledge, textbook, learn"},"green_book":{"name":"green_book","alternate-name":"read, library, knowledge, study"},"blue_book":{"name":"blue_book","alternate-name":"read, library, knowledge, learn, study"},"orange_book":{"name":"orange_book","alternate-name":"read, library, knowledge, textbook, study"},"notebook":{"name":"notebook","alternate-name":"stationery, record, notes, paper, study"},"notebook_with_decorative_cover":{"name":"notebook_with_decorative_cover","alternate-name":"classroom, notes, record, paper, study"},"ledger":{"name":"ledger","alternate-name":"notes, paper"},"books":{"name":"books","alternate-name":"literature, library, study"},"bookmark":{"name":"bookmark","alternate-name":"favorite, label, save"},"name_badge":{"name":"name_badge","alternate-name":"fire, forbid"},"microscope":{"name":"microscope","alternate-name":"laboratory, experiment, zoomin, science, study"},"telescope":{"name":"telescope","alternate-name":"stars, space, zoom"},"newspaper":{"name":"newspaper","alternate-name":"press, headline"},"football":{"name":"football","alternate-name":"sport, sports, balls, NFL"},"basketball":{"name":"basketball","alternate-name":"sport, sports, balls, NBA"},"soccer":{"name":"soccer","alternate-name":"sport, sports, balls, football, fifa"},"baseball":{"name":"baseball","alternate-name":"sport, sports, balls, MLB"},"tennis":{"name":"tennis","alternate-name":"sport, sports, balls, green"},"8ball":{"name":"8ball","alternate-name":"magic_ball, pool, hobby, game, luck, magic"},"rugby_football":{"name":"rugby_football","alternate-name":"sport, sports, team"},"bowling":{"name":"bowling","alternate-name":"sport, sports, fun, play"},"golf":{"name":"golf","alternate-name":"sport, sports, business, flag, hole, summer"},"mountain_bicyclist":{"name":"mountain_bicyclist","alternate-name":"sport, vehicle, transportation, sports, human, race, bike"},"bicyclist":{"name":"bicyclist","alternate-name":"sport, vehicle, sports, bike, exercise, hipster"},"horse_racing":{"name":"horse_racing","alternate-name":"sport, animal, betting, competition, gambling, luck"},"snowboarder":{"name":"snowboarder","alternate-name":"sport, sports, winter"},"swimmer":{"name":"swimmer","alternate-name":"sport, sports, exercise, human, athlete, water, summer"},"surfer":{"name":"surfer","alternate-name":"sport, sports, ocean, sea, summer, beach"},"ski":{"name":"ski","alternate-name":"sport, sports, winter, cold, snow"},"spades":{"name":"spades","alternate-name":"cards, suit, poker, suits, magic"},"hearts":{"name":"hearts","alternate-name":"heart, cards, suit, poker, magic, suits"},"clubs":{"name":"clubs","alternate-name":"cards, suit, poker, magic, suits"},"diamonds":{"name":"diamonds","alternate-name":"cards, suit, poker, magic, suits"},"gem":{"name":"gem","alternate-name":"jewelery, blue, ruby, diamond, jewelry"},"ring":{"name":"ring","alternate-name":"jewelery, wedding, propose, marriage, valentines, diamond, fashion, jewelry, gem"},"trophy":{"name":"trophy","alternate-name":"win, award, contest, place, ftw, ceremony"},"musical_score":{"name":"musical_score","alternate-name":"treble, clef"},"musical_keyboard":{"name":"musical_keyboard","alternate-name":"piano, instrument"},"violin":{"name":"violin","alternate-name":"music, instrument, orchestra, symphony"},"space_invader":{"name":"space_invader","alternate-name":"game, arcade, play"},"video_game":{"name":"video_game","alternate-name":"controller, play, console, PS4"},"black_joker":{"name":"black_joker","alternate-name":"poker, cards, game, play, magic"},"flower_playing_cards":{"name":"flower_playing_cards","alternate-name":"floral, game, sunset, red"},"game_die":{"name":"game_die","alternate-name":"dice, random, tabbletop, play, luck"},"dart":{"name":"dart","alternate-name":"game, play, bar"},"mahjong":{"name":"mahjong","alternate-name":"game, play, chinese, kanji"},"clapper":{"name":"clapper","alternate-name":"movie, film, record"},"memo":{"name":"memo","alternate-name":"write, documents, stationery, pencil, paper, writing, legal, exam, quiz, test, study"},"pencil":{"name":"pencil","alternate-name":"write"},"book":{"name":"book","alternate-name":"open_book, read, library, knowledge, literature, learn, study"},"art":{"name":"art","alternate-name":"design, paint, draw"},"microphone":{"name":"microphone","alternate-name":"sound, music, PA"},"headphones":{"name":"headphones","alternate-name":"music, score, gadgets"},"trumpet":{"name":"trumpet","alternate-name":"music, brass"},"saxophone":{"name":"saxophone","alternate-name":"music, instrument, jazz, blues"},"guitar":{"name":"guitar","alternate-name":"music, instrument"},"shoe":{"name":"shoe"},"sandal":{"name":"sandal","alternate-name":"shoes, fashion, flip flops"},"high_heel":{"name":"high_heel","alternate-name":"fashion, shoes, female, pumps, stiletto"},"lipstick":{"name":"lipstick","alternate-name":"female, girl, fashion, woman"},"boot":{"name":"boot","alternate-name":"shoes, fashion"},"shirt":{"name":"shirt","alternate-name":"fashion, cloth, formal"},"tshirt":{"name":"tshirt","alternate-name":"fashion, cloth, casual, tee"},"necktie":{"name":"necktie","alternate-name":"shirt, suitup, formal, fashion, cloth, business"},"womans_clothes":{"name":"womans_clothes","alternate-name":"fashion, shopping, female"},"dress":{"name":"dress","alternate-name":"clothes, fashion, shopping"},"running_shirt_with_sash":{"name":"running_shirt_with_sash","alternate-name":"play, pageant"},"jeans":{"name":"jeans","alternate-name":"fashion, shopping"},"kimono":{"name":"kimono","alternate-name":"dress, fashion, women, female, japanese"},"bikini":{"name":"bikini","alternate-name":"swimming, female, woman, girl, fashion, beach, summer"},"ribbon":{"name":"ribbon","alternate-name":"decoration, pink, girl, bowtie"},"tophat":{"name":"tophat","alternate-name":"magic, gentleman, classy, circus"},"crown":{"name":"crown","alternate-name":"king, kod, leader, royalty, lord"},"womans_hat":{"name":"womans_hat","alternate-name":"fashion, accessories, female, lady, spring"},"mans_shoe":{"name":"mans_shoe","alternate-name":"fashion, male"},"closed_umbrella":{"name":"closed_umbrella","alternate-name":"weather, rain, drizzle"},"briefcase":{"name":"briefcase","alternate-name":"business, documents, work, law, legal"},"handbag":{"name":"handbag","alternate-name":"fashion, accessory, accessories, shopping"},"pouch":{"name":"pouch","alternate-name":"bag, accessories, shopping"},"purse":{"name":"purse","alternate-name":"pocketbook, fashion, accessories, money, sales, shopping"},"eyeglasses":{"name":"eyeglasses","alternate-name":"fashion, accessories, eyesight, nerd, dork, geek"},"fishing_pole_and_fish":{"name":"fishing_pole_and_fish","alternate-name":"food, hobby, summer"},"coffee":{"name":"coffee","alternate-name":"drink, beverage, cafe, espresso"},"tea":{"name":"tea","alternate-name":"drink, bowl, breakfast, green, british"},"sake":{"name":"sake","alternate-name":"drink alcohol, wine, drink, drunk, beverage, japanese, alcohol, booze"},"baby_bottle":{"name":"baby_bottle","alternate-name":"food, container, milk"},"beer":{"name":"beer","alternate-name":"drink alcohol, relax, beverage, drink, drunk, party, pub, summer, alcohol, booze"},"beers":{"name":"beers","alternate-name":"drink alcohol, relax, beverage, drink, drunk, party, pub, summer, alcohol, booze"},"cocktail":{"name":"cocktail","alternate-name":"drink alcohol, drink, drunk, alcohol, beverage, booze"},"tropical_drink":{"name":"tropical_drink","alternate-name":"beverage, cocktail, summer, beach, alcohol, booze"},"wine_glass":{"name":"wine_glass","alternate-name":"drink alcohol, drink, beverage, drunk, alcohol, booze"},"fork_and_knife":{"name":"fork_and_knife","alternate-name":"cutlery, kitchen"},"pizza":{"name":"pizza","alternate-name":"food, italian dairy, party"},"hamburger":{"name":"hamburger","alternate-name":"food, american meat, meat, fast food, beef, cheeseburger, mcdonalds, burger king"},"fries":{"name":"fries","alternate-name":"food, american, chips, snack, fast food"},"poultry_leg":{"name":"poultry_leg","alternate-name":"food, meat, drumstick, bird, chicken, turkey"},"meat_on_bone":{"name":"meat_on_bone","alternate-name":"food, meat, good, drumstick"},"spaghetti":{"name":"spaghetti","alternate-name":"food, italian noodles, italian, noodle"},"curry":{"name":"curry","alternate-name":"food, indian, spicy, hot"},"fried_shrimp":{"name":"fried_shrimp","alternate-name":"food, seafood, animal, appetizer, summer"},"bento":{"name":"bento","alternate-name":"food, japanese, box"},"sushi":{"name":"sushi","alternate-name":"food, japanese, fish, rice"},"fish_cake":{"name":"fish_cake","alternate-name":"food, japanese seafood, naruto, japan, sea, beach"},"rice_ball":{"name":"rice_ball","alternate-name":"food, japanese"},"rice_cracker":{"name":"rice_cracker","alternate-name":"food, japanese"},"rice":{"name":"rice","alternate-name":"food, china, asian"},"ramen":{"name":"ramen","alternate-name":"food noodles, food, japanese, noodle, chipsticks"},"stew":{"name":"stew","alternate-name":"food, meat, soup"},"oden":{"name":"oden","alternate-name":"food, japanese"},"dango":{"name":"dango","alternate-name":"food, japanese, barbecue, meat"},"egg":{"name":"egg","alternate-name":"food,, food, breakfast, kitchen"},"bread":{"name":"bread","alternate-name":"food,, food, wheat, breakfast, toast"},"doughnut":{"name":"doughnut","alternate-name":"food, dessert, snack, sweet, donut"},"custard":{"name":"custard","alternate-name":"food, dessert"},"icecream":{"name":"icecream","alternate-name":"food, dessert, hot, summer"},"ice_cream":{"name":"ice_cream","alternate-name":"food, dessert, hot"},"shaved_ice":{"name":"shaved_ice","alternate-name":"food, dessert, hot, summer"},"birthday":{"name":"birthday","alternate-name":"party, cake, celebration"},"cake":{"name":"cake","alternate-name":"food, dessert"},"cookie":{"name":"cookie","alternate-name":"food, dessert, snack, oreo, chocolate, sweet"},"chocolate_bar":{"name":"chocolate_bar","alternate-name":"food, dessert, snack, sweet"},"candy":{"name":"candy","alternate-name":"food, dessert, snack, sweet"},"lollipop":{"name":"lollipop","alternate-name":"food, dessert, snack, candy, sweet"},"honey_pot":{"name":"honey_pot","alternate-name":"food, dessert, bees, sweet, kitchen"},"apple":{"name":"apple","alternate-name":"food, fruit, mac, school"},"green_apple":{"name":"green_apple","alternate-name":"food, fruit, nature"},"tangerine":{"name":"tangerine","alternate-name":"food, fruit, nature"},"lemon":{"name":"lemon","alternate-name":"food, fruit, nature"},"cherries":{"name":"cherries","alternate-name":"food, fruit"},"grapes":{"name":"grapes","alternate-name":"food, fruit, wine"},"watermelon":{"name":"watermelon","alternate-name":"food, fruit, picnic, summer"},"strawberry":{"name":"strawberry","alternate-name":"food, fruit, nature"},"peach":{"name":"peach","alternate-name":"food, fruit, nature"},"melon":{"name":"melon","alternate-name":"food, fruit, nature"},"banana":{"name":"banana","alternate-name":"food, fruit, monkey"},"pear":{"name":"pear","alternate-name":"food, fruit, nature"},"pineapple":{"name":"pineapple","alternate-name":"food, fruit, nature"},"sweet_potato":{"name":"sweet_potato","alternate-name":"food, vegetable, nature"},"eggplant":{"name":"eggplant","alternate-name":"food, vegetable, nature, aubergine"},"tomato":{"name":"tomato","alternate-name":"food, fruit, vegetable, nature"},"corn":{"name":"corn","alternate-name":"food, vegetable, plant"}},"places":{"house":{"name":"house","alternate-name":"building, home"},"house_with_garden":{"name":"house_with_garden","alternate-name":"building, home, plant, nature"},"school":{"name":"school","alternate-name":"building, student, education, learn, teach"},"office":{"name":"office","alternate-name":"building, unit, bureau, work"},"post_office":{"name":"post_office","alternate-name":"building, email, communication"},"hospital":{"name":"hospital","alternate-name":"building, health, surgery, doctor"},"bank":{"name":"bank","alternate-name":"building, money, sales, cash, business, enterprise"},"convenience_store":{"name":"convenience_store","alternate-name":"building, shopping, groceries"},"love_hotel":{"name":"love_hotel","alternate-name":"building, like, affection, dating"},"hotel":{"name":"hotel","alternate-name":"building, whotel, accomodation, checkin"},"wedding":{"name":"wedding","alternate-name":"building, love, like, affection, couple, marriage, bride, groom, church, heart"},"church":{"name":"church","alternate-name":"building, religion, christ"},"department_store":{"name":"department_store","alternate-name":"building, shopping, mall"},"european_post_office":{"name":"european_post_office","alternate-name":"building, email"},"city_sunrise":{"name":"city_sunrise","alternate-name":"photo, good morning, dawn"},"city_sunset":{"name":"city_sunset","alternate-name":"photo, evening, sky, buildings"},"japanese_castle":{"name":"japanese_castle","alternate-name":"photo, building, asia"},"european_castle":{"name":"european_castle","alternate-name":"building, royalty, history"},"tent":{"name":"tent","alternate-name":"camping, photo, camp, outdoors"},"factory":{"name":"factory","alternate-name":"building, industry, pollution, smoke"},"tokyo_tower":{"name":"tokyo_tower","alternate-name":"photo, japanese, asia"},"japan":{"name":"japan","alternate-name":"nation, country, japanese, asia, island"},"mount_fuji":{"name":"mount_fuji","alternate-name":"photo, mountain, nature, japanese"},"sunrise_over_mountains":{"name":"sunrise_over_mountains","alternate-name":"view, vacation, photo"},"sunrise":{"name":"sunrise","alternate-name":"morning, view, vacation, photo"},"stars":{"name":"stars","alternate-name":"night, photo, falling, sky, bright"},"statue_of_liberty":{"name":"statue_of_liberty","alternate-name":"american, newyork, monument, head"},"bridge_at_night":{"name":"bridge_at_night","alternate-name":"photo, sanfrancisco"},"carousel_horse":{"name":"carousel_horse","alternate-name":"photo, carnival, ride"},"rainbow":{"name":"rainbow","alternate-name":"nature, happy, unicorn, photo, sky, spring, color"},"ferris_wheel":{"name":"ferris_wheel","alternate-name":"photo, carnival, londoneye"},"fountain":{"name":"fountain","alternate-name":"photo, summer, water, fresh"},"roller_coaster":{"name":"roller_coaster","alternate-name":"carnival, playground, photo, ride, fun"},"ship":{"name":"ship","alternate-name":"vehicle, transportation, titanic, deploy, cruise"},"speedboat":{"name":"speedboat","alternate-name":"vehicle, ship, transportation, summer"},"boat":{"name":"boat","alternate-name":"vehicle, ship, summer, transportation, water, sailing, sailboat"},"sailboat":{"name":"sailboat","alternate-name":"vehicle"},"rowboat":{"name":"rowboat","alternate-name":"vehicle, sports, hobby, water, ship"},"anchor":{"name":"anchor","alternate-name":"ship, ferry, sea, boat"},"rocket":{"name":"rocket","alternate-name":"launch, ship, staffmode, NASA, outer space, outer_space, fly"},"airplane":{"name":"airplane","alternate-name":"vehicle, transportation, flight, fly"},"helicopter":{"name":"helicopter","alternate-name":"vehicle, transportation, fly"},"steam_locomotive":{"name":"steam_locomotive","alternate-name":"vehicle, transportation, train"},"tram":{"name":"tram","alternate-name":"vehicle, transportation"},"mountain_railway":{"name":"mountain_railway","alternate-name":"vehicle, transportation"},"bike":{"name":"bike","alternate-name":"vehicle, sports, bicycle, exercise, hipster"},"aerial_tramway":{"name":"aerial_tramway","alternate-name":"vehicle, transportation, ski"},"suspension_railway":{"name":"suspension_railway","alternate-name":"vehicle, transportation"},"mountain_cableway":{"name":"mountain_cableway","alternate-name":"vehicle, transportation, ski"},"tractor":{"name":"tractor","alternate-name":"vehicle, car, farming, agriculture"},"blue_car":{"name":"blue_car","alternate-name":"vehicle, transportation"},"oncoming_automobile":{"name":"oncoming_automobile","alternate-name":"vehicle, car, transportation"},"car":{"name":"car","alternate-name":"vehicle, car, red, transportation"},"red_car":{"name":"red_car","alternate-name":"vehicle"},"taxi":{"name":"taxi","alternate-name":"vehicle, car, uber, cars, transportation"},"oncoming_taxi":{"name":"oncoming_taxi","alternate-name":"vehicle, car, cars, uber"},"articulated_lorry":{"name":"articulated_lorry","alternate-name":"vehicle, cars, transportation, express"},"bus":{"name":"bus","alternate-name":"vehicle, car, transportation"},"oncoming_bus":{"name":"oncoming_bus","alternate-name":"vehicle, transportation"},"rotating_light":{"name":"rotating_light","alternate-name":"police, ambulance, 911, emergency, alert, error, pinged, law, legal"},"police_car":{"name":"police_car","alternate-name":"vehicle, cars, transportation, law, legal, enforcement"},"oncoming_police_car":{"name":"oncoming_police_car","alternate-name":"vehicle, law, legal, enforcement, 911"},"fire_engine":{"name":"fire_engine","alternate-name":"vehicle, transportation, cars"},"ambulance":{"name":"ambulance","alternate-name":"vehicle, health, 911, hospital"},"minibus":{"name":"minibus","alternate-name":"vehicle, car, transportation"},"truck":{"name":"truck","alternate-name":"vehicle, cars, transportation"},"train":{"name":"train","alternate-name":"vehicle, transportation, carriage, public, travel"},"station":{"name":"station","alternate-name":"transportation, vehicle, public"},"train2":{"name":"train2","alternate-name":"vehicle, transportation"},"bullettrain_front":{"name":"bullettrain_front","alternate-name":"vehicle, transportation, speed, fast, public, travel"},"bullettrain_side":{"name":"bullettrain_side","alternate-name":"vehicle, transportation"},"light_rail":{"name":"light_rail","alternate-name":"vehicle, transportation"},"monorail":{"name":"monorail","alternate-name":"vehicle, transportation"},"railway_car":{"name":"railway_car","alternate-name":"vehicle, transportation"},"trolleybus":{"name":"trolleybus","alternate-name":"vehicle, bart, transportation"},"ticket":{"name":"ticket","alternate-name":"event, concert, pass"},"fuelpump":{"name":"fuelpump","alternate-name":"gas station, petroleum"},"vertical_traffic_light":{"name":"vertical_traffic_light","alternate-name":"transportation, driving"},"traffic_light":{"name":"traffic_light","alternate-name":"stoplight, transportation, signal"},"warning":{"name":"warning","alternate-name":"exclamation, wip, alert, error, problem, issue"},"construction":{"name":"construction","alternate-name":"wip, progress, caution, warning"},"beginner":{"name":"beginner","alternate-name":"badge, shield"},"atm":{"name":"atm","alternate-name":"money, sales, cash, blue-square, payment, bank"},"slot_machine":{"name":"slot_machine","alternate-name":"bet, gamble, vegas, fruit machine, luck, casino"},"busstop":{"name":"busstop","alternate-name":"transportation, wait"},"barber":{"name":"barber","alternate-name":"hair, salon, style"},"hotsprings":{"name":"hotsprings","alternate-name":"bath, warm, relax"},"checkered_flag":{"name":"checkered_flag","alternate-name":"contest, finishline, rase, gokart"},"crossed_flags":{"name":"crossed_flags","alternate-name":"japanese, nation, country, border"},"izakaya_lantern":{"name":"izakaya_lantern","alternate-name":"light, paper, halloween, spooky"},"moyai":{"name":"moyai","alternate-name":"stone, easter island, beach, statue"},"circus_tent":{"name":"circus_tent","alternate-name":"festival, carnival, party"},"performing_arts":{"name":"performing_arts","alternate-name":"acting, theater, drama"},"round_pushpin":{"name":"round_pushpin","alternate-name":"stationery, location, map, here"},"triangular_flag_on_post":{"name":"triangular_flag_on_post","alternate-name":"mark, milestone, place"},"jp":{"name":"jp","alternate-name":"japan, nippon, nihon, japanese, nation, flag, country, banner"},"kr":{"name":"kr","alternate-name":"korea, hanguk, nation, flag, country, banner"},"cn":{"name":"cn","alternate-name":"china, prc, chinese, flag, country, nation, banner"},"us":{"name":"us","alternate-name":"usa, america, united states, nation, flag, american, country, banner"},"fr":{"name":"fr","alternate-name":"france, banner, flag, nation, french, country"},"es":{"name":"es","alternate-name":"spain, espana, flag, nation, country, banner"},"it":{"name":"it","alternate-name":"italy, italia, flag, nation, country, banner"},"ru":{"name":"ru","alternate-name":"russia, russian, nation, flag, country, banner"},"gb":{"name":"gb","alternate-name":"great britain, united kingdom, banner, nation, flag, british, UK, country, english, england, union jack"},"uk":{"name":"uk","alternate-name":"great britain, united kingdom"},"de":{"name":"de","alternate-name":"germany, deutschland, german, nation, flag, country, banner"}},"symbols":{"100":{"name":"100","alternate-name":"score, perfect, numbers, century, exam, quiz, test, pass, hundred"},"1234":{"name":"1234","alternate-name":"numbers, blue-square"},"one":{"name":"one","alternate-name":"1, blue-square, numbers"},"two":{"name":"two","alternate-name":"2, numbers, prime, blue-square"},"three":{"name":"three","alternate-name":"3, numbers, prime, blue-square"},"four":{"name":"four","alternate-name":"4, numbers, blue-square"},"five":{"name":"five","alternate-name":"5, numbers, blue-square, prime"},"six":{"name":"six","alternate-name":"6, numbers, blue-square"},"seven":{"name":"seven","alternate-name":"7, numbers, blue-square, prime"},"eight":{"name":"eight","alternate-name":"8, blue-square, numbers"},"nine":{"name":"nine","alternate-name":"9, blue-square, numbers"},"keycap_ten":{"name":"keycap_ten","alternate-name":"10, numbers, blue-square"},"zero":{"name":"zero","alternate-name":"0, numbers, blue-square, null"},"hash":{"name":"hash","alternate-name":"symbol, blue-square, twitter"},"symbols":{"name":"symbols","alternate-name":"blue-square, music, note, ampersand, percent, glyphs, characters"},"arrow_backward":{"name":"arrow_backward","alternate-name":"left, blue-square, direction"},"arrow_down":{"name":"arrow_down","alternate-name":"blue-square, direction, bottom"},"arrow_forward":{"name":"arrow_forward","alternate-name":"right, blue-square, direction"},"arrow_left":{"name":"arrow_left","alternate-name":"blue-square, previous, back"},"capital_abcd":{"name":"capital_abcd","alternate-name":"alphabet, words, blue-square"},"abcd":{"name":"abcd","alternate-name":"blue-square, alphabet"},"abc":{"name":"abc","alternate-name":"blue-square, alphabet"},"arrow_lower_left":{"name":"arrow_lower_left","alternate-name":"blue-square, direction"},"arrow_lower_right":{"name":"arrow_lower_right","alternate-name":"blue-square, direction"},"arrow_right":{"name":"arrow_right","alternate-name":"blue-square, next"},"arrow_up":{"name":"arrow_up","alternate-name":"blue-square, continue, top, direction"},"arrow_upper_left":{"name":"arrow_upper_left","alternate-name":"blue-square, point, direction"},"arrow_upper_right":{"name":"arrow_upper_right","alternate-name":"blue-square, point, direction"},"arrow_double_down":{"name":"arrow_double_down","alternate-name":"blue-square, direction, bottom"},"arrow_double_up":{"name":"arrow_double_up","alternate-name":"blue-square, direction, top"},"arrow_down_small":{"name":"arrow_down_small","alternate-name":"blue-square, direction, bottom"},"arrow_heading_down":{"name":"arrow_heading_down","alternate-name":"blue-square, direction, bottom"},"arrow_heading_up":{"name":"arrow_heading_up","alternate-name":"blue-square, direction, top"},"leftwards_arrow_with_hook":{"name":"leftwards_arrow_with_hook","alternate-name":"back, return, blue-square, undo"},"arrow_right_hook":{"name":"arrow_right_hook","alternate-name":"blue-square, return, rotade, direction"},"left_right_arrow":{"name":"left_right_arrow","alternate-name":"shape, direction"},"arrow_up_down":{"name":"arrow_up_down","alternate-name":"blue-square, direction, way"},"arrow_up_small":{"name":"arrow_up_small","alternate-name":"blue-square, triangle, direction, point, forward, top"},"arrows_clockwise":{"name":"arrows_clockwise","alternate-name":"sync, cycle, round, repeat"},"arrows_counterclockwise":{"name":"arrows_counterclockwise","alternate-name":"blue-square, sync, cycle"},"rewind":{"name":"rewind","alternate-name":"play, blue-square"},"fast_forward":{"name":"fast_forward","alternate-name":"blue-square, play, speed, continue"},"information_source":{"name":"information_source","alternate-name":"blue-square, alphabet, letter"},"ok":{"name":"ok","alternate-name":"good, agree, yes, blue-square"},"twisted_rightwards_arrows":{"name":"twisted_rightwards_arrows","alternate-name":"blue-square, shuffle, music, random"},"repeat":{"name":"repeat","alternate-name":"loop, record"},"repeat_one":{"name":"repeat_one","alternate-name":"blue-square, loop"},"new":{"name":"new","alternate-name":"blue-square, words, start"},"top":{"name":"top","alternate-name":"words, blue-square"},"up":{"name":"up","alternate-name":"blue-square, above, high"},"cool":{"name":"cool","alternate-name":"words, blue-square"},"free":{"name":"free","alternate-name":"blue-square, words"},"ng":{"name":"ng","alternate-name":"blue-square, words, shape, icon"},"cinema":{"name":"cinema","alternate-name":"movie, blue-square, record, film"},"koko":{"name":"koko","alternate-name":"blue-square, here, katakana, japanese, destination"},"signal_strength":{"name":"signal_strength","alternate-name":"blue-square, reception, phone, internet, connection, wifi, bluetooth"},"u5272":{"name":"u5272","alternate-name":"wari, cut, divide, chinese, kanji, pink-square"},"u5408":{"name":"u5408","alternate-name":"japanese, chinese, join, kanji, red-square"},"u55b6":{"name":"u55b6","alternate-name":"ying, japanese, opening hours, orange-square"},"u6307":{"name":"u6307","alternate-name":"zhǐ, zhi, chinese, point, green-square, kanji"},"u6708":{"name":"u6708","alternate-name":"yuè, yue, chinese, month, moon, japanese, orange-square, kanji"},"u6709":{"name":"u6709","alternate-name":"yǒu, you, orange-square, chinese, have, kanji"},"u6e80":{"name":"u6e80","alternate-name":"mitsuru, full, chinese, japanese, red-square, kanji"},"u7121":{"name":"u7121","alternate-name":"wú, wu, nothing, chinese, kanji, japanese, orange-square"},"u7533":{"name":"u7533","alternate-name":"shēn, shen, chinese, japanese, kanji, orange-square"},"u7a7a":{"name":"u7a7a","alternate-name":"kōng, kong, kanji, japanese, chinese, empty, sky, blue-square"},"u7981":{"name":"u7981","alternate-name":"jìn, jin, kanji, japanese, chinese, forbidden, limit, restricted, red-square"},"sa":{"name":"sa","alternate-name":"japanese, blue-square, katakana"},"restroom":{"name":"restroom","alternate-name":"blue-square, toilet, refresh, wc, gender"},"mens":{"name":"mens","alternate-name":"toilet, restroom, wc, blue-square, gender, male"},"womens":{"name":"womens","alternate-name":"purple-square, woman, female, toilet, loo, restroom, gender"},"baby_symbol":{"name":"baby_symbol","alternate-name":"orange-square, child"},"no_smoking":{"name":"no_smoking","alternate-name":"cigarette, blue-square, smell, smoke"},"parking":{"name":"parking","alternate-name":"cars, blue-square, alphabet, letter"},"wheelchair":{"name":"wheelchair","alternate-name":"blue-square, disabled, a11y, accessibility"},"metro":{"name":"metro","alternate-name":"transportation, blue-square, mrt, underground, tube"},"baggage_claim":{"name":"baggage_claim","alternate-name":"blue-square, airport, transport"},"accept":{"name":"accept","alternate-name":"ok, good, chinese, kanji, agree, yes, orange-circle"},"wc":{"name":"wc","alternate-name":"toilet, restroom, blue-square"},"potable_water":{"name":"potable_water","alternate-name":"blue-square, liquid, restroom, cleaning, faucet"},"put_litter_in_its_place":{"name":"put_litter_in_its_place","alternate-name":"blue-square, sign, human, info"},"secret":{"name":"secret","alternate-name":"privacy, chinese, sshh, kanji, red-circle"},"congratulations":{"name":"congratulations","alternate-name":"chinese, kanji, japanese, red-circle"},"m":{"name":"m","alternate-name":"alphabet, blue-circle, letter"},"passport_control":{"name":"passport_control","alternate-name":"custom, blue-square"},"left_luggage":{"name":"left_luggage","alternate-name":"blue-square, travel"},"customs":{"name":"customs","alternate-name":"passport, border, blue-square"},"ideograph_advantage":{"name":"ideograph_advantage","alternate-name":"chinese, kanji, obtain, get, circle"},"cl":{"name":"cl","alternate-name":"alphabet, words, red-square"},"sos":{"name":"sos","alternate-name":"help, red-square, words, emergency, 911"},"id":{"name":"id","alternate-name":"purple-square, words"},"no_entry_sign":{"name":"no_entry_sign","alternate-name":"forbid, stop, limit, denied, disallow, circle"},"underage":{"name":"underage","alternate-name":"18, drink, pub, night, minor, circle"},"no_mobile_phones":{"name":"no_mobile_phones","alternate-name":"iphone, mute, circle"},"do_not_litter":{"name":"do_not_litter","alternate-name":"trash, bin, garbage, circle"},"non-potable_water":{"name":"non-potable_water","alternate-name":"drink, faucet, tap, circle"},"no_bicycles":{"name":"no_bicycles","alternate-name":"cyclist, prohibited, circle"},"no_pedestrians":{"name":"no_pedestrians","alternate-name":"rules, crossing, walking, circle"},"children_crossing":{"name":"children_crossing","alternate-name":"school, warning, danger, sign, driving, yellow-diamond"},"no_entry":{"name":"no_entry","alternate-name":"limit, security, privacy, bad, denied, stop, circle"},"eight_spoked_asterisk":{"name":"eight_spoked_asterisk","alternate-name":"star, sparkle, green-square"},"sparkle":{"name":"sparkle","alternate-name":"stars, green-square, awesome, good, fireworks"},"eight_pointed_black_star":{"name":"eight_pointed_black_star","alternate-name":"orange-square, shape, polygon"},"heart_decoration":{"name":"heart_decoration","alternate-name":"heart, purple-square, love, like"},"vs":{"name":"vs","alternate-name":"words, orange-square"},"vibration_mode":{"name":"vibration_mode","alternate-name":"orange-square, phone"},"mobile_phone_off":{"name":"mobile_phone_off","alternate-name":"mute, orange-square, silence, quiet"},"chart":{"name":"chart","alternate-name":"yen, green-square, graph, presentation, stats"},"currency_exchange":{"name":"currency_exchange","alternate-name":"money, sales, dollar, travel"},"aries":{"name":"aries","alternate-name":"zodiac, sign, purple-square, astrology"},"taurus":{"name":"taurus","alternate-name":"zodiac, purple-square, sign, astrology"},"gemini":{"name":"gemini","alternate-name":"zodiac, sign, purple-square, astrology"},"cancer":{"name":"cancer","alternate-name":"zodiac, sign, purple-square, astrology"},"leo":{"name":"leo","alternate-name":"zodiac, sign, purple-square, astrology"},"virgo":{"name":"virgo","alternate-name":"zodiac, sign, purple-square, astrology"},"libra":{"name":"libra","alternate-name":"zodiac, sign, purple-square, astrology"},"scorpius":{"name":"scorpius","alternate-name":"zodiac, sign, purple-square, astrology, scorpio"},"sagittarius":{"name":"sagittarius","alternate-name":"zodiac, sign, purple-square, astrology"},"capricorn":{"name":"capricorn","alternate-name":"zodiac, sign, purple-square, astrology"},"aquarius":{"name":"aquarius","alternate-name":"zodiac, sign, purple-square, astrology"},"pisces":{"name":"pisces","alternate-name":"zodiac, purple-square, sign, astrology"},"ophiuchus":{"name":"ophiuchus","alternate-name":"zodiac, sign, purple-square, constellation, astrology"},"six_pointed_star":{"name":"six_pointed_star","alternate-name":"purple-square, religion, jewish, hexagram"},"negative_squared_cross_mark":{"name":"negative_squared_cross_mark","alternate-name":"x, green-square, no, deny"},"a":{"name":"a","alternate-name":"red-square, alphabet, letter"},"b":{"name":"b","alternate-name":"red-square, alphabet, letter"},"ab":{"name":"ab","alternate-name":"red-square, alphabet"},"o2":{"name":"o2","alternate-name":"alphabet, red-square, letter"},"diamond_shape_with_a_dot_inside":{"name":"diamond_shape_with_a_dot_inside","alternate-name":"jewel, blue, gem, crystal, fancy"},"recycle":{"name":"recycle","alternate-name":"arrow, environment, garbage, trash"},"end":{"name":"end","alternate-name":"words, arrow"},"back":{"name":"back","alternate-name":"arrow, words, return"},"on":{"name":"on","alternate-name":"arrow, words"},"soon":{"name":"soon","alternate-name":"arrow, words"},"clock1":{"name":"clock1","alternate-name":"time, late, early, schedule"},"clock130":{"name":"clock130","alternate-name":"time, late, early, schedule"},"clock10":{"name":"clock10","alternate-name":"time, late, early, schedule"},"clock1030":{"name":"clock1030","alternate-name":"time, late, early, schedule"},"clock11":{"name":"clock11","alternate-name":"time, late, early, schedule"},"clock1130":{"name":"clock1130","alternate-name":"time, late, early, schedule"},"clock12":{"name":"clock12","alternate-name":"midnight, noon, time, late, early, schedule"},"clock1230":{"name":"clock1230","alternate-name":"time, late, early, schedule"},"clock2":{"name":"clock2","alternate-name":"time, late, early, schedule"},"clock230":{"name":"clock230","alternate-name":"time, late, early, schedule"},"clock3":{"name":"clock3","alternate-name":"time, late, early, schedule"},"clock330":{"name":"clock330","alternate-name":"time, late, early, schedule"},"clock4":{"name":"clock4","alternate-name":"time, late, early, schedule"},"clock430":{"name":"clock430","alternate-name":"time, late, early, schedule"},"clock5":{"name":"clock5","alternate-name":"time, late, early, schedule"},"clock530":{"name":"clock530","alternate-name":"time, late, early, schedule"},"clock6":{"name":"clock6","alternate-name":"time, late, early, schedule, dawn, dusk"},"clock630":{"name":"clock630","alternate-name":"time, late, early, schedule"},"clock7":{"name":"clock7","alternate-name":"time, late, early, schedule"},"clock730":{"name":"clock730","alternate-name":"time, late, early, schedule"},"clock8":{"name":"clock8","alternate-name":"time, late, early, schedule"},"clock830":{"name":"clock830","alternate-name":"time, late, early, schedule"},"clock9":{"name":"clock9","alternate-name":"time, late, early, schedule"},"clock930":{"name":"clock930","alternate-name":"time, late, early, schedule"},"heavy_dollar_sign":{"name":"heavy_dollar_sign","alternate-name":"money, sales, payment, currency"},"copyright":{"name":"copyright","alternate-name":"ip, license, circle, law, legal"},"registered":{"name":"registered","alternate-name":"alphabet, circle"},"tm":{"name":"tm","alternate-name":"trademark, brand, law, legal"},"x":{"name":"x","alternate-name":"no, delete, remove"},"heavy_exclamation_mark":{"name":"heavy_exclamation_mark","alternate-name":"shocked, surprised"},"bangbang":{"name":"bangbang","alternate-name":"exclamation, surprise"},"interrobang":{"name":"interrobang","alternate-name":"wat, punctuation, surprise"},"o":{"name":"o","alternate-name":"circle, round"},"heavy_multiplication_x":{"name":"heavy_multiplication_x","alternate-name":"math, calculation"},"heavy_plus_sign":{"name":"heavy_plus_sign","alternate-name":"math, calculation, addition, more, increase"},"heavy_minus_sign":{"name":"heavy_minus_sign","alternate-name":"math, calculation, subtract, less"},"heavy_division_sign":{"name":"heavy_division_sign","alternate-name":"divide, math, calculation"},"white_flower":{"name":"white_flower","alternate-name":"floral, japanese, spring"},"heavy_check_mark":{"name":"heavy_check_mark","alternate-name":"ok, nike"},"ballot_box_with_check":{"name":"ballot_box_with_check","alternate-name":"ok, agree, confirm, black-square, vote, election"},"radio_button":{"name":"radio_button","alternate-name":"input, old, music, circle"},"link":{"name":"link","alternate-name":"rings, url"},"curly_loop":{"name":"curly_loop","alternate-name":"scribble, draw, shape, squiggle"},"wavy_dash":{"name":"wavy_dash","alternate-name":"draw, line, moustache, mustache, squiggle, scribble"},"part_alternation_mark":{"name":"part_alternation_mark","alternate-name":"graph, presentation, stats, business, economics, bad"},"trident":{"name":"trident","alternate-name":"weapon, spear"},"black_small_square":{"name":"black_small_square","alternate-name":"shape, icon"},"white_small_square":{"name":"white_small_square","alternate-name":"shape, icon"},"black_medium_small_square":{"name":"black_medium_small_square","alternate-name":"icon, shape, button"},"white_medium_small_square":{"name":"white_medium_small_square","alternate-name":"shape, stone, icon, button"},"black_medium_square":{"name":"black_medium_square","alternate-name":"shape, button, icon"},"white_medium_square":{"name":"white_medium_square","alternate-name":"shape, stone, icon"},//"black_large_square": {
+	//    "name": "black_large_square",
+	//    "alternate-name": "shape, icon, button"
+	//},
+	"white_large_square":{"name":"white_large_square","alternate-name":"shape, icon, stone, button"},"white_check_mark":{"name":"white_check_mark","alternate-name":"green-square, ok, agree, vote, election"},"black_square_button":{"name":"black_square_button","alternate-name":"shape, input, frame"},"white_square_button":{"name":"white_square_button","alternate-name":"shape, input"},"black_circle":{"name":"black_circle","alternate-name":"shape, button, round"},"white_circle":{"name":"white_circle","alternate-name":"shape, round"},"red_circle":{"name":"red_circle","alternate-name":"shape, error, danger"},"large_blue_circle":{"name":"large_blue_circle","alternate-name":"shape, icon, button"},"large_blue_diamond":{"name":"large_blue_diamond","alternate-name":"shape, jewel, gem"},"large_orange_diamond":{"name":"large_orange_diamond","alternate-name":"shape, jewel, gem"},"small_blue_diamond":{"name":"small_blue_diamond","alternate-name":"shape, jewel, gem"},"small_orange_diamond":{"name":"small_orange_diamond","alternate-name":"shape, jewel, gem"},"small_red_triangle":{"name":"small_red_triangle","alternate-name":"shape, direction, up, top"},"small_red_triangle_down":{"name":"small_red_triangle_down","alternate-name":"shape, direction, bottom"},"shipit":{"name":"shipit","alternate-name":"squirrel, detective, animal, sherlock, inspector, custom_"}},"partyParrot":{"parrot":{"name":"parrot"},"middleparrot":{"name":"middleparrot"},"rightparrot":{"name":"rightparrot"},"aussieparrot":{"name":"aussieparrot"},"gothparrot":{"name":"gothparrot"},"oldtimeyparrot":{"name":"oldtimeyparrot"},"boredparrot":{"name":"boredparrot"},"shuffleparrot":{"name":"shuffleparrot"},"shufflefurtherparrot":{"name":"shufflefurtherparrot"},"congaparrot":{"name":"congaparrot"},"reversecongaparrot":{"name":"reversecongaparrot"},"partyparrot":{"name":"partyparrot"},"sadparrot":{"name":"sadparrot"},"parrotcop":{"name":"parrotcop"},"fastparrot":{"name":"fastparrot"},"slowparrot":{"name":"slowparrot"},"parrotdad":{"name":"parrotdad"},"dealwithitparrot":{"name":"dealwithitparrot"},"fiestaparrot":{"name":"fiestaparrot"},"chillparrot":{"name":"chillparrot"},"explodyparrot":{"name":"explodyparrot"},"shufflepartyparrot":{"name":"shufflepartyparrot"},"ice-cream-parrot":{"name":"ice-cream-parrot"},"aussiecongaparrot":{"name":"aussiecongaparrot"},"aussiereversecongaparrot":{"name":"aussiereversecongaparrot"},"parrotwave1":{"name":"parrotwave1"},"parrotwave2":{"name":"parrotwave2"},"parrotwave3":{"name":"parrotwave3"},"parrotwave4":{"name":"parrotwave4"},"parrotwave5":{"name":"parrotwave5"},"parrotwave6":{"name":"parrotwave6"},"parrotwave7":{"name":"parrotwave7"}}};var EmoticonsGroup=exports.EmoticonsGroup={people:{groupName:'People',groupEmoticon:'smile'},nature:{groupName:'Nature',groupEmoticon:'leaves'},objects:{groupName:'Objects',groupEmoticon:'iphone'},places:{groupName:'Places',groupEmoticon:'airplane'},symbols:{groupName:'Symbols',groupEmoticon:'heart_decoration'},partyParrot:{groupName:'Party Parrots',groupEmoticon:'parrot'}};
+
+/***/ },
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(308);
+	var content = __webpack_require__(310);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(310)(content, {});
+	var update = __webpack_require__(312)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -50181,10 +53605,10 @@
 	}
 
 /***/ },
-/* 308 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(309)();
+	exports = module.exports = __webpack_require__(311)();
 	// imports
 
 
@@ -50195,7 +53619,7 @@
 
 
 /***/ },
-/* 309 */
+/* 311 */
 /***/ function(module, exports) {
 
 	/*
@@ -50251,7 +53675,7 @@
 
 
 /***/ },
-/* 310 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -50503,7 +53927,7 @@
 
 
 /***/ },
-/* 311 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -50528,7 +53952,7 @@
 
 	var _iconButton2 = _interopRequireDefault(_iconButton);
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50650,7 +54074,7 @@
 	exports.default = ChatAreaHeader;
 
 /***/ },
-/* 312 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -50689,7 +54113,7 @@
 
 	var _contextPure2 = _interopRequireDefault(_contextPure);
 
-	var _styleResizable = __webpack_require__(313);
+	var _styleResizable = __webpack_require__(315);
 
 	var _styleResizable2 = _interopRequireDefault(_styleResizable);
 
@@ -50697,7 +54121,7 @@
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _deprecatedPropType = __webpack_require__(314);
+	var _deprecatedPropType = __webpack_require__(316);
 
 	var _deprecatedPropType2 = _interopRequireDefault(_deprecatedPropType);
 
@@ -51067,7 +54491,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 313 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51131,7 +54555,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 314 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -51160,7 +54584,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 315 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51193,7 +54617,7 @@
 
 	var _person2 = _interopRequireDefault(_person);
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51322,16 +54746,16 @@
 	exports.default = Login;
 
 /***/ },
-/* 316 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(317);
+	var content = __webpack_require__(319);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(310)(content, {});
+	var update = __webpack_require__(312)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -51348,21 +54772,21 @@
 	}
 
 /***/ },
-/* 317 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(309)();
+	exports = module.exports = __webpack_require__(311)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "button[data-balloon] {\n  overflow: visible; }\n\n[data-balloon] {\n  position: relative; }\n\n[data-balloon]:before,\n[data-balloon]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)\";\n  filter: alpha(opacity=0);\n  -khtml-opacity: 0;\n  -moz-opacity: 0;\n  opacity: 0;\n  pointer-events: none;\n  -webkit-transition: all 0.18s ease-out 0.18s;\n  transition: all 0.18s ease-out 0.18s;\n  bottom: 100%;\n  left: 50%;\n  position: absolute;\n  z-index: 10;\n  -webkit-transform: translate(-50%, 10px);\n  -ms-transform: translate(-50%, 10px);\n  transform: translate(-50%, 10px);\n  -webkit-transform-origin: top;\n  -ms-transform-origin: top;\n  transform-origin: top; }\n\n[data-balloon]:after {\n  background: rgba(17, 17, 17, 0.9);\n  border-radius: 4px;\n  color: #fff;\n  content: attr(data-balloon);\n  font-size: 12px;\n  padding: .5em 1em;\n  white-space: nowrap;\n  margin-bottom: 11px; }\n\n[data-balloon]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(0)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  content: \"\";\n  margin-bottom: 5px; }\n\n[data-balloon]:hover:before,\n[data-balloon][data-balloon-visible]:before,\n[data-balloon]:hover:after,\n[data-balloon][data-balloon-visible]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)\";\n  filter: alpha(opacity=100);\n  -khtml-opacity: 1;\n  -moz-opacity: 1;\n  opacity: 1;\n  pointer-events: auto;\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon][data-balloon-break]:after {\n  white-space: normal; }\n\n[data-balloon-pos=\"down\"]:before,\n[data-balloon-pos=\"down\"]:after {\n  bottom: auto;\n  left: 50%;\n  top: 100%;\n  -webkit-transform: translate(-50%, -10px);\n  -ms-transform: translate(-50%, -10px);\n  transform: translate(-50%, -10px); }\n\n[data-balloon-pos=\"down\"]:after {\n  margin-top: 11px; }\n\n[data-balloon-pos=\"down\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(180 18 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  margin-top: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"down\"]:hover:before,\n[data-balloon-pos=\"down\"][data-balloon-visible]:before,\n[data-balloon-pos=\"down\"]:hover:after,\n[data-balloon-pos=\"down\"][data-balloon-visible]:after {\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon-pos=\"left\"]:before,\n[data-balloon-pos=\"left\"]:after {\n  bottom: auto;\n  left: auto;\n  right: 100%;\n  top: 50%;\n  -webkit-transform: translate(10px, -50%);\n  -ms-transform: translate(10px, -50%);\n  transform: translate(10px, -50%); }\n\n[data-balloon-pos=\"left\"]:after {\n  margin-right: 11px; }\n\n[data-balloon-pos=\"left\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(-90 18 18)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-right: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"left\"]:hover:before,\n[data-balloon-pos=\"left\"][data-balloon-visible]:before,\n[data-balloon-pos=\"left\"]:hover:after,\n[data-balloon-pos=\"left\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-pos=\"right\"]:before,\n[data-balloon-pos=\"right\"]:after {\n  bottom: auto;\n  left: 100%;\n  top: 50%;\n  -webkit-transform: translate(-10px, -50%);\n  -ms-transform: translate(-10px, -50%);\n  transform: translate(-10px, -50%); }\n\n[data-balloon-pos=\"right\"]:after {\n  margin-left: 11px; }\n\n[data-balloon-pos=\"right\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(90 6 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-bottom: 0;\n  margin-left: 5px; }\n\n[data-balloon-pos=\"right\"]:hover:before,\n[data-balloon-pos=\"right\"][data-balloon-visible]:before,\n[data-balloon-pos=\"right\"]:hover:after,\n[data-balloon-pos=\"right\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-length]:after {\n  white-space: normal; }\n\n[data-balloon-length=\"small\"]:after {\n  width: 80px; }\n\n[data-balloon-length=\"medium\"]:after {\n  width: 150px; }\n\n[data-balloon-length=\"large\"]:after {\n  width: 260px; }\n\n[data-balloon-length=\"xlarge\"]:after {\n  width: 90vw; }\n\n@media screen and (min-width: 768px) {\n  [data-balloon-length=\"xlarge\"]:after {\n    width: 380px; } }\n\n[data-balloon-length=\"fit\"]:after {\n  width: 100%; }\n\nhtml, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\nul {\n  list-style-type: none;\n  padding: 0;\n  margin: 0; }\n\n.clearfix::after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.ca-main-paper {\n  display: inline-block;\n  height: 80%;\n  width: 100%;\n  position: absolute;\n  top: 20%;\n  left: 0; }\n  .ca-main-paper.chatBox {\n    top: 0;\n    background: #F5F5F5;\n    height: 100%;\n    width: 100%; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 100%;\n  float: left; }\n\n.ma-sidebar {\n  display: none;\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 5px 30px; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n\n.ib-em-bt {\n  position: absolute !important;\n  right: 25px; }\n\n.ib-em-icon {\n  fill: #999 !important; }\n\n.ib-text input {\n  padding-right: 40px !important;\n  box-sizing: border-box; }\n\n.emoji {\n  width: 1.5em;\n  height: 1.5em;\n  display: inline-block;\n  margin-bottom: -0.25em;\n  background-size: contain; }\n\n@media screen and (min-width: 900px) {\n  .ca-main-paper {\n    top: 10%;\n    width: 450px;\n    height: 450px;\n    left: calc((100% - 450px) / 2); }\n    .ca-main-paper.chatBox {\n      top: 10%;\n      left: 0;\n      height: 80%; }\n  .messageForm {\n    width: 75%; }\n  .ma-sidebar {\n    display: block; } }\n\n@media screen and (min-width: 1200px) {\n  .ca-main-paper.chatBox {\n    left: calc((100% - 1200px) / 2);\n    top: 10%;\n    height: 80%;\n    width: 1200px; } }\n", ""]);
+	exports.push([module.id, "button[data-balloon] {\n  overflow: visible; }\n\n[data-balloon] {\n  position: relative; }\n\n[data-balloon]:before,\n[data-balloon]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)\";\n  filter: alpha(opacity=0);\n  -khtml-opacity: 0;\n  -moz-opacity: 0;\n  opacity: 0;\n  pointer-events: none;\n  -webkit-transition: all 0.18s ease-out 0.18s;\n  transition: all 0.18s ease-out 0.18s;\n  bottom: 100%;\n  left: 50%;\n  position: absolute;\n  z-index: 10;\n  -webkit-transform: translate(-50%, 10px);\n  -ms-transform: translate(-50%, 10px);\n  transform: translate(-50%, 10px);\n  -webkit-transform-origin: top;\n  -ms-transform-origin: top;\n  transform-origin: top; }\n\n[data-balloon]:after {\n  background: rgba(17, 17, 17, 0.9);\n  border-radius: 4px;\n  color: #fff;\n  content: attr(data-balloon);\n  font-size: 12px;\n  padding: .5em 1em;\n  white-space: nowrap;\n  margin-bottom: 11px; }\n\n[data-balloon]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(0)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  content: \"\";\n  margin-bottom: 5px; }\n\n[data-balloon]:hover:before,\n[data-balloon][data-balloon-visible]:before,\n[data-balloon]:hover:after,\n[data-balloon][data-balloon-visible]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)\";\n  filter: alpha(opacity=100);\n  -khtml-opacity: 1;\n  -moz-opacity: 1;\n  opacity: 1;\n  pointer-events: auto;\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon][data-balloon-break]:after {\n  white-space: normal; }\n\n[data-balloon-pos=\"down\"]:before,\n[data-balloon-pos=\"down\"]:after {\n  bottom: auto;\n  left: 50%;\n  top: 100%;\n  -webkit-transform: translate(-50%, -10px);\n  -ms-transform: translate(-50%, -10px);\n  transform: translate(-50%, -10px); }\n\n[data-balloon-pos=\"down\"]:after {\n  margin-top: 11px; }\n\n[data-balloon-pos=\"down\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(180 18 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  margin-top: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"down\"]:hover:before,\n[data-balloon-pos=\"down\"][data-balloon-visible]:before,\n[data-balloon-pos=\"down\"]:hover:after,\n[data-balloon-pos=\"down\"][data-balloon-visible]:after {\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon-pos=\"left\"]:before,\n[data-balloon-pos=\"left\"]:after {\n  bottom: auto;\n  left: auto;\n  right: 100%;\n  top: 50%;\n  -webkit-transform: translate(10px, -50%);\n  -ms-transform: translate(10px, -50%);\n  transform: translate(10px, -50%); }\n\n[data-balloon-pos=\"left\"]:after {\n  margin-right: 11px; }\n\n[data-balloon-pos=\"left\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(-90 18 18)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-right: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"left\"]:hover:before,\n[data-balloon-pos=\"left\"][data-balloon-visible]:before,\n[data-balloon-pos=\"left\"]:hover:after,\n[data-balloon-pos=\"left\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-pos=\"right\"]:before,\n[data-balloon-pos=\"right\"]:after {\n  bottom: auto;\n  left: 100%;\n  top: 50%;\n  -webkit-transform: translate(-10px, -50%);\n  -ms-transform: translate(-10px, -50%);\n  transform: translate(-10px, -50%); }\n\n[data-balloon-pos=\"right\"]:after {\n  margin-left: 11px; }\n\n[data-balloon-pos=\"right\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(90 6 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-bottom: 0;\n  margin-left: 5px; }\n\n[data-balloon-pos=\"right\"]:hover:before,\n[data-balloon-pos=\"right\"][data-balloon-visible]:before,\n[data-balloon-pos=\"right\"]:hover:after,\n[data-balloon-pos=\"right\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-length]:after {\n  white-space: normal; }\n\n[data-balloon-length=\"small\"]:after {\n  width: 80px; }\n\n[data-balloon-length=\"medium\"]:after {\n  width: 150px; }\n\n[data-balloon-length=\"large\"]:after {\n  width: 260px; }\n\n[data-balloon-length=\"xlarge\"]:after {\n  width: 90vw; }\n\n@media screen and (min-width: 768px) {\n  [data-balloon-length=\"xlarge\"]:after {\n    width: 380px; } }\n\n[data-balloon-length=\"fit\"]:after {\n  width: 100%; }\n\nhtml, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\nul {\n  list-style-type: none;\n  padding: 0;\n  margin: 0; }\n\n.clearfix::after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.ca-main-paper {\n  display: inline-block;\n  height: 80%;\n  width: 100%;\n  position: absolute;\n  top: 20%;\n  left: 0; }\n  .ca-main-paper.chatBox {\n    top: 0;\n    background: #F5F5F5;\n    height: 100%;\n    width: 100%; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 100%;\n  float: left; }\n\n.ma-sidebar {\n  display: none;\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 8px 30px; }\n  .message:hover {\n    background: #f6f6f6; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n\n.ib-em-bt {\n  position: absolute !important;\n  right: 25px; }\n\n.ib-em-icon {\n  fill: #999 !important; }\n\n.ib-text input {\n  padding-right: 40px !important;\n  box-sizing: border-box; }\n\n.emoji {\n  width: 1.5em;\n  height: 1.5em;\n  display: inline-block;\n  background-size: contain; }\n\n.md-link {\n  color: #0000EE; }\n\n@media screen and (min-width: 900px) {\n  .ca-main-paper {\n    top: 10%;\n    width: 450px;\n    height: 450px;\n    left: calc((100% - 450px) / 2); }\n    .ca-main-paper.chatBox {\n      top: 10%;\n      left: 0;\n      height: 80%; }\n  .messageForm {\n    width: 75%; }\n  .ma-sidebar {\n    display: block; } }\n\n@media screen and (min-width: 1200px) {\n  .ca-main-paper.chatBox {\n    left: calc((100% - 1200px) / 2);\n    top: 10%;\n    height: 80%;\n    width: 1200px; } }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 318 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -51372,7 +54796,7 @@
 	});
 	exports.default = reducer;
 
-	var _actions = __webpack_require__(306);
+	var _actions = __webpack_require__(307);
 
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
 	                                                                                                                                                                                                     * Created by amanjain on 30/07/16 at 9:46 AM.
@@ -51415,23 +54839,23 @@
 	}
 
 /***/ },
-/* 319 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defaultClickRejectionStrategy = __webpack_require__(320);
+	var defaultClickRejectionStrategy = __webpack_require__(322);
 
 	module.exports = function injectTapEventPlugin (strategyOverrides) {
 	  strategyOverrides = strategyOverrides || {}
 	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
 
 	  __webpack_require__(31).injection.injectEventPluginsByName({
-	    "TapEventPlugin":       __webpack_require__(321)(shouldRejectClick)
+	    "TapEventPlugin":       __webpack_require__(323)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 320 */
+/* 322 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -51442,7 +54866,7 @@
 
 
 /***/ },
-/* 321 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -51470,10 +54894,10 @@
 	var EventPluginUtils = __webpack_require__(33);
 	var EventPropagators = __webpack_require__(73);
 	var SyntheticUIEvent = __webpack_require__(87);
-	var TouchEventUtils = __webpack_require__(322);
+	var TouchEventUtils = __webpack_require__(324);
 	var ViewportMetrics = __webpack_require__(38);
 
-	var keyOf = __webpack_require__(323);
+	var keyOf = __webpack_require__(325);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -51619,7 +55043,7 @@
 
 
 /***/ },
-/* 322 */
+/* 324 */
 /***/ function(module, exports) {
 
 	/**
@@ -51667,7 +55091,7 @@
 
 
 /***/ },
-/* 323 */
+/* 325 */
 /***/ function(module, exports) {
 
 	/**
@@ -51705,20 +55129,6 @@
 	};
 
 	module.exports = keyOf;
-
-/***/ },
-/* 324 */
-/***/ function(module, exports) {
-
-	"use strict";Object.defineProperty(exports,"__esModule",{value:true});var EmoticonGroupDetails=exports.EmoticonGroupDetails={"people":{"bowtie":{"name":"bowtie","alternate-name":"classy, bow, face, formal, fashion, suit, magic, circus"},"smile":{"name":"smile","alternate-name":"happy, cheerful, face, joy, funny, haha, laugh, like"},//"simple_smile": {
-	//    "name": "simple_smile",
-	//    "alternate-name": "smile, guy, happy, cheerful, smiling"
-	//},
-	"laughing":{"name":"laughing","alternate-name":"lol, funny, happy, joy, satisfied, haha, face, glad"},"blush":{"name":"blush","alternate-name":"face, smile, happy, flushed, crush, embarrassed, shy, joy"},"smiley":{"name":"smiley","alternate-name":"funny, face, happy, joy, haha"},"relaxed":{"name":"relaxed","alternate-name":"face, blush, massage, happiness"},"smirk":{"name":"smirk","alternate-name":"face, smile, mean, prank, smug, sarcasm"},"heart_eyes":{"name":"heart_eyes","alternate-name":"heart, love, face, like, affection, valentines, infatuation, crush"},"kissing_heart":{"name":"kissing_heart","alternate-name":"heart, kiss, face, love, like, affection, valentines, infatuation"},"kissing_closed_eyes":{"name":"kissing_closed_eyes","alternate-name":"face, love, like, affection, valentines, infatuation"},"flushed":{"name":"flushed","alternate-name":"flustered, embarassed, face, blush, shy, flattered"},"relieved":{"name":"relieved","alternate-name":"face, relaxed, phew, massage, happiness"},"satisfied":{"name":"satisfied","alternate-name":"contented"},"grin":{"name":"grin","alternate-name":"happy, smile, face, joy"},"wink":{"name":"wink","alternate-name":"flirt, face, happy, mischievous, secret"},"stuck_out_tongue_winking_eye":{"name":"stuck_out_tongue_winking_eye","alternate-name":"face, prank, childish, playful, mischievous, smile"},"stuck_out_tongue_closed_eyes":{"name":"stuck_out_tongue_closed_eyes","alternate-name":"face, prank, playful, mischievous, smile"},"grinning":{"name":"grinning","alternate-name":"smiling, face, smile, happy, joy"},"kissing":{"name":"kissing","alternate-name":"love, like, face, 3, valentines, infatuation"},"kissing_smiling_eyes":{"name":"kissing_smiling_eyes","alternate-name":"smooch, face, affection, valentines, infatuation"},"stuck_out_tongue":{"name":"stuck_out_tongue","alternate-name":"face, prank, childish, playful, mischievous, smile"},"sleeping":{"name":"sleeping","alternate-name":"asleep, face, tired, sleepy, night, zzz"},"worried":{"name":"worried","alternate-name":"frustrated, scared, face, concern, nervous"},"frowning":{"name":"frowning","alternate-name":"face, aw, what"},"anguished":{"name":"anguished","alternate-name":"face, stunned, nervous"},"open_mouth":{"name":"open_mouth","alternate-name":"face, surprise, impressed, wow"},"grimacing":{"name":"grimacing","alternate-name":"face, grimace, teeth"},"confused":{"name":"confused","alternate-name":"baffled, puzzled, face, indifference, huh, weird, hmmm"},"hushed":{"name":"hushed","alternate-name":"face, woo, shh, conceal, hide"},"expressionless":{"name":"expressionless","alternate-name":"deadpan, face, indifferent, -_-, meh"},"unamused":{"name":"unamused","alternate-name":"sarcasm, indifference, bored, straight face, serious"},"sweat_smile":{"name":"sweat_smile","alternate-name":"happy, relief, face, hot, laugh"},"sweat":{"name":"sweat","alternate-name":"worried, stressed, face, hot, sad, tired, exercise"},"disappointed_relieved":{"name":"disappointed_relieved","alternate-name":"face, phew, sweat, nervous"},"weary":{"name":"weary","alternate-name":"tired, face, sleepy, sad, frustrated, upset"},"pensive":{"name":"pensive","alternate-name":"face, sad, depressed, okay, upset"},"disappointed":{"name":"disappointed","alternate-name":"sad, lonely, face, upset, depressed"},"confounded":{"name":"confounded","alternate-name":"face, confused, sick, unwell, oops"},"fearful":{"name":"fearful","alternate-name":"scared, afraid, nervous, scared, face, terrified, oops, huh"},"cold_sweat":{"name":"cold_sweat","alternate-name":"scared, frightened, nervous, scared, face"},"persevere":{"name":"persevere","alternate-name":"face, sick, no, upset, oops"},"cry":{"name":"cry","alternate-name":"sad, unhappy, tear, face, tears, depressed, upset"},"sob":{"name":"sob","alternate-name":"sad, unhappy, face, cry, tears, upset, depressed"},"joy":{"name":"joy","alternate-name":"happy, happytears, face, cry, tears, weep, haha"},"astonished":{"name":"astonished","alternate-name":"face, xox, surprised, poisoned"},"scream":{"name":"scream","alternate-name":"halloween, scary, scared, terrified, face, munch, omg"},"neckbeard":{"name":"neckbeard","alternate-name":"nerd, geek, nerdy, face, custom_"},"tired_face":{"name":"tired_face","alternate-name":"sick, whine, upset, frustrated"},"angry":{"name":"angry","alternate-name":"mad, face, annoyed, frustrated"},"rage":{"name":"rage","alternate-name":"furious, angry, mad, hate, despise"},"triumph":{"name":"triumph","alternate-name":"face, gas, phew, proud, pride"},"sleepy":{"name":"sleepy","alternate-name":"tired, zzz, face, rest, nap"},"yum":{"name":"yum","alternate-name":"delicious, happy, joy, tongue, smile, face, silly, yummy"},"mask":{"name":"mask","alternate-name":"face, sick, ill, disease"},"sunglasses":{"name":"sunglasses","alternate-name":"shades, face, cool, smile, summer, beach"},"dizzy_face":{"name":"dizzy_face","alternate-name":"ko, spent, unconscious, xox"},"imp":{"name":"imp","alternate-name":"devil, angry, horns"},"smiling_imp":{"name":"smiling_imp","alternate-name":"devil, horns"},"neutral_face":{"name":"neutral_face","alternate-name":"indifference, meh"},"no_mouth":{"name":"no_mouth","alternate-name":"face, hellokitty, silent"},"innocent":{"name":"innocent","alternate-name":"angel, face, heaven, halo"},"alien":{"name":"alien","alternate-name":"extraterrestrial, UFO, paul, weird, outer_space"},"yellow_heart":{"name":"yellow_heart","alternate-name":"heart, love, like, affection, valentines"},"blue_heart":{"name":"blue_heart","alternate-name":"heart, love, like, affection, valentines"},"purple_heart":{"name":"purple_heart","alternate-name":"heart, love, like, affection, valentines"},"heart":{"name":"heart","alternate-name":"heart, love, like, valentines"},"green_heart":{"name":"green_heart","alternate-name":"heart, love, like, affection, valentines"},"broken_heart":{"name":"broken_heart","alternate-name":"heart, heartbreak, sad, sorry, break"},"heartbeat":{"name":"heartbeat","alternate-name":"heart, love, like, affection, valentines, pink"},"heartpulse":{"name":"heartpulse","alternate-name":"heart, like, love, affection, valentines, pink"},"two_hearts":{"name":"two_hearts","alternate-name":"heart, love, like, affection, valentines"},"revolving_hearts":{"name":"revolving_hearts","alternate-name":"heart, love, like, affection, valentines"},"cupid":{"name":"cupid","alternate-name":"love, like, heart, affection, valentines"},"sparkling_heart":{"name":"sparkling_heart","alternate-name":"heart, love, like, affection, valentines"},"sparkles":{"name":"sparkles","alternate-name":"stars, shine, shiny, cool, awesome, good, magic"},"star":{"name":"star","alternate-name":"night, yellow"},"star2":{"name":"star2","alternate-name":"night, sparkle, awesome, good, magic"},"dizzy":{"name":"dizzy","alternate-name":"star, sparkle, shoot, magic"},"boom":{"name":"boom","alternate-name":"explosion, bomb, explode, collision, blown"},"collision":{"name":"collision","alternate-name":"accident, fight, boom"},"anger":{"name":"anger","alternate-name":"angry, mad"},"exclamation":{"name":"exclamation","alternate-name":"heavy_exclamation_mark, danger, surprise, punctuation, wow, warning"},"question":{"name":"question","alternate-name":"doubt, confused"},"grey_exclamation":{"name":"grey_exclamation","alternate-name":"surprise, punctuation, gray, wow, warning"},"grey_question":{"name":"grey_question","alternate-name":"doubts, gray, huh"},"zzz":{"name":"zzz","alternate-name":"sleep, bored, sleepy, tired"},"dash":{"name":"dash","alternate-name":"wind, air, fast, shoo, fart, smoke, puff"},"sweat_drops":{"name":"sweat_drops","alternate-name":"water, drip, oops"},"notes":{"name":"notes","alternate-name":"music, score"},"musical_note":{"name":"musical_note","alternate-name":"music, score, tone, sound"},"fire":{"name":"fire","alternate-name":"hot, cook, flame"},"hankey":{"name":"hankey","alternate-name":"poop, shitface, fail, turd"},"poop":{"name":"poop","alternate-name":"shit, turd"},"shit":{"name":"shit","alternate-name":"poop"},"+1":{"name":"+1","alternate-name":"thumbsup, yes, awesome, good, agree, accept, cool, hand, like"},"thumbsup":{"name":"thumbsup","alternate-name":"like"},"-1":{"name":"-1","alternate-name":"thumbsdown, no, dislike, hand"},"thumbsdown":{"name":"thumbsdown","alternate-name":"dislike"},"ok_hand":{"name":"ok_hand","alternate-name":"fingers, limbs, perfect"},"punch":{"name":"punch","alternate-name":"pound"},"facepunch":{"name":"facepunch","alternate-name":"angry, violence, fist, hit, attack, hand"},"fist":{"name":"fist","alternate-name":"fingers, hand, grasp"},"v":{"name":"v","alternate-name":"peace, deuces, fingers, ohyeah, hand, victory, two"},"wave":{"name":"wave","alternate-name":"hi, hello, bye, hands, gesture, goodbye, solong, farewell, palm"},"hand":{"name":"hand","alternate-name":"stop, fingers, highfive, palm, ban, raised_hand"},"raised_hand":{"name":"raised_hand","alternate-name":"stop"},"open_hands":{"name":"open_hands","alternate-name":"fingers, butterfly"},"point_up":{"name":"point_up","alternate-name":"hand, fingers, direction"},"point_down":{"name":"point_down","alternate-name":"fingers, hand, direction"},"point_left":{"name":"point_left","alternate-name":"direction, fingers, hand"},"point_right":{"name":"point_right","alternate-name":"fingers, hand, direction"},"raised_hands":{"name":"raised_hands","alternate-name":"gesture, hooray, yea, celebration"},"pray":{"name":"pray","alternate-name":"please, hope, wish, namaste, highfive"},"point_up_2":{"name":"point_up_2","alternate-name":"fingers, hand, direction"},"clap":{"name":"clap","alternate-name":"hands, praise, applause, congrats, yay"},"muscle":{"name":"muscle","alternate-name":"arm, flex, hand, summer, strong"},"metal":{"name":"metal","alternate-name":"fingers, rocknroll, concert, band, custom_"},"fu":{"name":"fu","alternate-name":"fuck, finger, dislike, thumbsdown, disapprove, no, custom_"},"runner":{"name":"runner","alternate-name":"sport, man, walking, exercise, race, running"},"running":{"name":"running","alternate-name":"sport"},"couple":{"name":"couple","alternate-name":"pair, people, human, love, date, dating, like, affection, valentines, marriage"},"family":{"name":"family","alternate-name":"home, parents, child, mom, dad, father, mother, people, human"},"two_men_holding_hands":{"name":"two_men_holding_hands","alternate-name":"gay, pair, couple, love, like, bromance, friendship, people, human"},"two_women_holding_hands":{"name":"two_women_holding_hands","alternate-name":"gay, pair, friendship, couple, love, like, female, people, human, lesbian"},"dancer":{"name":"dancer","alternate-name":"party, female, girl, woman, fun"},"dancers":{"name":"dancers","alternate-name":"party, female, bunny, women, girls"},"ok_woman":{"name":"ok_woman","alternate-name":"women, girl, female, pink, human"},"no_good":{"name":"no_good","alternate-name":"female, girl, woman, nope"},"information_desk_person":{"name":"information_desk_person","alternate-name":"female, girl, woman, human"},"raising_hand":{"name":"raising_hand","alternate-name":"female, girl, woman"},"bride_with_veil":{"name":"bride_with_veil","alternate-name":"couple, marriage, wedding"},"person_with_pouting_face":{"name":"person_with_pouting_face","alternate-name":"female, girl, woman"},"person_frowning":{"name":"person_frowning","alternate-name":"female, girl, woman, sad, depressed, discouraged, unhappy"},"bow":{"name":"bow","alternate-name":"man, male, boy"},"couplekiss":{"name":"couplekiss","alternate-name":"pair, valentines, love, like, dating, marriage"},"couple_with_heart":{"name":"couple_with_heart","alternate-name":"heart, pair, love, like, affection, human, dating, valentines, marriage"},"massage":{"name":"massage","alternate-name":"female, girl, woman, head"},"haircut":{"name":"haircut","alternate-name":"female, girl, woman"},"nail_care":{"name":"nail_care","alternate-name":"manicure, beauty, finger, fashion"},"boy":{"name":"boy","alternate-name":"man, male, guy, teenager"},"girl":{"name":"girl","alternate-name":"female, woman, teenager"},"woman":{"name":"woman","alternate-name":"female, girls, lady"},"man":{"name":"man","alternate-name":"guy, mustache, father, dad, classy, sir, moustache"},"baby":{"name":"baby","alternate-name":"infant, child, boy, girl, toddler"},"older_woman":{"name":"older_woman","alternate-name":"grandma, granny, female, women, girl, lady"},"older_man":{"name":"older_man","alternate-name":"grandpa, grandad, human, male, men"},"person_with_blond_hair":{"name":"person_with_blond_hair","alternate-name":"man, male, boy, blonde, guy"},"man_with_gua_pi_mao":{"name":"man_with_gua_pi_mao","alternate-name":"male, boy"},"man_with_turban":{"name":"man_with_turban","alternate-name":"male, indian, hinduism, arabs"},"construction_worker":{"name":"construction_worker","alternate-name":"male, human, wip, guy, build"},"cop":{"name":"cop","alternate-name":"police, policeman, man, law, legal, enforcement, arrest, 911"},"angel":{"name":"angel","alternate-name":"heaven, wings, halo"},"princess":{"name":"princess","alternate-name":"girl, woman, female, blond, crown, royal, queen"},"smiley_cat":{"name":"smiley_cat","alternate-name":"animal, happy, cats"},"smile_cat":{"name":"smile_cat","alternate-name":"animal, happy, cats"},"heart_eyes_cat":{"name":"heart_eyes_cat","alternate-name":"heart, animal, love, like, affection, cats, valentines"},"kissing_cat":{"name":"kissing_cat","alternate-name":"animal, love, cats"},"smirk_cat":{"name":"smirk_cat","alternate-name":"animal, cats"},"scream_cat":{"name":"scream_cat","alternate-name":"animal, cats, munch, scared"},"crying_cat_face":{"name":"crying_cat_face","alternate-name":"animal, sad, tears, weep, cats, upset"},"joy_cat":{"name":"joy_cat","alternate-name":"animal, happy, cats, haha, tears"},"pouting_cat":{"name":"pouting_cat","alternate-name":"animal, sad, unhappy, angry, cats"},"japanese_ogre":{"name":"japanese_ogre","alternate-name":"namahage, monster, red, mask, halloween, scary, creepy, devil, demon"},"japanese_goblin":{"name":"japanese_goblin","alternate-name":"tengu, red, evil, mask, monster, scary, creepy"},"see_no_evil":{"name":"see_no_evil","alternate-name":"monkey, animal, nature, haha"},"hear_no_evil":{"name":"hear_no_evil","alternate-name":"animal, monkey, nature"},"speak_no_evil":{"name":"speak_no_evil","alternate-name":"monkey, animal, nature, omg"},"guardsman":{"name":"guardsman","alternate-name":"uk, gb, british, male, guy, royal"},"skull":{"name":"skull","alternate-name":"scary, halloween, dead, skeleton, creepy"},"feet":{"name":"feet","alternate-name":"animal, tracking, footprints, dog, cat, pet, paw_prints"},"lips":{"name":"lips","alternate-name":"mouth, kiss"},"kiss":{"name":"kiss","alternate-name":"face, lips, love, like, affection, valentines"},"droplet":{"name":"droplet","alternate-name":"water, drip, faucet, spring"},"ear":{"name":"ear","alternate-name":"face, hear, sound, listen"},"eyes":{"name":"eyes","alternate-name":"eye-rolling, look, watch, stalk, peek, see"},"nose":{"name":"nose","alternate-name":"smell, sniff"},"tongue":{"name":"tongue","alternate-name":"mouth, playful"},"love_letter":{"name":"love_letter","alternate-name":"email, like, affection, envelope, valentines"},"bust_in_silhouette":{"name":"bust_in_silhouette","alternate-name":"user, person, human"},"busts_in_silhouette":{"name":"busts_in_silhouette","alternate-name":"user, person, human, group, team"},"speech_balloon":{"name":"speech_balloon","alternate-name":"bubble, words, message, talk, chatting"},"thought_balloon":{"name":"thought_balloon","alternate-name":"bubble, cloud, speech, thinking"},"feelsgood":{"name":"feelsgood","alternate-name":"doom, oldschool"},"finnadie":{"name":"finnadie","alternate-name":"doom, oldschool"},"goberserk":{"name":"goberserk","alternate-name":"doom, rage, bloody, hurt"},"godmode":{"name":"godmode","alternate-name":"doom, oldschool"},"hurtrealbad":{"name":"hurtrealbad","alternate-name":"mad, injured, doom, oldschool, custom_"},"rage1":{"name":"rage1","alternate-name":"angry, mad, hate, despise"},"rage2":{"name":"rage2","alternate-name":"angry, mad, hate, despise"},"rage3":{"name":"rage3","alternate-name":"angry, mad, hate, despise"},"rage4":{"name":"rage4","alternate-name":"angry, mad, hate, despise"},"suspect":{"name":"suspect","alternate-name":"mad, custom_"},"trollface":{"name":"trollface","alternate-name":"internet, meme, custom_"}},"nature":{"sunny":{"name":"sunny","alternate-name":"weather, sun, nature, brightness, summer, beach, spring"},"umbrella":{"name":"umbrella","alternate-name":"water, rain, rainy, weather, spring"},"cloud":{"name":"cloud","alternate-name":"weather, sky"},"snowflake":{"name":"snowflake","alternate-name":"winter, season, cold, weather, christmas, xmas"},"snowman":{"name":"snowman","alternate-name":"winter, season, cold, weather, christmas, xmas, frozen"},"zap":{"name":"zap","alternate-name":"weather, lightning, thunder, lightning bolt, fast"},"cyclone":{"name":"cyclone","alternate-name":"weather, swirl, blue, cloud"},"foggy":{"name":"foggy","alternate-name":"weather, fog, photo, mountain"},"ocean":{"name":"ocean","alternate-name":"waves, sea, water, wave, nature, tsunami, disaster"},"cat":{"name":"cat","alternate-name":"animal, meow, nature, pet"},"dog":{"name":"dog","alternate-name":"animal, friend, nature, woof, puppy, pet, faithful"},"mouse":{"name":"mouse","alternate-name":"animal, nature, cheese"},"hamster":{"name":"hamster","alternate-name":"animal, nature"},"rabbit":{"name":"rabbit","alternate-name":"animal, nature, pet, spring, magic"},"wolf":{"name":"wolf","alternate-name":"animal, dog, animal, nature, wild, audrey, lulu, audrey and lulu"},"frog":{"name":"frog","alternate-name":"animal, nature, croak"},"tiger":{"name":"tiger","alternate-name":"animal, cat, danger, wild, nature, roar"},"koala":{"name":"koala","alternate-name":"animal, nature"},"bear":{"name":"bear","alternate-name":"animal, nature, wild"},"pig":{"name":"pig","alternate-name":"animal, oink, nature"},"pig_nose":{"name":"pig_nose","alternate-name":"animal, oink"},"cow":{"name":"cow","alternate-name":"animal, beef, ox, nature, moo, milk"},"boar":{"name":"boar","alternate-name":"animal, nature"},"monkey_face":{"name":"monkey_face","alternate-name":"animal, nature, circus, ape"},"monkey":{"name":"monkey","alternate-name":"animal, nature, banana, circus, ape"},"horse":{"name":"horse","alternate-name":"animal, brown, nature, unicorn"},"racehorse":{"name":"racehorse","alternate-name":"animal, gamble, luck"},"camel":{"name":"camel","alternate-name":"animal, nature, hot, desert, hump"},"sheep":{"name":"sheep","alternate-name":"animal, nature, wool, shipit"},"elephant":{"name":"elephant","alternate-name":"animal, nature, nose, thailand, circus"},"panda_face":{"name":"panda_face","alternate-name":"animal, nature"},"snake":{"name":"snake","alternate-name":"animal, serpent, animal, evil, nature, hiss"},"bird":{"name":"bird","alternate-name":"animal, nature, fly, tweet, spring"},"baby_chick":{"name":"baby_chick","alternate-name":"animal, bird, chicken"},"hatched_chick":{"name":"hatched_chick","alternate-name":"animal, bird, chicken, baby"},"hatching_chick":{"name":"hatching_chick","alternate-name":"animal, bird, egg, chicken, egg, born, baby, bird"},"chicken":{"name":"chicken","alternate-name":"animal, bird, cluck, nature"},"penguin":{"name":"penguin","alternate-name":"animal, bird, nature"},"turtle":{"name":"turtle","alternate-name":"animal, tortoise, slow, nature"},"bug":{"name":"bug","alternate-name":"animal, insect, nature, worm"},"honeybee":{"name":"honeybee","alternate-name":"animal"},"ant":{"name":"ant","alternate-name":"animal, insect, nature, bug"},"beetle":{"name":"beetle","alternate-name":"animal, insect, nature, bug"},"snail":{"name":"snail","alternate-name":"animal, slow, shell"},"octopus":{"name":"octopus","alternate-name":"animal, creature, ocean, sea, nature, beach"},"tropical_fish":{"name":"tropical_fish","alternate-name":"animal, swim, ocean, beach, nemo"},"fish":{"name":"fish","alternate-name":"animal, food, nature"},"whale":{"name":"whale","alternate-name":"animal, nature, sea, ocean"},"whale2":{"name":"whale2","alternate-name":"animal, nature, sea, ocean"},"dolphin":{"name":"dolphin","alternate-name":"animal, nature, fish, sea, ocean, flipper, fins, beach"},"cow2":{"name":"cow2","alternate-name":"animal, beef, ox, nature, moo, milk"},"ram":{"name":"ram","alternate-name":"animal, sheep, nature"},"rat":{"name":"rat","alternate-name":"animal, mouse, rodent"},"water_buffalo":{"name":"water_buffalo","alternate-name":"animal, nature, ox, cow"},"tiger2":{"name":"tiger2","alternate-name":"animal, nature, roar"},"rabbit2":{"name":"rabbit2","alternate-name":"animal, bunny, nature, pet, magic, spring"},"dragon":{"name":"dragon","alternate-name":"animal, myth, nature, chinese, green"},"goat":{"name":"goat","alternate-name":"animal, nature"},"rooster":{"name":"rooster","alternate-name":"animal, chicken, nature"},"dog2":{"name":"dog2","alternate-name":"animal, nature, friend, doge, pet, faithful"},"pig2":{"name":"pig2","alternate-name":"animal, nature"},"mouse2":{"name":"mouse2","alternate-name":"animal, nature, rodent"},"ox":{"name":"ox","alternate-name":"animal, cow, beef"},"dragon_face":{"name":"dragon_face","alternate-name":"animal, myth, nature, chinese, green"},"blowfish":{"name":"blowfish","alternate-name":"animal, nature, food, sea, ocean"},"crocodile":{"name":"crocodile","alternate-name":"animal, alligator, nature, reptile"},"dromedary_camel":{"name":"dromedary_camel","alternate-name":"animal, hot, desert, hump"},"leopard":{"name":"leopard","alternate-name":"animal, nature"},"cat2":{"name":"cat2","alternate-name":"animal, kitty, kitten, meow, pet, cats"},"poodle":{"name":"poodle","alternate-name":"animal, dog, 101, nature, pet"},"paw_prints":{"name":"paw_prints","alternate-name":"animal"},"bouquet":{"name":"bouquet","alternate-name":"flowers, nature, spring"},"cherry_blossom":{"name":"cherry_blossom","alternate-name":"floral, nature, plant, spring, flower"},"tulip":{"name":"tulip","alternate-name":"floral, flowers, plant, nature, summer, spring"},"four_leaf_clover":{"name":"four_leaf_clover","alternate-name":"vegetable, plant, nature, lucky"},"rose":{"name":"rose","alternate-name":"floral, flowers, valentines, love, spring"},"sunflower":{"name":"sunflower","alternate-name":"floral, nature, plant, fall"},"hibiscus":{"name":"hibiscus","alternate-name":"floral, plant, vegetable, flowers, beach"},"maple_leaf":{"name":"maple_leaf","alternate-name":"nature, plant, vegetable, canada, fall"},"leaves":{"name":"leaves","alternate-name":"nature, plant, tree, vegetable, grass, lawn, spring"},"fallen_leaf":{"name":"fallen_leaf","alternate-name":"nature, plant, vegetable, leaves"},"herb":{"name":"herb","alternate-name":"vegetable, plant, medicine, weed, grass, lawn"},"mushroom":{"name":"mushroom","alternate-name":"plant, vegetable"},"cactus":{"name":"cactus","alternate-name":"vegetable, plant, nature"},"palm_tree":{"name":"palm_tree","alternate-name":"plant, vegetable, nature, summer, beach"},"evergreen_tree":{"name":"evergreen_tree","alternate-name":"plant, nature"},"deciduous_tree":{"name":"deciduous_tree","alternate-name":"plant, nature"},"chestnut":{"name":"chestnut","alternate-name":"food, squirrel"},"seedling":{"name":"seedling","alternate-name":"plant, nature, grass, lawn, spring"},"blossom":{"name":"blossom","alternate-name":"nature, flowers, yellow"},"ear_of_rice":{"name":"ear_of_rice","alternate-name":"nature, plant"},"shell":{"name":"shell","alternate-name":"nature, sea, beach"},"globe_with_meridians":{"name":"globe_with_meridians","alternate-name":"earth, international, world, internet, interweb, i18n"},"sun_with_face":{"name":"sun_with_face","alternate-name":"nature, morning, sky"},"full_moon_with_face":{"name":"full_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"new_moon_with_face":{"name":"new_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"new_moon":{"name":"new_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waxing_crescent_moon":{"name":"waxing_crescent_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"first_quarter_moon":{"name":"first_quarter_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waxing_gibbous_moon":{"name":"waxing_gibbous_moon"},"full_moon":{"name":"full_moon","alternate-name":"nature, yellow, twilight, planet, space, night, evening, sleep"},"waning_gibbous_moon":{"name":"waning_gibbous_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep, waxing_gibbous_moon"},"last_quarter_moon":{"name":"last_quarter_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"waning_crescent_moon":{"name":"waning_crescent_moon","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"last_quarter_moon_with_face":{"name":"last_quarter_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"first_quarter_moon_with_face":{"name":"first_quarter_moon_with_face","alternate-name":"nature, twilight, planet, space, night, evening, sleep"},"crescent_moon":{"name":"crescent_moon","alternate-name":"night, sleep, sky, evening, magic"},"earth_africa":{"name":"earth_africa","alternate-name":"europe, emea, globe, world, international"},"earth_americas":{"name":"earth_americas","alternate-name":"globe, world, USA, international"},"earth_asia":{"name":"earth_asia","alternate-name":"globe, world, east, international"},"volcano":{"name":"volcano","alternate-name":"photo, nature, disaster"},"milky_way":{"name":"milky_way","alternate-name":"photo, space, stars"},"partly_sunny":{"name":"partly_sunny","alternate-name":"weather, nature, cloudy, morning, fall, spring"},"octocat":{"name":"octocat","alternate-name":"github, animal, octopus, custom_"},"squirrel":{"name":"squirrel","alternate-name":"animal"}},"objects":{"bamboo":{"name":"bamboo","alternate-name":"plant, nature, vegetable, panda"},"gift_heart":{"name":"gift_heart","alternate-name":"heart, love, valentines"},"dolls":{"name":"dolls","alternate-name":"japanese, toy, kimono"},"school_satchel":{"name":"school_satchel","alternate-name":"student, education, bag"},"mortar_board":{"name":"mortar_board","alternate-name":"edu, university, school, college, degree, graduation, cap, hat, legal, learn, education"},"flags":{"name":"flags","alternate-name":"fish, japanese, koinobori, carp, banner"},"fireworks":{"name":"fireworks","alternate-name":"photo, festival, carnival, congratulations"},"sparkler":{"name":"sparkler","alternate-name":"stars, night, shine"},"wind_chime":{"name":"wind_chime","alternate-name":"nature, ding, spring, bell"},"rice_scene":{"name":"rice_scene","alternate-name":"photo, japan, asia, tsukimi"},"jack_o_lantern":{"name":"jack_o_lantern","alternate-name":"halloween, light, pumpkin, creepy, fall"},"ghost":{"name":"ghost","alternate-name":"boom, halloween, spooky, scary"},"santa":{"name":"santa","alternate-name":"christmas, festival, man, male, xmas, father christmas"},"christmas_tree":{"name":"christmas_tree","alternate-name":"festival, vacation, december, xmas, celebration"},"gift":{"name":"gift","alternate-name":"present, birthday, christmas, xmas"},"bell":{"name":"bell","alternate-name":"sound, notification, christmas, xmas, chime"},"no_bell":{"name":"no_bell","alternate-name":"sound, volume, mute, quiet, silent"},"tanabata_tree":{"name":"tanabata_tree","alternate-name":"plant, nature, branch, summer"},"tada":{"name":"tada","alternate-name":"party, contulations, birthday, magic, circus"},"confetti_ball":{"name":"confetti_ball","alternate-name":"celebration, festival, party, birthday, circus"},"balloon":{"name":"balloon","alternate-name":"party, celebration, birthday, circus"},"crystal_ball":{"name":"crystal_ball","alternate-name":"disco, party, magic, circus, fortune_teller"},"cd":{"name":"cd","alternate-name":"technology, dvd, disk, disc, 90s"},"dvd":{"name":"dvd","alternate-name":"cd, disk, disc"},"floppy_disk":{"name":"floppy_disk","alternate-name":"oldschool, technology, save, 90s, 80s"},"camera":{"name":"camera","alternate-name":"gadgets, photo"},"video_camera":{"name":"video_camera","alternate-name":"film, record"},"movie_camera":{"name":"movie_camera","alternate-name":"film, record"},"computer":{"name":"computer","alternate-name":"tech, laptop, screen, display, monitor"},"tv":{"name":"tv","alternate-name":"television, technology, program, oldschool, show"},"iphone":{"name":"iphone","alternate-name":"technology, apple, gadgets, dial"},"phone":{"name":"phone","alternate-name":"technology, communication, dial, telephone"},"telephone":{"name":"telephone","alternate-name":"calling"},"telephone_receiver":{"name":"telephone_receiver","alternate-name":"technology, communication, dial"},"pager":{"name":"pager","alternate-name":"bbcall, oldschool, 90s"},"fax":{"name":"fax","alternate-name":"communication, technology"},"minidisc":{"name":"minidisc","alternate-name":"technology, record, data, disk, 90s"},"vhs":{"name":"vhs","alternate-name":"record, video, oldschool, 90s, 80s"},"sound":{"name":"sound","alternate-name":"loud, noise, volume, speaker, broadcast"},"speaker":{"name":"speaker","alternate-name":"sound, volume, silence, broadcast"},"mute":{"name":"mute","alternate-name":"sound, volume, silence, quiet"},"loudspeaker":{"name":"loudspeaker","alternate-name":"volume, sound"},"mega":{"name":"mega","alternate-name":"sound, speaker, volume"},"hourglass":{"name":"hourglass","alternate-name":"time, clock, oldschool, limit, exam, quiz, test"},"hourglass_flowing_sand":{"name":"hourglass_flowing_sand","alternate-name":"oldschool, time, countdown"},"alarm_clock":{"name":"alarm_clock","alternate-name":"time, wake"},"watch":{"name":"watch","alternate-name":"clock, time, accessories"},"radio":{"name":"radio","alternate-name":"communication, music, podcast, program"},"satellite":{"name":"satellite","alternate-name":"communication, future, radio, space"},"loop":{"name":"loop","alternate-name":"tape, cassette"},"mag":{"name":"mag","alternate-name":"magnifying, glass, search, zoom, find, detective"},"mag_right":{"name":"mag_right","alternate-name":"magnifying, glass, search, zoom, find, detective"},"unlock":{"name":"unlock","alternate-name":"privacy, security"},"lock":{"name":"lock","alternate-name":"security, password, padlock"},"lock_with_ink_pen":{"name":"lock_with_ink_pen","alternate-name":"security, secret"},"closed_lock_with_key":{"name":"closed_lock_with_key","alternate-name":"security, privacy"},"key":{"name":"key","alternate-name":"lock, door, password"},"bulb":{"name":"bulb","alternate-name":"light, electricity, idea"},"flashlight":{"name":"flashlight","alternate-name":"dark, camping, sight, night"},"high_brightness":{"name":"high_brightness","alternate-name":"sun, light"},"low_brightness":{"name":"low_brightness","alternate-name":"sun, afternoon, warm, summer"},"electric_plug":{"name":"electric_plug","alternate-name":"charger, power"},"battery":{"name":"battery","alternate-name":"power, energy, sustain"},"calling":{"name":"calling","alternate-name":"iphone, incoming"},"email":{"name":"email","alternate-name":"envelope, letter, postal, inbox, communication"},"mailbox":{"name":"mailbox","alternate-name":"email, inbox, communication"},"postbox":{"name":"postbox","alternate-name":"email, letter, envelope"},"bath":{"name":"bath","alternate-name":"clean, shower, bathroom"},"bathtub":{"name":"bathtub","alternate-name":"clean, shower, bathroom"},"shower":{"name":"shower","alternate-name":"water, clean, bathroom"},"toilet":{"name":"toilet","alternate-name":"restroom, wc, washroom, bathroom, potty"},"wrench":{"name":"wrench","alternate-name":"tools, diy, ikea, fix, maintainer"},"nut_and_bolt":{"name":"nut_and_bolt","alternate-name":"tools, handy, fix"},"hammer":{"name":"hammer","alternate-name":"tools, verdict, judge, done, law, legal, ruling, gavel"},"seat":{"name":"seat","alternate-name":"sit, airplane, transport, bus, flight, fly"},"moneybag":{"name":"moneybag","alternate-name":"dollar, payment, coins, sale"},"yen":{"name":"yen","alternate-name":"bill cash currency money, money, sales, japanese, dollar, currency"},"dollar":{"name":"dollar","alternate-name":"bill cash currency money, money, sales, bill, currency"},"pound":{"name":"pound","alternate-name":"bill cash currency money, british, sterling, money, sales, bills, uk, england, currency"},"euro":{"name":"euro","alternate-name":"bill cash currency money, money, sales, dollar, currency"},"credit_card":{"name":"credit_card","alternate-name":"money, sales, dollar, bill, payment, shopping"},"money_with_wings":{"name":"money_with_wings","alternate-name":"money, dollar, bills, payment, sale"},"e-mail":{"name":"e-mail","alternate-name":"mail, send, communication, inbox, email"},"inbox_tray":{"name":"inbox_tray","alternate-name":"email, documents"},"outbox_tray":{"name":"outbox_tray","alternate-name":"inbox, email"},"envelope":{"name":"envelope","alternate-name":"message"},"incoming_envelope":{"name":"incoming_envelope","alternate-name":"email, inbox"},"postal_horn":{"name":"postal_horn","alternate-name":"instrument, music"},"mailbox_closed":{"name":"mailbox_closed","alternate-name":"email, communication, inbox"},"mailbox_with_mail":{"name":"mailbox_with_mail","alternate-name":"email, inbox, communication"},"mailbox_with_no_mail":{"name":"mailbox_with_no_mail","alternate-name":"email, inbox"},"package":{"name":"package","alternate-name":"box, mail, gift, cardboard, moving"},"door":{"name":"door","alternate-name":"house, entry, exit"},"smoking":{"name":"smoking","alternate-name":"smoke, kills, tobacco, cigarette, joint"},"bomb":{"name":"bomb","alternate-name":"boom, explode, explosion, terrorism"},"gun":{"name":"gun","alternate-name":"violence, weapon, pistol, revolver"},"hocho":{"name":"hocho","alternate-name":"knife, blade, cutlery, kitchen, weapon"},"pill":{"name":"pill","alternate-name":"health, medicine, doctor, pharmacy, drug"},"syringe":{"name":"syringe","alternate-name":"health, hospital, drugs, blood, medicine, needle, doctor, nurse"},"page_facing_up":{"name":"page_facing_up","alternate-name":"documents, office, paper, information"},"page_with_curl":{"name":"page_with_curl","alternate-name":"documents, office, paper"},"bookmark_tabs":{"name":"bookmark_tabs","alternate-name":"favorite, save, order, tidy"},"bar_chart":{"name":"bar_chart","alternate-name":"graph, presentation, stats"},"chart_with_upwards_trend":{"name":"chart_with_upwards_trend","alternate-name":"graph, presenetation, stats, recovery, business, economics, money, sales, good, success"},"chart_with_downwards_trend":{"name":"chart_with_downwards_trend","alternate-name":"graph, presentation, stats, recession, business, economics, money, sales, bad, failure"},"scroll":{"name":"scroll","alternate-name":"documents, ancient, history, paper"},"clipboard":{"name":"clipboard","alternate-name":"stationery, documents"},"calendar":{"name":"calendar","alternate-name":"schedule, date, planning"},"date":{"name":"date","alternate-name":"calendar, schedule"},"card_index":{"name":"card_index","alternate-name":"business, stationery"},"file_folder":{"name":"file_folder","alternate-name":"documents, business, office"},"open_file_folder":{"name":"open_file_folder","alternate-name":"documents, load"},"scissors":{"name":"scissors","alternate-name":"stationery, cut"},"pushpin":{"name":"pushpin","alternate-name":"stationery, mark, here"},"paperclip":{"name":"paperclip","alternate-name":"documents, stationery"},"black_nib":{"name":"black_nib","alternate-name":"pen, stationery, writing, write"},"pencil2":{"name":"pencil2","alternate-name":"stationery, write, paper, writing, school, study"},"straight_ruler":{"name":"straight_ruler","alternate-name":"stationery, calculate, length, math, school, drawing, architect, sketch"},"triangular_ruler":{"name":"triangular_ruler","alternate-name":"stationery, math, architect, sketch"},"closed_book":{"name":"closed_book","alternate-name":"read, library, knowledge, textbook, learn"},"green_book":{"name":"green_book","alternate-name":"read, library, knowledge, study"},"blue_book":{"name":"blue_book","alternate-name":"read, library, knowledge, learn, study"},"orange_book":{"name":"orange_book","alternate-name":"read, library, knowledge, textbook, study"},"notebook":{"name":"notebook","alternate-name":"stationery, record, notes, paper, study"},"notebook_with_decorative_cover":{"name":"notebook_with_decorative_cover","alternate-name":"classroom, notes, record, paper, study"},"ledger":{"name":"ledger","alternate-name":"notes, paper"},"books":{"name":"books","alternate-name":"literature, library, study"},"bookmark":{"name":"bookmark","alternate-name":"favorite, label, save"},"name_badge":{"name":"name_badge","alternate-name":"fire, forbid"},"microscope":{"name":"microscope","alternate-name":"laboratory, experiment, zoomin, science, study"},"telescope":{"name":"telescope","alternate-name":"stars, space, zoom"},"newspaper":{"name":"newspaper","alternate-name":"press, headline"},"football":{"name":"football","alternate-name":"sport, sports, balls, NFL"},"basketball":{"name":"basketball","alternate-name":"sport, sports, balls, NBA"},"soccer":{"name":"soccer","alternate-name":"sport, sports, balls, football, fifa"},"baseball":{"name":"baseball","alternate-name":"sport, sports, balls, MLB"},"tennis":{"name":"tennis","alternate-name":"sport, sports, balls, green"},"8ball":{"name":"8ball","alternate-name":"magic_ball, pool, hobby, game, luck, magic"},"rugby_football":{"name":"rugby_football","alternate-name":"sport, sports, team"},"bowling":{"name":"bowling","alternate-name":"sport, sports, fun, play"},"golf":{"name":"golf","alternate-name":"sport, sports, business, flag, hole, summer"},"mountain_bicyclist":{"name":"mountain_bicyclist","alternate-name":"sport, vehicle, transportation, sports, human, race, bike"},"bicyclist":{"name":"bicyclist","alternate-name":"sport, vehicle, sports, bike, exercise, hipster"},"horse_racing":{"name":"horse_racing","alternate-name":"sport, animal, betting, competition, gambling, luck"},"snowboarder":{"name":"snowboarder","alternate-name":"sport, sports, winter"},"swimmer":{"name":"swimmer","alternate-name":"sport, sports, exercise, human, athlete, water, summer"},"surfer":{"name":"surfer","alternate-name":"sport, sports, ocean, sea, summer, beach"},"ski":{"name":"ski","alternate-name":"sport, sports, winter, cold, snow"},"spades":{"name":"spades","alternate-name":"cards, suit, poker, suits, magic"},"hearts":{"name":"hearts","alternate-name":"heart, cards, suit, poker, magic, suits"},"clubs":{"name":"clubs","alternate-name":"cards, suit, poker, magic, suits"},"diamonds":{"name":"diamonds","alternate-name":"cards, suit, poker, magic, suits"},"gem":{"name":"gem","alternate-name":"jewelery, blue, ruby, diamond, jewelry"},"ring":{"name":"ring","alternate-name":"jewelery, wedding, propose, marriage, valentines, diamond, fashion, jewelry, gem"},"trophy":{"name":"trophy","alternate-name":"win, award, contest, place, ftw, ceremony"},"musical_score":{"name":"musical_score","alternate-name":"treble, clef"},"musical_keyboard":{"name":"musical_keyboard","alternate-name":"piano, instrument"},"violin":{"name":"violin","alternate-name":"music, instrument, orchestra, symphony"},"space_invader":{"name":"space_invader","alternate-name":"game, arcade, play"},"video_game":{"name":"video_game","alternate-name":"controller, play, console, PS4"},"black_joker":{"name":"black_joker","alternate-name":"poker, cards, game, play, magic"},"flower_playing_cards":{"name":"flower_playing_cards","alternate-name":"floral, game, sunset, red"},"game_die":{"name":"game_die","alternate-name":"dice, random, tabbletop, play, luck"},"dart":{"name":"dart","alternate-name":"game, play, bar"},"mahjong":{"name":"mahjong","alternate-name":"game, play, chinese, kanji"},"clapper":{"name":"clapper","alternate-name":"movie, film, record"},"memo":{"name":"memo","alternate-name":"write, documents, stationery, pencil, paper, writing, legal, exam, quiz, test, study"},"pencil":{"name":"pencil","alternate-name":"write"},"book":{"name":"book","alternate-name":"open_book, read, library, knowledge, literature, learn, study"},"art":{"name":"art","alternate-name":"design, paint, draw"},"microphone":{"name":"microphone","alternate-name":"sound, music, PA"},"headphones":{"name":"headphones","alternate-name":"music, score, gadgets"},"trumpet":{"name":"trumpet","alternate-name":"music, brass"},"saxophone":{"name":"saxophone","alternate-name":"music, instrument, jazz, blues"},"guitar":{"name":"guitar","alternate-name":"music, instrument"},"shoe":{"name":"shoe"},"sandal":{"name":"sandal","alternate-name":"shoes, fashion, flip flops"},"high_heel":{"name":"high_heel","alternate-name":"fashion, shoes, female, pumps, stiletto"},"lipstick":{"name":"lipstick","alternate-name":"female, girl, fashion, woman"},"boot":{"name":"boot","alternate-name":"shoes, fashion"},"shirt":{"name":"shirt","alternate-name":"fashion, cloth, formal"},"tshirt":{"name":"tshirt","alternate-name":"fashion, cloth, casual, tee"},"necktie":{"name":"necktie","alternate-name":"shirt, suitup, formal, fashion, cloth, business"},"womans_clothes":{"name":"womans_clothes","alternate-name":"fashion, shopping, female"},"dress":{"name":"dress","alternate-name":"clothes, fashion, shopping"},"running_shirt_with_sash":{"name":"running_shirt_with_sash","alternate-name":"play, pageant"},"jeans":{"name":"jeans","alternate-name":"fashion, shopping"},"kimono":{"name":"kimono","alternate-name":"dress, fashion, women, female, japanese"},"bikini":{"name":"bikini","alternate-name":"swimming, female, woman, girl, fashion, beach, summer"},"ribbon":{"name":"ribbon","alternate-name":"decoration, pink, girl, bowtie"},"tophat":{"name":"tophat","alternate-name":"magic, gentleman, classy, circus"},"crown":{"name":"crown","alternate-name":"king, kod, leader, royalty, lord"},"womans_hat":{"name":"womans_hat","alternate-name":"fashion, accessories, female, lady, spring"},"mans_shoe":{"name":"mans_shoe","alternate-name":"fashion, male"},"closed_umbrella":{"name":"closed_umbrella","alternate-name":"weather, rain, drizzle"},"briefcase":{"name":"briefcase","alternate-name":"business, documents, work, law, legal"},"handbag":{"name":"handbag","alternate-name":"fashion, accessory, accessories, shopping"},"pouch":{"name":"pouch","alternate-name":"bag, accessories, shopping"},"purse":{"name":"purse","alternate-name":"pocketbook, fashion, accessories, money, sales, shopping"},"eyeglasses":{"name":"eyeglasses","alternate-name":"fashion, accessories, eyesight, nerd, dork, geek"},"fishing_pole_and_fish":{"name":"fishing_pole_and_fish","alternate-name":"food, hobby, summer"},"coffee":{"name":"coffee","alternate-name":"drink, beverage, cafe, espresso"},"tea":{"name":"tea","alternate-name":"drink, bowl, breakfast, green, british"},"sake":{"name":"sake","alternate-name":"drink alcohol, wine, drink, drunk, beverage, japanese, alcohol, booze"},"baby_bottle":{"name":"baby_bottle","alternate-name":"food, container, milk"},"beer":{"name":"beer","alternate-name":"drink alcohol, relax, beverage, drink, drunk, party, pub, summer, alcohol, booze"},"beers":{"name":"beers","alternate-name":"drink alcohol, relax, beverage, drink, drunk, party, pub, summer, alcohol, booze"},"cocktail":{"name":"cocktail","alternate-name":"drink alcohol, drink, drunk, alcohol, beverage, booze"},"tropical_drink":{"name":"tropical_drink","alternate-name":"beverage, cocktail, summer, beach, alcohol, booze"},"wine_glass":{"name":"wine_glass","alternate-name":"drink alcohol, drink, beverage, drunk, alcohol, booze"},"fork_and_knife":{"name":"fork_and_knife","alternate-name":"cutlery, kitchen"},"pizza":{"name":"pizza","alternate-name":"food, italian dairy, party"},"hamburger":{"name":"hamburger","alternate-name":"food, american meat, meat, fast food, beef, cheeseburger, mcdonalds, burger king"},"fries":{"name":"fries","alternate-name":"food, american, chips, snack, fast food"},"poultry_leg":{"name":"poultry_leg","alternate-name":"food, meat, drumstick, bird, chicken, turkey"},"meat_on_bone":{"name":"meat_on_bone","alternate-name":"food, meat, good, drumstick"},"spaghetti":{"name":"spaghetti","alternate-name":"food, italian noodles, italian, noodle"},"curry":{"name":"curry","alternate-name":"food, indian, spicy, hot"},"fried_shrimp":{"name":"fried_shrimp","alternate-name":"food, seafood, animal, appetizer, summer"},"bento":{"name":"bento","alternate-name":"food, japanese, box"},"sushi":{"name":"sushi","alternate-name":"food, japanese, fish, rice"},"fish_cake":{"name":"fish_cake","alternate-name":"food, japanese seafood, naruto, japan, sea, beach"},"rice_ball":{"name":"rice_ball","alternate-name":"food, japanese"},"rice_cracker":{"name":"rice_cracker","alternate-name":"food, japanese"},"rice":{"name":"rice","alternate-name":"food, china, asian"},"ramen":{"name":"ramen","alternate-name":"food noodles, food, japanese, noodle, chipsticks"},"stew":{"name":"stew","alternate-name":"food, meat, soup"},"oden":{"name":"oden","alternate-name":"food, japanese"},"dango":{"name":"dango","alternate-name":"food, japanese, barbecue, meat"},"egg":{"name":"egg","alternate-name":"food,, food, breakfast, kitchen"},"bread":{"name":"bread","alternate-name":"food,, food, wheat, breakfast, toast"},"doughnut":{"name":"doughnut","alternate-name":"food, dessert, snack, sweet, donut"},"custard":{"name":"custard","alternate-name":"food, dessert"},"icecream":{"name":"icecream","alternate-name":"food, dessert, hot, summer"},"ice_cream":{"name":"ice_cream","alternate-name":"food, dessert, hot"},"shaved_ice":{"name":"shaved_ice","alternate-name":"food, dessert, hot, summer"},"birthday":{"name":"birthday","alternate-name":"party, cake, celebration"},"cake":{"name":"cake","alternate-name":"food, dessert"},"cookie":{"name":"cookie","alternate-name":"food, dessert, snack, oreo, chocolate, sweet"},"chocolate_bar":{"name":"chocolate_bar","alternate-name":"food, dessert, snack, sweet"},"candy":{"name":"candy","alternate-name":"food, dessert, snack, sweet"},"lollipop":{"name":"lollipop","alternate-name":"food, dessert, snack, candy, sweet"},"honey_pot":{"name":"honey_pot","alternate-name":"food, dessert, bees, sweet, kitchen"},"apple":{"name":"apple","alternate-name":"food, fruit, mac, school"},"green_apple":{"name":"green_apple","alternate-name":"food, fruit, nature"},"tangerine":{"name":"tangerine","alternate-name":"food, fruit, nature"},"lemon":{"name":"lemon","alternate-name":"food, fruit, nature"},"cherries":{"name":"cherries","alternate-name":"food, fruit"},"grapes":{"name":"grapes","alternate-name":"food, fruit, wine"},"watermelon":{"name":"watermelon","alternate-name":"food, fruit, picnic, summer"},"strawberry":{"name":"strawberry","alternate-name":"food, fruit, nature"},"peach":{"name":"peach","alternate-name":"food, fruit, nature"},"melon":{"name":"melon","alternate-name":"food, fruit, nature"},"banana":{"name":"banana","alternate-name":"food, fruit, monkey"},"pear":{"name":"pear","alternate-name":"food, fruit, nature"},"pineapple":{"name":"pineapple","alternate-name":"food, fruit, nature"},"sweet_potato":{"name":"sweet_potato","alternate-name":"food, vegetable, nature"},"eggplant":{"name":"eggplant","alternate-name":"food, vegetable, nature, aubergine"},"tomato":{"name":"tomato","alternate-name":"food, fruit, vegetable, nature"},"corn":{"name":"corn","alternate-name":"food, vegetable, plant"}},"places":{"house":{"name":"house","alternate-name":"building, home"},"house_with_garden":{"name":"house_with_garden","alternate-name":"building, home, plant, nature"},"school":{"name":"school","alternate-name":"building, student, education, learn, teach"},"office":{"name":"office","alternate-name":"building, unit, bureau, work"},"post_office":{"name":"post_office","alternate-name":"building, email, communication"},"hospital":{"name":"hospital","alternate-name":"building, health, surgery, doctor"},"bank":{"name":"bank","alternate-name":"building, money, sales, cash, business, enterprise"},"convenience_store":{"name":"convenience_store","alternate-name":"building, shopping, groceries"},"love_hotel":{"name":"love_hotel","alternate-name":"building, like, affection, dating"},"hotel":{"name":"hotel","alternate-name":"building, whotel, accomodation, checkin"},"wedding":{"name":"wedding","alternate-name":"building, love, like, affection, couple, marriage, bride, groom, church, heart"},"church":{"name":"church","alternate-name":"building, religion, christ"},"department_store":{"name":"department_store","alternate-name":"building, shopping, mall"},"european_post_office":{"name":"european_post_office","alternate-name":"building, email"},"city_sunrise":{"name":"city_sunrise","alternate-name":"photo, good morning, dawn"},"city_sunset":{"name":"city_sunset","alternate-name":"photo, evening, sky, buildings"},"japanese_castle":{"name":"japanese_castle","alternate-name":"photo, building, asia"},"european_castle":{"name":"european_castle","alternate-name":"building, royalty, history"},"tent":{"name":"tent","alternate-name":"camping, photo, camp, outdoors"},"factory":{"name":"factory","alternate-name":"building, industry, pollution, smoke"},"tokyo_tower":{"name":"tokyo_tower","alternate-name":"photo, japanese, asia"},"japan":{"name":"japan","alternate-name":"nation, country, japanese, asia, island"},"mount_fuji":{"name":"mount_fuji","alternate-name":"photo, mountain, nature, japanese"},"sunrise_over_mountains":{"name":"sunrise_over_mountains","alternate-name":"view, vacation, photo"},"sunrise":{"name":"sunrise","alternate-name":"morning, view, vacation, photo"},"stars":{"name":"stars","alternate-name":"night, photo, falling, sky, bright"},"statue_of_liberty":{"name":"statue_of_liberty","alternate-name":"american, newyork, monument, head"},"bridge_at_night":{"name":"bridge_at_night","alternate-name":"photo, sanfrancisco"},"carousel_horse":{"name":"carousel_horse","alternate-name":"photo, carnival, ride"},"rainbow":{"name":"rainbow","alternate-name":"nature, happy, unicorn, photo, sky, spring, color"},"ferris_wheel":{"name":"ferris_wheel","alternate-name":"photo, carnival, londoneye"},"fountain":{"name":"fountain","alternate-name":"photo, summer, water, fresh"},"roller_coaster":{"name":"roller_coaster","alternate-name":"carnival, playground, photo, ride, fun"},"ship":{"name":"ship","alternate-name":"vehicle, transportation, titanic, deploy, cruise"},"speedboat":{"name":"speedboat","alternate-name":"vehicle, ship, transportation, summer"},"boat":{"name":"boat","alternate-name":"vehicle, ship, summer, transportation, water, sailing, sailboat"},"sailboat":{"name":"sailboat","alternate-name":"vehicle"},"rowboat":{"name":"rowboat","alternate-name":"vehicle, sports, hobby, water, ship"},"anchor":{"name":"anchor","alternate-name":"ship, ferry, sea, boat"},"rocket":{"name":"rocket","alternate-name":"launch, ship, staffmode, NASA, outer space, outer_space, fly"},"airplane":{"name":"airplane","alternate-name":"vehicle, transportation, flight, fly"},"helicopter":{"name":"helicopter","alternate-name":"vehicle, transportation, fly"},"steam_locomotive":{"name":"steam_locomotive","alternate-name":"vehicle, transportation, train"},"tram":{"name":"tram","alternate-name":"vehicle, transportation"},"mountain_railway":{"name":"mountain_railway","alternate-name":"vehicle, transportation"},"bike":{"name":"bike","alternate-name":"vehicle, sports, bicycle, exercise, hipster"},"aerial_tramway":{"name":"aerial_tramway","alternate-name":"vehicle, transportation, ski"},"suspension_railway":{"name":"suspension_railway","alternate-name":"vehicle, transportation"},"mountain_cableway":{"name":"mountain_cableway","alternate-name":"vehicle, transportation, ski"},"tractor":{"name":"tractor","alternate-name":"vehicle, car, farming, agriculture"},"blue_car":{"name":"blue_car","alternate-name":"vehicle, transportation"},"oncoming_automobile":{"name":"oncoming_automobile","alternate-name":"vehicle, car, transportation"},"car":{"name":"car","alternate-name":"vehicle, car, red, transportation"},"red_car":{"name":"red_car","alternate-name":"vehicle"},"taxi":{"name":"taxi","alternate-name":"vehicle, car, uber, cars, transportation"},"oncoming_taxi":{"name":"oncoming_taxi","alternate-name":"vehicle, car, cars, uber"},"articulated_lorry":{"name":"articulated_lorry","alternate-name":"vehicle, cars, transportation, express"},"bus":{"name":"bus","alternate-name":"vehicle, car, transportation"},"oncoming_bus":{"name":"oncoming_bus","alternate-name":"vehicle, transportation"},"rotating_light":{"name":"rotating_light","alternate-name":"police, ambulance, 911, emergency, alert, error, pinged, law, legal"},"police_car":{"name":"police_car","alternate-name":"vehicle, cars, transportation, law, legal, enforcement"},"oncoming_police_car":{"name":"oncoming_police_car","alternate-name":"vehicle, law, legal, enforcement, 911"},"fire_engine":{"name":"fire_engine","alternate-name":"vehicle, transportation, cars"},"ambulance":{"name":"ambulance","alternate-name":"vehicle, health, 911, hospital"},"minibus":{"name":"minibus","alternate-name":"vehicle, car, transportation"},"truck":{"name":"truck","alternate-name":"vehicle, cars, transportation"},"train":{"name":"train","alternate-name":"vehicle, transportation, carriage, public, travel"},"station":{"name":"station","alternate-name":"transportation, vehicle, public"},"train2":{"name":"train2","alternate-name":"vehicle, transportation"},"bullettrain_front":{"name":"bullettrain_front","alternate-name":"vehicle, transportation, speed, fast, public, travel"},"bullettrain_side":{"name":"bullettrain_side","alternate-name":"vehicle, transportation"},"light_rail":{"name":"light_rail","alternate-name":"vehicle, transportation"},"monorail":{"name":"monorail","alternate-name":"vehicle, transportation"},"railway_car":{"name":"railway_car","alternate-name":"vehicle, transportation"},"trolleybus":{"name":"trolleybus","alternate-name":"vehicle, bart, transportation"},"ticket":{"name":"ticket","alternate-name":"event, concert, pass"},"fuelpump":{"name":"fuelpump","alternate-name":"gas station, petroleum"},"vertical_traffic_light":{"name":"vertical_traffic_light","alternate-name":"transportation, driving"},"traffic_light":{"name":"traffic_light","alternate-name":"stoplight, transportation, signal"},"warning":{"name":"warning","alternate-name":"exclamation, wip, alert, error, problem, issue"},"construction":{"name":"construction","alternate-name":"wip, progress, caution, warning"},"beginner":{"name":"beginner","alternate-name":"badge, shield"},"atm":{"name":"atm","alternate-name":"money, sales, cash, blue-square, payment, bank"},"slot_machine":{"name":"slot_machine","alternate-name":"bet, gamble, vegas, fruit machine, luck, casino"},"busstop":{"name":"busstop","alternate-name":"transportation, wait"},"barber":{"name":"barber","alternate-name":"hair, salon, style"},"hotsprings":{"name":"hotsprings","alternate-name":"bath, warm, relax"},"checkered_flag":{"name":"checkered_flag","alternate-name":"contest, finishline, rase, gokart"},"crossed_flags":{"name":"crossed_flags","alternate-name":"japanese, nation, country, border"},"izakaya_lantern":{"name":"izakaya_lantern","alternate-name":"light, paper, halloween, spooky"},"moyai":{"name":"moyai","alternate-name":"stone, easter island, beach, statue"},"circus_tent":{"name":"circus_tent","alternate-name":"festival, carnival, party"},"performing_arts":{"name":"performing_arts","alternate-name":"acting, theater, drama"},"round_pushpin":{"name":"round_pushpin","alternate-name":"stationery, location, map, here"},"triangular_flag_on_post":{"name":"triangular_flag_on_post","alternate-name":"mark, milestone, place"},"jp":{"name":"jp","alternate-name":"japan, nippon, nihon, japanese, nation, flag, country, banner"},"kr":{"name":"kr","alternate-name":"korea, hanguk, nation, flag, country, banner"},"cn":{"name":"cn","alternate-name":"china, prc, chinese, flag, country, nation, banner"},"us":{"name":"us","alternate-name":"usa, america, united states, nation, flag, american, country, banner"},"fr":{"name":"fr","alternate-name":"france, banner, flag, nation, french, country"},"es":{"name":"es","alternate-name":"spain, espana, flag, nation, country, banner"},"it":{"name":"it","alternate-name":"italy, italia, flag, nation, country, banner"},"ru":{"name":"ru","alternate-name":"russia, russian, nation, flag, country, banner"},"gb":{"name":"gb","alternate-name":"great britain, united kingdom, banner, nation, flag, british, UK, country, english, england, union jack"},"uk":{"name":"uk","alternate-name":"great britain, united kingdom"},"de":{"name":"de","alternate-name":"germany, deutschland, german, nation, flag, country, banner"}},"symbols":{"100":{"name":"100","alternate-name":"score, perfect, numbers, century, exam, quiz, test, pass, hundred"},"1234":{"name":"1234","alternate-name":"numbers, blue-square"},"one":{"name":"one","alternate-name":"1, blue-square, numbers"},"two":{"name":"two","alternate-name":"2, numbers, prime, blue-square"},"three":{"name":"three","alternate-name":"3, numbers, prime, blue-square"},"four":{"name":"four","alternate-name":"4, numbers, blue-square"},"five":{"name":"five","alternate-name":"5, numbers, blue-square, prime"},"six":{"name":"six","alternate-name":"6, numbers, blue-square"},"seven":{"name":"seven","alternate-name":"7, numbers, blue-square, prime"},"eight":{"name":"eight","alternate-name":"8, blue-square, numbers"},"nine":{"name":"nine","alternate-name":"9, blue-square, numbers"},"keycap_ten":{"name":"keycap_ten","alternate-name":"10, numbers, blue-square"},"zero":{"name":"zero","alternate-name":"0, numbers, blue-square, null"},"hash":{"name":"hash","alternate-name":"symbol, blue-square, twitter"},"symbols":{"name":"symbols","alternate-name":"blue-square, music, note, ampersand, percent, glyphs, characters"},"arrow_backward":{"name":"arrow_backward","alternate-name":"left, blue-square, direction"},"arrow_down":{"name":"arrow_down","alternate-name":"blue-square, direction, bottom"},"arrow_forward":{"name":"arrow_forward","alternate-name":"right, blue-square, direction"},"arrow_left":{"name":"arrow_left","alternate-name":"blue-square, previous, back"},"capital_abcd":{"name":"capital_abcd","alternate-name":"alphabet, words, blue-square"},"abcd":{"name":"abcd","alternate-name":"blue-square, alphabet"},"abc":{"name":"abc","alternate-name":"blue-square, alphabet"},"arrow_lower_left":{"name":"arrow_lower_left","alternate-name":"blue-square, direction"},"arrow_lower_right":{"name":"arrow_lower_right","alternate-name":"blue-square, direction"},"arrow_right":{"name":"arrow_right","alternate-name":"blue-square, next"},"arrow_up":{"name":"arrow_up","alternate-name":"blue-square, continue, top, direction"},"arrow_upper_left":{"name":"arrow_upper_left","alternate-name":"blue-square, point, direction"},"arrow_upper_right":{"name":"arrow_upper_right","alternate-name":"blue-square, point, direction"},"arrow_double_down":{"name":"arrow_double_down","alternate-name":"blue-square, direction, bottom"},"arrow_double_up":{"name":"arrow_double_up","alternate-name":"blue-square, direction, top"},"arrow_down_small":{"name":"arrow_down_small","alternate-name":"blue-square, direction, bottom"},"arrow_heading_down":{"name":"arrow_heading_down","alternate-name":"blue-square, direction, bottom"},"arrow_heading_up":{"name":"arrow_heading_up","alternate-name":"blue-square, direction, top"},"leftwards_arrow_with_hook":{"name":"leftwards_arrow_with_hook","alternate-name":"back, return, blue-square, undo"},"arrow_right_hook":{"name":"arrow_right_hook","alternate-name":"blue-square, return, rotade, direction"},"left_right_arrow":{"name":"left_right_arrow","alternate-name":"shape, direction"},"arrow_up_down":{"name":"arrow_up_down","alternate-name":"blue-square, direction, way"},"arrow_up_small":{"name":"arrow_up_small","alternate-name":"blue-square, triangle, direction, point, forward, top"},"arrows_clockwise":{"name":"arrows_clockwise","alternate-name":"sync, cycle, round, repeat"},"arrows_counterclockwise":{"name":"arrows_counterclockwise","alternate-name":"blue-square, sync, cycle"},"rewind":{"name":"rewind","alternate-name":"play, blue-square"},"fast_forward":{"name":"fast_forward","alternate-name":"blue-square, play, speed, continue"},"information_source":{"name":"information_source","alternate-name":"blue-square, alphabet, letter"},"ok":{"name":"ok","alternate-name":"good, agree, yes, blue-square"},"twisted_rightwards_arrows":{"name":"twisted_rightwards_arrows","alternate-name":"blue-square, shuffle, music, random"},"repeat":{"name":"repeat","alternate-name":"loop, record"},"repeat_one":{"name":"repeat_one","alternate-name":"blue-square, loop"},"new":{"name":"new","alternate-name":"blue-square, words, start"},"top":{"name":"top","alternate-name":"words, blue-square"},"up":{"name":"up","alternate-name":"blue-square, above, high"},"cool":{"name":"cool","alternate-name":"words, blue-square"},"free":{"name":"free","alternate-name":"blue-square, words"},"ng":{"name":"ng","alternate-name":"blue-square, words, shape, icon"},"cinema":{"name":"cinema","alternate-name":"movie, blue-square, record, film"},"koko":{"name":"koko","alternate-name":"blue-square, here, katakana, japanese, destination"},"signal_strength":{"name":"signal_strength","alternate-name":"blue-square, reception, phone, internet, connection, wifi, bluetooth"},"u5272":{"name":"u5272","alternate-name":"wari, cut, divide, chinese, kanji, pink-square"},"u5408":{"name":"u5408","alternate-name":"japanese, chinese, join, kanji, red-square"},"u55b6":{"name":"u55b6","alternate-name":"ying, japanese, opening hours, orange-square"},"u6307":{"name":"u6307","alternate-name":"zhǐ, zhi, chinese, point, green-square, kanji"},"u6708":{"name":"u6708","alternate-name":"yuè, yue, chinese, month, moon, japanese, orange-square, kanji"},"u6709":{"name":"u6709","alternate-name":"yǒu, you, orange-square, chinese, have, kanji"},"u6e80":{"name":"u6e80","alternate-name":"mitsuru, full, chinese, japanese, red-square, kanji"},"u7121":{"name":"u7121","alternate-name":"wú, wu, nothing, chinese, kanji, japanese, orange-square"},"u7533":{"name":"u7533","alternate-name":"shēn, shen, chinese, japanese, kanji, orange-square"},"u7a7a":{"name":"u7a7a","alternate-name":"kōng, kong, kanji, japanese, chinese, empty, sky, blue-square"},"u7981":{"name":"u7981","alternate-name":"jìn, jin, kanji, japanese, chinese, forbidden, limit, restricted, red-square"},"sa":{"name":"sa","alternate-name":"japanese, blue-square, katakana"},"restroom":{"name":"restroom","alternate-name":"blue-square, toilet, refresh, wc, gender"},"mens":{"name":"mens","alternate-name":"toilet, restroom, wc, blue-square, gender, male"},"womens":{"name":"womens","alternate-name":"purple-square, woman, female, toilet, loo, restroom, gender"},"baby_symbol":{"name":"baby_symbol","alternate-name":"orange-square, child"},"no_smoking":{"name":"no_smoking","alternate-name":"cigarette, blue-square, smell, smoke"},"parking":{"name":"parking","alternate-name":"cars, blue-square, alphabet, letter"},"wheelchair":{"name":"wheelchair","alternate-name":"blue-square, disabled, a11y, accessibility"},"metro":{"name":"metro","alternate-name":"transportation, blue-square, mrt, underground, tube"},"baggage_claim":{"name":"baggage_claim","alternate-name":"blue-square, airport, transport"},"accept":{"name":"accept","alternate-name":"ok, good, chinese, kanji, agree, yes, orange-circle"},"wc":{"name":"wc","alternate-name":"toilet, restroom, blue-square"},"potable_water":{"name":"potable_water","alternate-name":"blue-square, liquid, restroom, cleaning, faucet"},"put_litter_in_its_place":{"name":"put_litter_in_its_place","alternate-name":"blue-square, sign, human, info"},"secret":{"name":"secret","alternate-name":"privacy, chinese, sshh, kanji, red-circle"},"congratulations":{"name":"congratulations","alternate-name":"chinese, kanji, japanese, red-circle"},"m":{"name":"m","alternate-name":"alphabet, blue-circle, letter"},"passport_control":{"name":"passport_control","alternate-name":"custom, blue-square"},"left_luggage":{"name":"left_luggage","alternate-name":"blue-square, travel"},"customs":{"name":"customs","alternate-name":"passport, border, blue-square"},"ideograph_advantage":{"name":"ideograph_advantage","alternate-name":"chinese, kanji, obtain, get, circle"},"cl":{"name":"cl","alternate-name":"alphabet, words, red-square"},"sos":{"name":"sos","alternate-name":"help, red-square, words, emergency, 911"},"id":{"name":"id","alternate-name":"purple-square, words"},"no_entry_sign":{"name":"no_entry_sign","alternate-name":"forbid, stop, limit, denied, disallow, circle"},"underage":{"name":"underage","alternate-name":"18, drink, pub, night, minor, circle"},"no_mobile_phones":{"name":"no_mobile_phones","alternate-name":"iphone, mute, circle"},"do_not_litter":{"name":"do_not_litter","alternate-name":"trash, bin, garbage, circle"},"non-potable_water":{"name":"non-potable_water","alternate-name":"drink, faucet, tap, circle"},"no_bicycles":{"name":"no_bicycles","alternate-name":"cyclist, prohibited, circle"},"no_pedestrians":{"name":"no_pedestrians","alternate-name":"rules, crossing, walking, circle"},"children_crossing":{"name":"children_crossing","alternate-name":"school, warning, danger, sign, driving, yellow-diamond"},"no_entry":{"name":"no_entry","alternate-name":"limit, security, privacy, bad, denied, stop, circle"},"eight_spoked_asterisk":{"name":"eight_spoked_asterisk","alternate-name":"star, sparkle, green-square"},"sparkle":{"name":"sparkle","alternate-name":"stars, green-square, awesome, good, fireworks"},"eight_pointed_black_star":{"name":"eight_pointed_black_star","alternate-name":"orange-square, shape, polygon"},"heart_decoration":{"name":"heart_decoration","alternate-name":"heart, purple-square, love, like"},"vs":{"name":"vs","alternate-name":"words, orange-square"},"vibration_mode":{"name":"vibration_mode","alternate-name":"orange-square, phone"},"mobile_phone_off":{"name":"mobile_phone_off","alternate-name":"mute, orange-square, silence, quiet"},"chart":{"name":"chart","alternate-name":"yen, green-square, graph, presentation, stats"},"currency_exchange":{"name":"currency_exchange","alternate-name":"money, sales, dollar, travel"},"aries":{"name":"aries","alternate-name":"zodiac, sign, purple-square, astrology"},"taurus":{"name":"taurus","alternate-name":"zodiac, purple-square, sign, astrology"},"gemini":{"name":"gemini","alternate-name":"zodiac, sign, purple-square, astrology"},"cancer":{"name":"cancer","alternate-name":"zodiac, sign, purple-square, astrology"},"leo":{"name":"leo","alternate-name":"zodiac, sign, purple-square, astrology"},"virgo":{"name":"virgo","alternate-name":"zodiac, sign, purple-square, astrology"},"libra":{"name":"libra","alternate-name":"zodiac, sign, purple-square, astrology"},"scorpius":{"name":"scorpius","alternate-name":"zodiac, sign, purple-square, astrology, scorpio"},"sagittarius":{"name":"sagittarius","alternate-name":"zodiac, sign, purple-square, astrology"},"capricorn":{"name":"capricorn","alternate-name":"zodiac, sign, purple-square, astrology"},"aquarius":{"name":"aquarius","alternate-name":"zodiac, sign, purple-square, astrology"},"pisces":{"name":"pisces","alternate-name":"zodiac, purple-square, sign, astrology"},"ophiuchus":{"name":"ophiuchus","alternate-name":"zodiac, sign, purple-square, constellation, astrology"},"six_pointed_star":{"name":"six_pointed_star","alternate-name":"purple-square, religion, jewish, hexagram"},"negative_squared_cross_mark":{"name":"negative_squared_cross_mark","alternate-name":"x, green-square, no, deny"},"a":{"name":"a","alternate-name":"red-square, alphabet, letter"},"b":{"name":"b","alternate-name":"red-square, alphabet, letter"},"ab":{"name":"ab","alternate-name":"red-square, alphabet"},"o2":{"name":"o2","alternate-name":"alphabet, red-square, letter"},"diamond_shape_with_a_dot_inside":{"name":"diamond_shape_with_a_dot_inside","alternate-name":"jewel, blue, gem, crystal, fancy"},"recycle":{"name":"recycle","alternate-name":"arrow, environment, garbage, trash"},"end":{"name":"end","alternate-name":"words, arrow"},"back":{"name":"back","alternate-name":"arrow, words, return"},"on":{"name":"on","alternate-name":"arrow, words"},"soon":{"name":"soon","alternate-name":"arrow, words"},"clock1":{"name":"clock1","alternate-name":"time, late, early, schedule"},"clock130":{"name":"clock130","alternate-name":"time, late, early, schedule"},"clock10":{"name":"clock10","alternate-name":"time, late, early, schedule"},"clock1030":{"name":"clock1030","alternate-name":"time, late, early, schedule"},"clock11":{"name":"clock11","alternate-name":"time, late, early, schedule"},"clock1130":{"name":"clock1130","alternate-name":"time, late, early, schedule"},"clock12":{"name":"clock12","alternate-name":"midnight, noon, time, late, early, schedule"},"clock1230":{"name":"clock1230","alternate-name":"time, late, early, schedule"},"clock2":{"name":"clock2","alternate-name":"time, late, early, schedule"},"clock230":{"name":"clock230","alternate-name":"time, late, early, schedule"},"clock3":{"name":"clock3","alternate-name":"time, late, early, schedule"},"clock330":{"name":"clock330","alternate-name":"time, late, early, schedule"},"clock4":{"name":"clock4","alternate-name":"time, late, early, schedule"},"clock430":{"name":"clock430","alternate-name":"time, late, early, schedule"},"clock5":{"name":"clock5","alternate-name":"time, late, early, schedule"},"clock530":{"name":"clock530","alternate-name":"time, late, early, schedule"},"clock6":{"name":"clock6","alternate-name":"time, late, early, schedule, dawn, dusk"},"clock630":{"name":"clock630","alternate-name":"time, late, early, schedule"},"clock7":{"name":"clock7","alternate-name":"time, late, early, schedule"},"clock730":{"name":"clock730","alternate-name":"time, late, early, schedule"},"clock8":{"name":"clock8","alternate-name":"time, late, early, schedule"},"clock830":{"name":"clock830","alternate-name":"time, late, early, schedule"},"clock9":{"name":"clock9","alternate-name":"time, late, early, schedule"},"clock930":{"name":"clock930","alternate-name":"time, late, early, schedule"},"heavy_dollar_sign":{"name":"heavy_dollar_sign","alternate-name":"money, sales, payment, currency"},"copyright":{"name":"copyright","alternate-name":"ip, license, circle, law, legal"},"registered":{"name":"registered","alternate-name":"alphabet, circle"},"tm":{"name":"tm","alternate-name":"trademark, brand, law, legal"},"x":{"name":"x","alternate-name":"no, delete, remove"},"heavy_exclamation_mark":{"name":"heavy_exclamation_mark","alternate-name":"shocked, surprised"},"bangbang":{"name":"bangbang","alternate-name":"exclamation, surprise"},"interrobang":{"name":"interrobang","alternate-name":"wat, punctuation, surprise"},"o":{"name":"o","alternate-name":"circle, round"},"heavy_multiplication_x":{"name":"heavy_multiplication_x","alternate-name":"math, calculation"},"heavy_plus_sign":{"name":"heavy_plus_sign","alternate-name":"math, calculation, addition, more, increase"},"heavy_minus_sign":{"name":"heavy_minus_sign","alternate-name":"math, calculation, subtract, less"},"heavy_division_sign":{"name":"heavy_division_sign","alternate-name":"divide, math, calculation"},"white_flower":{"name":"white_flower","alternate-name":"floral, japanese, spring"},"heavy_check_mark":{"name":"heavy_check_mark","alternate-name":"ok, nike"},"ballot_box_with_check":{"name":"ballot_box_with_check","alternate-name":"ok, agree, confirm, black-square, vote, election"},"radio_button":{"name":"radio_button","alternate-name":"input, old, music, circle"},"link":{"name":"link","alternate-name":"rings, url"},"curly_loop":{"name":"curly_loop","alternate-name":"scribble, draw, shape, squiggle"},"wavy_dash":{"name":"wavy_dash","alternate-name":"draw, line, moustache, mustache, squiggle, scribble"},"part_alternation_mark":{"name":"part_alternation_mark","alternate-name":"graph, presentation, stats, business, economics, bad"},"trident":{"name":"trident","alternate-name":"weapon, spear"},"black_small_square":{"name":"black_small_square","alternate-name":"shape, icon"},"white_small_square":{"name":"white_small_square","alternate-name":"shape, icon"},"black_medium_small_square":{"name":"black_medium_small_square","alternate-name":"icon, shape, button"},"white_medium_small_square":{"name":"white_medium_small_square","alternate-name":"shape, stone, icon, button"},"black_medium_square":{"name":"black_medium_square","alternate-name":"shape, button, icon"},"white_medium_square":{"name":"white_medium_square","alternate-name":"shape, stone, icon"},//"black_large_square": {
-	//    "name": "black_large_square",
-	//    "alternate-name": "shape, icon, button"
-	//},
-	"white_large_square":{"name":"white_large_square","alternate-name":"shape, icon, stone, button"},"white_check_mark":{"name":"white_check_mark","alternate-name":"green-square, ok, agree, vote, election"},"black_square_button":{"name":"black_square_button","alternate-name":"shape, input, frame"},"white_square_button":{"name":"white_square_button","alternate-name":"shape, input"},"black_circle":{"name":"black_circle","alternate-name":"shape, button, round"},"white_circle":{"name":"white_circle","alternate-name":"shape, round"},"red_circle":{"name":"red_circle","alternate-name":"shape, error, danger"},"large_blue_circle":{"name":"large_blue_circle","alternate-name":"shape, icon, button"},"large_blue_diamond":{"name":"large_blue_diamond","alternate-name":"shape, jewel, gem"},"large_orange_diamond":{"name":"large_orange_diamond","alternate-name":"shape, jewel, gem"},"small_blue_diamond":{"name":"small_blue_diamond","alternate-name":"shape, jewel, gem"},"small_orange_diamond":{"name":"small_orange_diamond","alternate-name":"shape, jewel, gem"},"small_red_triangle":{"name":"small_red_triangle","alternate-name":"shape, direction, up, top"},"small_red_triangle_down":{"name":"small_red_triangle_down","alternate-name":"shape, direction, bottom"},"shipit":{"name":"shipit","alternate-name":"squirrel, detective, animal, sherlock, inspector, custom_"}},"partyParrot":{"parrot":{"name":"parrot"},"middleparrot":{"name":"middleparrot"},"rightparrot":{"name":"rightparrot"},"aussieparrot":{"name":"aussieparrot"},"gothparrot":{"name":"gothparrot"},"oldtimeyparrot":{"name":"oldtimeyparrot"},"boredparrot":{"name":"boredparrot"},"shuffleparrot":{"name":"shuffleparrot"},"shufflefurtherparrot":{"name":"shufflefurtherparrot"},"congaparrot":{"name":"congaparrot"},"reversecongaparrot":{"name":"reversecongaparrot"},"partyparrot":{"name":"partyparrot"},"sadparrot":{"name":"sadparrot"},"parrotcop":{"name":"parrotcop"},"fastparrot":{"name":"fastparrot"},"slowparrot":{"name":"slowparrot"},"parrotdad":{"name":"parrotdad"},"dealwithitparrot":{"name":"dealwithitparrot"},"fiestaparrot":{"name":"fiestaparrot"},"chillparrot":{"name":"chillparrot"},"explodyparrot":{"name":"explodyparrot"},"shufflepartyparrot":{"name":"shufflepartyparrot"},"ice-cream-parrot":{"name":"ice-cream-parrot"},"aussiecongaparrot":{"name":"aussiecongaparrot"},"aussiereversecongaparrot":{"name":"aussiereversecongaparrot"},"parrotwave1":{"name":"parrotwave1"},"parrotwave2":{"name":"parrotwave2"},"parrotwave3":{"name":"parrotwave3"},"parrotwave4":{"name":"parrotwave4"},"parrotwave5":{"name":"parrotwave5"},"parrotwave6":{"name":"parrotwave6"},"parrotwave7":{"name":"parrotwave7"}}};var EmoticonsGroup=exports.EmoticonsGroup={people:{groupName:'People',groupEmoticon:'smile'},nature:{groupName:'Nature',groupEmoticon:'leaves'},objects:{groupName:'Objects',groupEmoticon:'iphone'},places:{groupName:'Places',groupEmoticon:'airplane'},symbols:{groupName:'Symbols',groupEmoticon:'heart_decoration'},partyParrot:{groupName:'Party Parrots',groupEmoticon:'parrot'}};
 
 /***/ }
 /******/ ]);

@@ -12,10 +12,10 @@ body {
 ul {
   list-style-type: none;
   padding: 0;
-  margin:0;
+  margin: 0;
 }
 
-.clearfix::after{
+.clearfix::after {
   visibility: hidden;
   display: block;
   font-size: 0;
@@ -138,7 +138,10 @@ ul {
 }
 
 .message {
-  padding: 5px 30px;
+  padding: 8px 30px;
+  &:hover {
+    background: #f6f6f6;
+  }
 }
 
 .message-time {
@@ -195,8 +198,11 @@ ul {
   width: 1.5em;
   height: 1.5em;
   display: inline-block;
-  margin-bottom: -0.25em;
   background-size: contain;
+}
+
+.md-link{
+  color:  #0000EE
 }
 
 @media screen and (min-width: 900px) {
