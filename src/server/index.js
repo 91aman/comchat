@@ -11,6 +11,7 @@ app.get('/build/app.js', function (req, res) {
 
 app.get('/src/*', function (req, res) {
     console.log(__dirname + '/../../'+req.originalUrl);
+    res.setHeader('Cache-Control', 'public, max-age=3600');
     res.sendFile(path.join(__dirname + '/../../'+ req.originalUrl));
 });
 

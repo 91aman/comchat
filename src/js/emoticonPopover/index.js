@@ -11,6 +11,8 @@ import Popover from 'material-ui/lib/popover/popover';
 import {toggleEmoticonPopover, onEmoticonClick} from '../actions';
 import {EmoticonsGroup, EmoticonGroupDetails} from '../../constants/emoticons';
 import styles from './emoticon.scss';
+import AppUtils from '../utils/appUtils';
+import Halogen from 'halogen';
 
 
 const Emoticon = ({dataKey,emoticonName, emoticonIcon,selected, onClick = () => {
@@ -21,21 +23,76 @@ const Emoticon = ({dataKey,emoticonName, emoticonIcon,selected, onClick = () => 
         </li>)
 };
 
+
+const EmoticonsList = ({selectedEmoticonGroup ,closeEmoticonPopover}) => {
+    const selectedEmoticons = EmoticonGroupDetails[selectedEmoticonGroup];
+
+    return (<ul className={"emo-pop-wrap clearfix"}>
+        {Object.keys(selectedEmoticons).map((emoticonIcon) => {
+            return <Emoticon
+                key={emoticonIcon}
+                dataKey={`:${emoticonIcon}:` }
+                emoticonIcon={emoticonIcon}
+                emoticonName={`:${emoticonIcon}:` }
+                onClick={(key) => {onEmoticonClick(key); closeEmoticonPopover()}}
+            />
+        })}
+    </ul>)
+};
+
+const EmoticonGroupList = ({selectedEmoticonGroup, onSelect}) => {
+
+    return (<ul className={"emo-pop-list-wrap clearfix"}>
+        {
+            Object.keys(EmoticonsGroup).map((emoticonGroupKey) => {
+                const emoticonGroup = EmoticonsGroup[emoticonGroupKey];
+                return <Emoticon
+                    key={emoticonGroupKey}
+                    dataKey={emoticonGroupKey}
+                    onClick={onSelect}
+                    selected={selectedEmoticonGroup === emoticonGroupKey}
+                    emoticonName={emoticonGroup.groupName}
+                    emoticonIcon={emoticonGroup.groupEmoticon}
+                />
+            })
+        }
+    </ul>)
+};
+
+function prefetchImages() {
+    const that = this,
+        {selectedEmoticonGroup, emoticonGroupLoaded = {}} = that.state,
+        selectedEmoticons = EmoticonGroupDetails[selectedEmoticonGroup],
+
+        imageSrcList = Object.keys(selectedEmoticons).map((emoticonIcon) => {
+            return `./src/img/emoticons/${emoticonIcon}.png`;
+        });
+
+    AppUtils.preFetchImages(imageSrcList).then(() => {
+        that.setState({emoticonGroupLoaded : Object.assign({} , emoticonGroupLoaded, {[selectedEmoticonGroup] : true})});
+    })
+};
+
 class EmoticonPopoverComponent extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedEmoticonGroup: Object.keys(EmoticonsGroup)[0]
+            selectedEmoticonGroup: Object.keys(EmoticonsGroup)[0],
+            emoticonGroupLoaded: {}
         }
     }
 
     render() {
         const that = this,
-            {selectedEmoticonGroup} = that.state,
-            {closeEmoticonPopover, emoticonPopoverOpen, anchorEl, onEmoticonClick} = that.props,
-            selectedEmoticons = EmoticonGroupDetails[selectedEmoticonGroup];
+            {selectedEmoticonGroup, loading, emoticonGroupLoaded} = that.state,
+            {closeEmoticonPopover, emoticonPopoverOpen, anchorEl} = that.props,
+            needLoading = !emoticonGroupLoaded[selectedEmoticonGroup];
+
+
+        needLoading && prefetchImages.call(that);
+
         return (
             <Popover
                 className={"emo-pop"}
@@ -45,34 +102,11 @@ class EmoticonPopoverComponent extends Component {
                 targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 onRequestClose={() => {closeEmoticonPopover(false)}}
             >
-                <ul className={"emo-pop-wrap clearfix"}>
-                    {Object.keys(selectedEmoticons).map((emoticonIcon) => {
-                        return <Emoticon
-                            key={emoticonIcon}
-                            dataKey={`:${emoticonIcon}:` }
-                            emoticonIcon={emoticonIcon}
-                            emoticonName={`:${emoticonIcon}:` }
-                            onClick={(key) => {onEmoticonClick(key); closeEmoticonPopover()}}
-                        />
-                    })}
-                </ul>
-                <ul className={"emo-pop-list-wrap clearfix"}>
-                    {
-                        Object.keys(EmoticonsGroup).map((emoticonGroupKey) => {
-                            const emoticonGroup = EmoticonsGroup[emoticonGroupKey];
-                            return <Emoticon
-                                key={emoticonGroupKey}
-                                dataKey={emoticonGroupKey}
-                                onClick={(key) => {
-                                that.setState({selectedEmoticonGroup : key})
-                                }}
-                                selected={selectedEmoticonGroup === emoticonGroupKey}
-                                emoticonName={emoticonGroup.groupName}
-                                emoticonIcon={emoticonGroup.groupEmoticon}
-                            />
-                        })
-                    }
-                </ul>
+                {needLoading ? <div><Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/></div> : <div><EmoticonsList selectedEmoticonGroup={selectedEmoticonGroup}
+                                                                       closeEmoticonPopover={closeEmoticonPopover}/>
+                    <EmoticonGroupList onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
+                                       selectedEmoticonGroup={selectedEmoticonGroup}/></div> }
+
             </Popover>
         );
     }
