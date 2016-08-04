@@ -24,7 +24,7 @@ const Emoticon = ({dataKey,emoticonName, emoticonIcon,selected, onClick = () => 
 };
 
 
-const EmoticonsList = ({selectedEmoticonGroup ,closeEmoticonPopover}) => {
+const EmoticonsList = ({selectedEmoticonGroup ,closeEmoticonPopover, onEmoticonClick}) => {
     const selectedEmoticons = EmoticonGroupDetails[selectedEmoticonGroup];
 
     return (<ul className={"emo-pop-wrap clearfix"}>
@@ -86,8 +86,8 @@ class EmoticonPopoverComponent extends Component {
 
     render() {
         const that = this,
-            {selectedEmoticonGroup, loading, emoticonGroupLoaded} = that.state,
-            {closeEmoticonPopover, emoticonPopoverOpen, anchorEl} = that.props,
+            {selectedEmoticonGroup, emoticonGroupLoaded} = that.state,
+            {closeEmoticonPopover, emoticonPopoverOpen, anchorEl, onEmoticonClick} = that.props,
             needLoading = !emoticonGroupLoaded[selectedEmoticonGroup];
 
 
@@ -104,7 +104,7 @@ class EmoticonPopoverComponent extends Component {
             >
                 {needLoading ?
                     <Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/> :
-                    <EmoticonsList selectedEmoticonGroup={selectedEmoticonGroup} closeEmoticonPopover={closeEmoticonPopover}/>
+                    <EmoticonsList onEmoticonClick={onEmoticonClick} selectedEmoticonGroup={selectedEmoticonGroup} closeEmoticonPopover={closeEmoticonPopover}/>
                 }
 
                 <EmoticonGroupList onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
