@@ -69,7 +69,7 @@ function prefetchImages() {
         });
 
     AppUtils.preFetchImages(imageSrcList).then(() => {
-        that.setState({emoticonGroupLoaded : Object.assign({} , emoticonGroupLoaded, {[selectedEmoticonGroup] : true})});
+        that.setState({emoticonGroupLoaded: Object.assign({}, emoticonGroupLoaded, {[selectedEmoticonGroup]: true})});
     })
 };
 
@@ -102,10 +102,13 @@ class EmoticonPopoverComponent extends Component {
                 targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 onRequestClose={() => {closeEmoticonPopover(false)}}
             >
-                {needLoading ? <div><Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/></div> : <div><EmoticonsList selectedEmoticonGroup={selectedEmoticonGroup}
-                                                                       closeEmoticonPopover={closeEmoticonPopover}/>
-                    <EmoticonGroupList onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
-                                       selectedEmoticonGroup={selectedEmoticonGroup}/></div> }
+                {needLoading ?
+                    <Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/> :
+                    <EmoticonsList selectedEmoticonGroup={selectedEmoticonGroup} closeEmoticonPopover={closeEmoticonPopover}/>
+                }
+
+                <EmoticonGroupList onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
+                                   selectedEmoticonGroup={selectedEmoticonGroup}/>
 
             </Popover>
         );

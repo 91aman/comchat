@@ -105,6 +105,8 @@
 }
 
 .emo-pop-loader{
+  height: calc(100% - 41px);
   text-align: center;
-  margin-top: 125px;
+  padding-top: 100px;
+  box-sizing: border-box;
 }
