@@ -6,9 +6,11 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import LinkIcon from 'material-ui/lib/svg-icons/content/link';
+import NotificationIcon from 'material-ui/lib/svg-icons/social/notifications';
+import NotificationOffIcon from 'material-ui/lib/svg-icons/social/notifications-off';
 import IconButton from 'material-ui/lib/icon-button';
 
-import {toggleSnackbar} from '../actions'
+import {toggleSnackbar, toggleNotification} from '../actions'
 
 
 function copyTextToClipboard() {
@@ -69,14 +71,24 @@ function copyTextToClipboard() {
 class ChatAreaHeaderComponent extends Component {
     render() {
 
-        const {channelName, showSnackbar} = this.props;
+        const {channelName, showSnackbar, disableNotification, toggleNotification} = this.props;
         return (
             <div className="ml-g-header">
                 <div className="ml-g-h-label">{channelName}</div>
-                <IconButton className="ml-g-h-icon" onClick={() => {copyTextToClipboard() ; showSnackbar()}}>
+                <IconButton
+                    className="ml-g-h-icon"
+                    title="Copy Link"
+                    onClick={() => {copyTextToClipboard() ; showSnackbar()}}
+                >
                     <LinkIcon />
                 </IconButton>
-
+                <IconButton
+                    className="ml-g-h-icon"
+                    title={disableNotification ? 'Enable Notification' : 'Disable Notification'}
+                    onClick={toggleNotification}
+                >
+                    {disableNotification ? <NotificationOffIcon/> : <NotificationIcon />}
+                </IconButton>
             </div>
 
         );
@@ -85,7 +97,8 @@ class ChatAreaHeaderComponent extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        channelName: state.channelName
+        channelName: state.channelName,
+        disableNotification: state.disableNotification
     }
 };
 
@@ -93,6 +106,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         showSnackbar: () => {
             dispatch(toggleSnackbar(true))
+        },
+        toggleNotification: () => {
+            dispatch(toggleNotification())
         }
     }
 };

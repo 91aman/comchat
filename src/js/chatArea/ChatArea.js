@@ -12,7 +12,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right';
 import Divider from 'material-ui/lib/divider';
-import LinkIcon from 'material-ui/lib/svg-icons/content/link';
+import ChatIcon from 'material-ui/lib/svg-icons/communication/chat';
 import EmotionIcon from 'material-ui/lib/svg-icons/editor/insert-emoticon';
 
 import MessageUtils from '../utils/messageUtils';
@@ -23,6 +23,12 @@ import ChatAreaHeader from './ChatAreaHeader';
 
 
 var nameSpaceSocket;
+
+const colors = ['FF1744', 'FF1744', 'D500F9', '651FFF', '3D5AFE', '2979FF', '00B0FF', '00E5FF', '1DE9B6', '00E676', 'FFC400', 'FF9100', 'FF3D00'];
+
+function randomColor() {
+    return colors[Math.floor(Math.random() * (colors.length - 1)) + 1]
+};
 
 const User = ({username, color}) => {
     return (<li className="mas-user">
@@ -44,11 +50,11 @@ const SenderName = ({name, color}) => {
     return <span className="message-name" style={{color : '#' + color}}><b>{name}</b></span>
 };
 
-const Message = ({msg , time, username, color}) => {
+const Message = ({enrichedMessage , time, username, color}) => {
     return (<div className="message">
         <MessageDate time={new Date(time)}/>
         <SenderName name={username} color={color}/>
-        <span className="message-desc" dangerouslySetInnerHTML={{__html: msg}}>
+        <span className="message-desc" dangerouslySetInnerHTML={{__html: enrichedMessage}}>
         </span>
     </div>)
 };
@@ -65,7 +71,11 @@ const Info = ({msg, time}) => {
 const SideBar = ({username,users = []}) => {
     return (<div className="ma-sidebar">
         <div className="ma-sb-username">
-            <div>{username}</div>
+            <div className="lfloat">{username}</div>
+            <a className="rfloat" href="http://comchat.io/" target="_blank">
+                <IconButton className="ma-sb-icon" title="Start a new conversation">
+                    <ChatIcon />
+                </IconButton></a>
         </div>
         <ul className="mas-user-list">
             {_.map(users, (user) => <User {...user}/>)}
@@ -101,11 +111,24 @@ function onUserMessageChange(e) {
 
 
 function onSubmit(e) {
+
     e.preventDefault();
-    const {message = '', onMessageChange } = this.props;
+    const that = this,
+        {message = '', onMessageChange, username, color } = that.props;
 
     if (!!message.trim()) {
-        nameSpaceSocket.emit('chat message', message);
+        const enrichedMessage = MessageUtils.parseMessage(message),
+            messageDetails = {
+                username,
+                color,
+                time: +new Date(),
+                enrichedMessage,
+                message
+            };
+
+        nameSpaceSocket.emit('chat message', messageDetails);
+        that.props.onNewMessageRecieve(messageDetails);
+
         onMessageChange('');
     }
 }
@@ -154,16 +177,35 @@ class MessageForm extends Component {
 
 }
 
+function pushNotification({username, message} = {}) {
+
+    var notification = new Notification(username, {
+        icon: '/src/img/chatIcon.png',
+        body: message
+    });
+
+    window.setTimeout(() => {
+        notification.close()
+    }, 2000);
+
+    notification.onclick = function () {
+        window.focus();
+        notification.close();
+    };
+}
+
 class ChatRoomComponent extends Component {
 
     constructor(props) {
         super(props);
 
-        const {channelName, username} = props;
+        const that = this,
+            {channelName, username} = props,
+            color = randomColor();
 
         nameSpaceSocket = io("/" + channelName);
 
-        nameSpaceSocket.emit('login', username);
+        nameSpaceSocket.emit('login', {username, color});
 
         nameSpaceSocket.on('userLoggedIn', ({time, user, users}) => {
             const {messages = []} = this.props;
@@ -181,10 +223,12 @@ class ChatRoomComponent extends Component {
             this.props.onStateChange({usersTyping});
         });
 
-        nameSpaceSocket.on('chat message', (message) => {
-            this.props.onNewMessageRecieve(Object.assign(message, {msg: MessageUtils.parseMessage(message.msg)}));
-
+        nameSpaceSocket.on('chat message', (messageDetails) => {
+            this.props.onNewMessageRecieve(messageDetails);
+            !that.props.disableNotification && pushNotification.call(that, messageDetails);
         });
+
+        props.onStateChange({color})
     }
 
     render() {
@@ -195,6 +239,12 @@ class ChatRoomComponent extends Component {
             </div>
         );
     }
+
+    componentDidMount() {
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    }
 }
 
 const mapStateToProps = (state) => {
@@ -204,7 +254,9 @@ const mapStateToProps = (state) => {
         users: state.users,
         messages: state.messages,
         usersTyping: state.usersTyping,
-        message: state.message
+        message: state.message,
+        color: state.color,
+        disableNotification: state.disableNotification
     }
 };
 

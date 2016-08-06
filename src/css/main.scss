@@ -24,6 +24,14 @@ ul {
   height: 0;
 }
 
+.rfloat{
+  float:right;
+}
+
+.lfloat{
+  float:left;
+}
+
 #app, .chatApp {
   height: 100%;
 }
@@ -84,6 +92,12 @@ ul {
   border-right: 1px solid #dedede;
 }
 
+.ma-sb-icon svg{
+  height:20px !important;
+  width: 20px !important;
+  fill : #ccc !important;
+}
+
 .mas-user-list {
   list-style-type: none;
   padding: 0;
@@ -110,7 +124,7 @@ ul {
 }
 
 .ml-g-header, .ma-sb-username {
-  padding: 0 30px;
+  padding: 0 10px 0 30px;
   border-bottom: 1px solid #dedede;
   box-sizing: border-box;
   background-color: #f5f5f5;

@@ -12,7 +12,8 @@ import {
     NEW_MESSAGE_RECIEVED,
     TOGGLE_SNACKBAR,
     ON_EMOTICON_ADD,
-    TOGGLE_EMOTICON_POPOVER
+    TOGGLE_EMOTICON_POPOVER,
+    TOGGLE_NOTIFICATION
 } from './actions';
 
 
@@ -36,6 +37,8 @@ export default function reducer(state = {}, action) {
             return Object.assign({}, state, {showSnackBar: action.data});
         case TOGGLE_EMOTICON_POPOVER:
             return Object.assign({}, state, {emoticonPopoverDetails: action.data});
+        case TOGGLE_NOTIFICATION:
+            return Object.assign({}, state, {disableNotification: !state.disableNotification});
         case ON_EMOTICON_ADD:
             const message = state.message || '';
             return Object.assign({}, state, {message: `${message} ${action.data}`});

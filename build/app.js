@@ -62,7 +62,7 @@
 
 	var _lodash2 = _interopRequireDefault(_lodash);
 
-	var _main = __webpack_require__(342);
+	var _main = __webpack_require__(343);
 
 	var _main2 = _interopRequireDefault(_main);
 
@@ -70,7 +70,7 @@
 
 	var _redux = __webpack_require__(167);
 
-	var _reducers = __webpack_require__(344);
+	var _reducers = __webpack_require__(345);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -88,7 +88,7 @@
 
 	var store = (0, _redux.createStore)(_reducers2.default, getDefaultState());
 
-	var injectTapEventPlugin = __webpack_require__(345);
+	var injectTapEventPlugin = __webpack_require__(346);
 	injectTapEventPlugin();
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -19776,7 +19776,7 @@
 
 	var _ChatArea2 = _interopRequireDefault(_ChatArea);
 
-	var _snackbar = __webpack_require__(338);
+	var _snackbar = __webpack_require__(339);
 
 	var _snackbar2 = _interopRequireDefault(_snackbar);
 
@@ -19786,7 +19786,7 @@
 
 	var _actions = __webpack_require__(307);
 
-	var _Login = __webpack_require__(341);
+	var _Login = __webpack_require__(342);
 
 	var _Login2 = _interopRequireDefault(_Login);
 
@@ -44474,9 +44474,9 @@
 
 	var _divider2 = _interopRequireDefault(_divider);
 
-	var _link = __webpack_require__(301);
+	var _chat = __webpack_require__(301);
 
-	var _link2 = _interopRequireDefault(_link);
+	var _chat2 = _interopRequireDefault(_chat);
 
 	var _insertEmoticon = __webpack_require__(302);
 
@@ -44508,6 +44508,12 @@
 	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 	var nameSpaceSocket;
+
+	var colors = ['FF1744', 'FF1744', 'D500F9', '651FFF', '3D5AFE', '2979FF', '00B0FF', '00E5FF', '1DE9B6', '00E676', 'FFC400', 'FF9100', 'FF3D00'];
+
+	function randomColor() {
+	    return colors[Math.floor(Math.random() * (colors.length - 1)) + 1];
+	};
 
 	var User = function User(_ref) {
 	    var username = _ref.username;
@@ -44560,7 +44566,7 @@
 	};
 
 	var Message = function Message(_ref4) {
-	    var msg = _ref4.msg;
+	    var enrichedMessage = _ref4.enrichedMessage;
 	    var time = _ref4.time;
 	    var username = _ref4.username;
 	    var color = _ref4.color;
@@ -44570,7 +44576,7 @@
 	        { className: 'message' },
 	        _react2.default.createElement(MessageDate, { time: new Date(time) }),
 	        _react2.default.createElement(SenderName, { name: username, color: color }),
-	        _react2.default.createElement('span', { className: 'message-desc', dangerouslySetInnerHTML: { __html: msg } })
+	        _react2.default.createElement('span', { className: 'message-desc', dangerouslySetInnerHTML: { __html: enrichedMessage } })
 	    );
 	};
 
@@ -44608,8 +44614,17 @@
 	            { className: 'ma-sb-username' },
 	            _react2.default.createElement(
 	                'div',
-	                null,
+	                { className: 'lfloat' },
 	                username
+	            ),
+	            _react2.default.createElement(
+	                'a',
+	                { className: 'rfloat', href: 'http://comchat.io/', target: '_blank' },
+	                _react2.default.createElement(
+	                    _iconButton2.default,
+	                    { className: 'ma-sb-icon', title: 'Start a new conversation' },
+	                    _react2.default.createElement(_chat2.default, null)
+	                )
 	            )
 	        ),
 	        _react2.default.createElement(
@@ -44651,15 +44666,30 @@
 	}
 
 	function onSubmit(e) {
+
 	    e.preventDefault();
-	    var _props = this.props;
-	    var _props$message = _props.message;
-	    var message = _props$message === undefined ? '' : _props$message;
-	    var onMessageChange = _props.onMessageChange;
+	    var that = this;
+	    var _that$props = that.props;
+	    var _that$props$message = _that$props.message;
+	    var message = _that$props$message === undefined ? '' : _that$props$message;
+	    var onMessageChange = _that$props.onMessageChange;
+	    var username = _that$props.username;
+	    var color = _that$props.color;
 
 
 	    if (!!message.trim()) {
-	        nameSpaceSocket.emit('chat message', message);
+	        var enrichedMessage = _messageUtils2.default.parseMessage(message),
+	            messageDetails = {
+	            username: username,
+	            color: color,
+	            time: +new Date(),
+	            enrichedMessage: enrichedMessage,
+	            message: message
+	        };
+
+	        nameSpaceSocket.emit('chat message', messageDetails);
+	        that.props.onNewMessageRecieve(messageDetails);
+
 	        onMessageChange('');
 	    }
 	}
@@ -44746,6 +44776,28 @@
 	    return MessageForm;
 	}(_react.Component);
 
+	function pushNotification() {
+	    var _ref8 = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	    var username = _ref8.username;
+	    var message = _ref8.message;
+
+
+	    var notification = new Notification(username, {
+	        icon: '/src/img/chatIcon.png',
+	        body: message
+	    });
+
+	    window.setTimeout(function () {
+	        notification.close();
+	    }, 2000);
+
+	    notification.onclick = function () {
+	        window.focus();
+	        notification.close();
+	    };
+	}
+
 	var ChatRoomComponent = function (_Component2) {
 	    _inherits(ChatRoomComponent, _Component2);
 
@@ -44754,18 +44806,19 @@
 
 	        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(ChatRoomComponent).call(this, props));
 
+	        var that = _this2;
 	        var channelName = props.channelName;
 	        var username = props.username;
-
+	        var color = randomColor();
 
 	        nameSpaceSocket = io("/" + channelName);
 
-	        nameSpaceSocket.emit('login', username);
+	        nameSpaceSocket.emit('login', { username: username, color: color });
 
-	        nameSpaceSocket.on('userLoggedIn', function (_ref8) {
-	            var time = _ref8.time;
-	            var user = _ref8.user;
-	            var users = _ref8.users;
+	        nameSpaceSocket.on('userLoggedIn', function (_ref9) {
+	            var time = _ref9.time;
+	            var user = _ref9.user;
+	            var users = _ref9.users;
 	            var _this2$props$messages = _this2.props.messages;
 	            var messages = _this2$props$messages === undefined ? [] : _this2$props$messages;
 
@@ -44773,10 +44826,10 @@
 	            _this2.props.onStateChange({ messages: messages, users: users });
 	        });
 
-	        nameSpaceSocket.on('userLoggedOut', function (_ref9) {
-	            var time = _ref9.time;
-	            var user = _ref9.user;
-	            var users = _ref9.users;
+	        nameSpaceSocket.on('userLoggedOut', function (_ref10) {
+	            var time = _ref10.time;
+	            var user = _ref10.user;
+	            var users = _ref10.users;
 	            var _this2$props$messages2 = _this2.props.messages;
 	            var messages = _this2$props$messages2 === undefined ? [] : _this2$props$messages2;
 
@@ -44784,15 +44837,18 @@
 	            _this2.props.onStateChange({ messages: messages, users: users });
 	        });
 
-	        nameSpaceSocket.on('userTyping', function (_ref10) {
-	            var usersTyping = _ref10.usersTyping;
+	        nameSpaceSocket.on('userTyping', function (_ref11) {
+	            var usersTyping = _ref11.usersTyping;
 
 	            _this2.props.onStateChange({ usersTyping: usersTyping });
 	        });
 
-	        nameSpaceSocket.on('chat message', function (message) {
-	            _this2.props.onNewMessageRecieve(Object.assign(message, { msg: _messageUtils2.default.parseMessage(message.msg) }));
+	        nameSpaceSocket.on('chat message', function (messageDetails) {
+	            _this2.props.onNewMessageRecieve(messageDetails);
+	            !that.props.disableNotification && pushNotification.call(that, messageDetails);
 	        });
+
+	        props.onStateChange({ color: color });
 	        return _this2;
 	    }
 
@@ -44806,6 +44862,13 @@
 	                _react2.default.createElement(MessageForm, this.props)
 	            );
 	        }
+	    }, {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            if (Notification.permission !== "granted") {
+	                Notification.requestPermission();
+	            }
+	        }
 	    }]);
 
 	    return ChatRoomComponent;
@@ -44818,7 +44881,9 @@
 	        users: state.users,
 	        messages: state.messages,
 	        usersTyping: state.usersTyping,
-	        message: state.message
+	        message: state.message,
+	        color: state.color,
+	        disableNotification: state.disableNotification
 	    };
 	};
 
@@ -49374,8 +49439,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var ContentLink = _react2.default.createClass({
-	  displayName: 'ContentLink',
+	var CommunicationChat = _react2.default.createClass({
+	  displayName: 'CommunicationChat',
 
 	  mixins: [_reactAddonsPureRenderMixin2.default],
 
@@ -49383,12 +49448,12 @@
 	    return _react2.default.createElement(
 	      _svgIcon2.default,
 	      this.props,
-	      _react2.default.createElement('path', { d: 'M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' })
+	      _react2.default.createElement('path', { d: 'M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z' })
 	    );
 	  }
 	});
 
-	exports.default = ContentLink;
+	exports.default = CommunicationChat;
 	module.exports = exports['default'];
 
 /***/ },
@@ -53559,6 +53624,7 @@
 	exports.toggleSnackbar = toggleSnackbar;
 	exports.toggleEmoticonPopover = toggleEmoticonPopover;
 	exports.onEmoticonClick = onEmoticonClick;
+	exports.toggleNotification = toggleNotification;
 	/**
 	 * Created by amanjain on 30/07/16 at 10:17 AM.
 	 * Description :
@@ -53574,6 +53640,7 @@
 	var TOGGLE_SNACKBAR = exports.TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 	var TOGGLE_EMOTICON_POPOVER = exports.TOGGLE_EMOTICON_POPOVER = 'TOGGLE_EMOTICON_POPOVER';
 	var ON_EMOTICON_ADD = exports.ON_EMOTICON_ADD = 'ON_EMOTICON_ADD';
+	var TOGGLE_NOTIFICATION = exports.TOGGLE_NOTIFICATION = 'TOGGLE_NOTIFICATION';
 
 	/*
 	 * action creators
@@ -53614,6 +53681,10 @@
 
 	function onEmoticonClick(data) {
 	    return { type: ON_EMOTICON_ADD, data: data };
+	}
+
+	function toggleNotification(data) {
+	    return { type: TOGGLE_NOTIFICATION, data: data };
 	}
 
 /***/ },
@@ -56376,9 +56447,17 @@
 
 	var _reactRedux = __webpack_require__(160);
 
-	var _link = __webpack_require__(301);
+	var _link = __webpack_require__(338);
 
 	var _link2 = _interopRequireDefault(_link);
+
+	var _notifications = __webpack_require__(351);
+
+	var _notifications2 = _interopRequireDefault(_notifications);
+
+	var _notificationsOff = __webpack_require__(352);
+
+	var _notificationsOff2 = _interopRequireDefault(_notificationsOff);
 
 	var _iconButton = __webpack_require__(292);
 
@@ -56464,6 +56543,8 @@
 	            var _props = this.props;
 	            var channelName = _props.channelName;
 	            var showSnackbar = _props.showSnackbar;
+	            var disableNotification = _props.disableNotification;
+	            var toggleNotification = _props.toggleNotification;
 
 	            return _react2.default.createElement(
 	                'div',
@@ -56475,10 +56556,23 @@
 	                ),
 	                _react2.default.createElement(
 	                    _iconButton2.default,
-	                    { className: 'ml-g-h-icon', onClick: function onClick() {
+	                    {
+	                        className: 'ml-g-h-icon',
+	                        title: 'Copy Link',
+	                        onClick: function onClick() {
 	                            copyTextToClipboard();showSnackbar();
-	                        } },
+	                        }
+	                    },
 	                    _react2.default.createElement(_link2.default, null)
+	                ),
+	                _react2.default.createElement(
+	                    _iconButton2.default,
+	                    {
+	                        className: 'ml-g-h-icon',
+	                        title: disableNotification ? 'Enable Notification' : 'Disable Notification',
+	                        onClick: toggleNotification
+	                    },
+	                    disableNotification ? _react2.default.createElement(_notificationsOff2.default, null) : _react2.default.createElement(_notifications2.default, null)
 	                )
 	            );
 	        }
@@ -56489,7 +56583,8 @@
 
 	var mapStateToProps = function mapStateToProps(state) {
 	    return {
-	        channelName: state.channelName
+	        channelName: state.channelName,
+	        disableNotification: state.disableNotification
 	    };
 	};
 
@@ -56497,6 +56592,9 @@
 	    return {
 	        showSnackbar: function showSnackbar() {
 	            dispatch((0, _actions.toggleSnackbar)(true));
+	        },
+	        toggleNotification: function toggleNotification() {
+	            dispatch((0, _actions.toggleNotification)());
 	        }
 	    };
 	};
@@ -56507,6 +56605,47 @@
 
 /***/ },
 /* 338 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(258);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _svgIcon = __webpack_require__(277);
+
+	var _svgIcon2 = _interopRequireDefault(_svgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ContentLink = _react2.default.createClass({
+	  displayName: 'ContentLink',
+
+	  mixins: [_reactAddonsPureRenderMixin2.default],
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      _svgIcon2.default,
+	      this.props,
+	      _react2.default.createElement('path', { d: 'M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z' })
+	    );
+	  }
+	});
+
+	exports.default = ContentLink;
+	module.exports = exports['default'];
+
+/***/ },
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -56545,7 +56684,7 @@
 
 	var _contextPure2 = _interopRequireDefault(_contextPure);
 
-	var _styleResizable = __webpack_require__(339);
+	var _styleResizable = __webpack_require__(340);
 
 	var _styleResizable2 = _interopRequireDefault(_styleResizable);
 
@@ -56553,7 +56692,7 @@
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _deprecatedPropType = __webpack_require__(340);
+	var _deprecatedPropType = __webpack_require__(341);
 
 	var _deprecatedPropType2 = _interopRequireDefault(_deprecatedPropType);
 
@@ -56923,7 +57062,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 339 */
+/* 340 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56987,7 +57126,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 340 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -57016,7 +57155,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 341 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57178,13 +57317,13 @@
 	exports.default = Login;
 
 /***/ },
-/* 342 */
+/* 343 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(343);
+	var content = __webpack_require__(344);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(312)(content, {});
@@ -57204,7 +57343,7 @@
 	}
 
 /***/ },
-/* 343 */
+/* 344 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(311)();
@@ -57212,13 +57351,13 @@
 
 
 	// module
-	exports.push([module.id, "button[data-balloon] {\n  overflow: visible; }\n\n[data-balloon] {\n  position: relative; }\n\n[data-balloon]:before,\n[data-balloon]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)\";\n  filter: alpha(opacity=0);\n  -khtml-opacity: 0;\n  -moz-opacity: 0;\n  opacity: 0;\n  pointer-events: none;\n  -webkit-transition: all 0.18s ease-out 0.18s;\n  transition: all 0.18s ease-out 0.18s;\n  bottom: 100%;\n  left: 50%;\n  position: absolute;\n  z-index: 10;\n  -webkit-transform: translate(-50%, 10px);\n  -ms-transform: translate(-50%, 10px);\n  transform: translate(-50%, 10px);\n  -webkit-transform-origin: top;\n  -ms-transform-origin: top;\n  transform-origin: top; }\n\n[data-balloon]:after {\n  background: rgba(17, 17, 17, 0.9);\n  border-radius: 4px;\n  color: #fff;\n  content: attr(data-balloon);\n  font-size: 12px;\n  padding: .5em 1em;\n  white-space: nowrap;\n  margin-bottom: 11px; }\n\n[data-balloon]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(0)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  content: \"\";\n  margin-bottom: 5px; }\n\n[data-balloon]:hover:before,\n[data-balloon][data-balloon-visible]:before,\n[data-balloon]:hover:after,\n[data-balloon][data-balloon-visible]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)\";\n  filter: alpha(opacity=100);\n  -khtml-opacity: 1;\n  -moz-opacity: 1;\n  opacity: 1;\n  pointer-events: auto;\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon][data-balloon-break]:after {\n  white-space: normal; }\n\n[data-balloon-pos=\"down\"]:before,\n[data-balloon-pos=\"down\"]:after {\n  bottom: auto;\n  left: 50%;\n  top: 100%;\n  -webkit-transform: translate(-50%, -10px);\n  -ms-transform: translate(-50%, -10px);\n  transform: translate(-50%, -10px); }\n\n[data-balloon-pos=\"down\"]:after {\n  margin-top: 11px; }\n\n[data-balloon-pos=\"down\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(180 18 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  margin-top: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"down\"]:hover:before,\n[data-balloon-pos=\"down\"][data-balloon-visible]:before,\n[data-balloon-pos=\"down\"]:hover:after,\n[data-balloon-pos=\"down\"][data-balloon-visible]:after {\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon-pos=\"left\"]:before,\n[data-balloon-pos=\"left\"]:after {\n  bottom: auto;\n  left: auto;\n  right: 100%;\n  top: 50%;\n  -webkit-transform: translate(10px, -50%);\n  -ms-transform: translate(10px, -50%);\n  transform: translate(10px, -50%); }\n\n[data-balloon-pos=\"left\"]:after {\n  margin-right: 11px; }\n\n[data-balloon-pos=\"left\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(-90 18 18)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-right: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"left\"]:hover:before,\n[data-balloon-pos=\"left\"][data-balloon-visible]:before,\n[data-balloon-pos=\"left\"]:hover:after,\n[data-balloon-pos=\"left\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-pos=\"right\"]:before,\n[data-balloon-pos=\"right\"]:after {\n  bottom: auto;\n  left: 100%;\n  top: 50%;\n  -webkit-transform: translate(-10px, -50%);\n  -ms-transform: translate(-10px, -50%);\n  transform: translate(-10px, -50%); }\n\n[data-balloon-pos=\"right\"]:after {\n  margin-left: 11px; }\n\n[data-balloon-pos=\"right\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(90 6 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-bottom: 0;\n  margin-left: 5px; }\n\n[data-balloon-pos=\"right\"]:hover:before,\n[data-balloon-pos=\"right\"][data-balloon-visible]:before,\n[data-balloon-pos=\"right\"]:hover:after,\n[data-balloon-pos=\"right\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-length]:after {\n  white-space: normal; }\n\n[data-balloon-length=\"small\"]:after {\n  width: 80px; }\n\n[data-balloon-length=\"medium\"]:after {\n  width: 150px; }\n\n[data-balloon-length=\"large\"]:after {\n  width: 260px; }\n\n[data-balloon-length=\"xlarge\"]:after {\n  width: 90vw; }\n\n@media screen and (min-width: 768px) {\n  [data-balloon-length=\"xlarge\"]:after {\n    width: 380px; } }\n\n[data-balloon-length=\"fit\"]:after {\n  width: 100%; }\n\nhtml, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\nul {\n  list-style-type: none;\n  padding: 0;\n  margin: 0; }\n\n.clearfix::after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.ca-main-paper {\n  display: inline-block;\n  height: 80%;\n  width: 100%;\n  position: absolute;\n  top: 20%;\n  left: 0; }\n  .ca-main-paper.chatBox {\n    top: 0;\n    background: #F5F5F5;\n    height: 100%;\n    width: 100%; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 100%;\n  float: left; }\n\n.ma-sidebar {\n  display: none;\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 8px 30px; }\n  .message:hover {\n    background: #f6f6f6; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n\n.ib-em-bt {\n  position: absolute !important;\n  right: 25px; }\n\n.ib-em-icon {\n  fill: #999 !important; }\n\n.ib-text input {\n  padding-right: 40px !important;\n  box-sizing: border-box; }\n\n.emoji {\n  width: 1.5em;\n  height: 1.5em;\n  display: inline-block;\n  background-size: contain; }\n\n.md-link {\n  color: #0000EE; }\n\n@media screen and (min-width: 900px) {\n  .ca-main-paper {\n    top: 10%;\n    width: 450px;\n    height: 450px;\n    left: calc((100% - 450px) / 2); }\n    .ca-main-paper.chatBox {\n      top: 10%;\n      left: 0;\n      height: 80%; }\n  .messageForm {\n    width: 75%; }\n  .ma-sidebar {\n    display: block; } }\n\n@media screen and (min-width: 1200px) {\n  .ca-main-paper.chatBox {\n    left: calc((100% - 1200px) / 2);\n    top: 10%;\n    height: 80%;\n    width: 1200px; } }\n", ""]);
+	exports.push([module.id, "button[data-balloon] {\n  overflow: visible; }\n\n[data-balloon] {\n  position: relative; }\n\n[data-balloon]:before,\n[data-balloon]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)\";\n  filter: alpha(opacity=0);\n  -khtml-opacity: 0;\n  -moz-opacity: 0;\n  opacity: 0;\n  pointer-events: none;\n  -webkit-transition: all 0.18s ease-out 0.18s;\n  transition: all 0.18s ease-out 0.18s;\n  bottom: 100%;\n  left: 50%;\n  position: absolute;\n  z-index: 10;\n  -webkit-transform: translate(-50%, 10px);\n  -ms-transform: translate(-50%, 10px);\n  transform: translate(-50%, 10px);\n  -webkit-transform-origin: top;\n  -ms-transform-origin: top;\n  transform-origin: top; }\n\n[data-balloon]:after {\n  background: rgba(17, 17, 17, 0.9);\n  border-radius: 4px;\n  color: #fff;\n  content: attr(data-balloon);\n  font-size: 12px;\n  padding: .5em 1em;\n  white-space: nowrap;\n  margin-bottom: 11px; }\n\n[data-balloon]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(0)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  content: \"\";\n  margin-bottom: 5px; }\n\n[data-balloon]:hover:before,\n[data-balloon][data-balloon-visible]:before,\n[data-balloon]:hover:after,\n[data-balloon][data-balloon-visible]:after {\n  -ms-filter: \"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)\";\n  filter: alpha(opacity=100);\n  -khtml-opacity: 1;\n  -moz-opacity: 1;\n  opacity: 1;\n  pointer-events: auto;\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon][data-balloon-break]:after {\n  white-space: normal; }\n\n[data-balloon-pos=\"down\"]:before,\n[data-balloon-pos=\"down\"]:after {\n  bottom: auto;\n  left: 50%;\n  top: 100%;\n  -webkit-transform: translate(-50%, -10px);\n  -ms-transform: translate(-50%, -10px);\n  transform: translate(-50%, -10px); }\n\n[data-balloon-pos=\"down\"]:after {\n  margin-top: 11px; }\n\n[data-balloon-pos=\"down\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"36px\" height=\"12px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(180 18 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 6px;\n  width: 18px;\n  margin-top: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"down\"]:hover:before,\n[data-balloon-pos=\"down\"][data-balloon-visible]:before,\n[data-balloon-pos=\"down\"]:hover:after,\n[data-balloon-pos=\"down\"][data-balloon-visible]:after {\n  -webkit-transform: translate(-50%, 0);\n  -ms-transform: translate(-50%, 0);\n  transform: translate(-50%, 0); }\n\n[data-balloon-pos=\"left\"]:before,\n[data-balloon-pos=\"left\"]:after {\n  bottom: auto;\n  left: auto;\n  right: 100%;\n  top: 50%;\n  -webkit-transform: translate(10px, -50%);\n  -ms-transform: translate(10px, -50%);\n  transform: translate(10px, -50%); }\n\n[data-balloon-pos=\"left\"]:after {\n  margin-right: 11px; }\n\n[data-balloon-pos=\"left\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(-90 18 18)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-right: 5px;\n  margin-bottom: 0; }\n\n[data-balloon-pos=\"left\"]:hover:before,\n[data-balloon-pos=\"left\"][data-balloon-visible]:before,\n[data-balloon-pos=\"left\"]:hover:after,\n[data-balloon-pos=\"left\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-pos=\"right\"]:before,\n[data-balloon-pos=\"right\"]:after {\n  bottom: auto;\n  left: 100%;\n  top: 50%;\n  -webkit-transform: translate(-10px, -50%);\n  -ms-transform: translate(-10px, -50%);\n  transform: translate(-10px, -50%); }\n\n[data-balloon-pos=\"right\"]:after {\n  margin-left: 11px; }\n\n[data-balloon-pos=\"right\"]:before {\n  background: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12px\" height=\"36px\"><path fill=\"rgba(17, 17, 17, 0.9)\" transform=\"rotate(90 6 6)\" d=\"M2.658,0.000 C-13.615,0.000 50.938,0.000 34.662,0.000 C28.662,0.000 23.035,12.002 18.660,12.002 C14.285,12.002 8.594,0.000 2.658,0.000 Z\"/></svg>') no-repeat;\n  background-size: 100% auto;\n  height: 18px;\n  width: 6px;\n  margin-bottom: 0;\n  margin-left: 5px; }\n\n[data-balloon-pos=\"right\"]:hover:before,\n[data-balloon-pos=\"right\"][data-balloon-visible]:before,\n[data-balloon-pos=\"right\"]:hover:after,\n[data-balloon-pos=\"right\"][data-balloon-visible]:after {\n  -webkit-transform: translate(0, -50%);\n  -ms-transform: translate(0, -50%);\n  transform: translate(0, -50%); }\n\n[data-balloon-length]:after {\n  white-space: normal; }\n\n[data-balloon-length=\"small\"]:after {\n  width: 80px; }\n\n[data-balloon-length=\"medium\"]:after {\n  width: 150px; }\n\n[data-balloon-length=\"large\"]:after {\n  width: 260px; }\n\n[data-balloon-length=\"xlarge\"]:after {\n  width: 90vw; }\n\n@media screen and (min-width: 768px) {\n  [data-balloon-length=\"xlarge\"]:after {\n    width: 380px; } }\n\n[data-balloon-length=\"fit\"]:after {\n  width: 100%; }\n\nhtml, body {\n  height: 100%; }\n\nbody {\n  margin: 0;\n  background: #FAFAFA; }\n\nul {\n  list-style-type: none;\n  padding: 0;\n  margin: 0; }\n\n.clearfix::after {\n  visibility: hidden;\n  display: block;\n  font-size: 0;\n  content: \" \";\n  clear: both;\n  height: 0; }\n\n.rfloat {\n  float: right; }\n\n.lfloat {\n  float: left; }\n\n#app, .chatApp {\n  height: 100%; }\n\n.chatApp::after {\n  position: fixed;\n  z-index: -1;\n  background-color: #03A9F4;\n  width: 100%;\n  height: 200px;\n  content: '';\n  top: 0;\n  left: 0; }\n\n.ca-main-paper {\n  display: inline-block;\n  height: 80%;\n  width: 100%;\n  position: absolute;\n  top: 20%;\n  left: 0; }\n  .ca-main-paper.chatBox {\n    top: 0;\n    background: #F5F5F5;\n    height: 100%;\n    width: 100%; }\n\n.nick-wrap {\n  padding: 0 50px;\n  position: absolute;\n  width: 100%;\n  box-sizing: border-box;\n  top: 50%;\n  transform: translateY(-50%); }\n\n.messageArea {\n  height: 100%; }\n\n.messageForm {\n  height: 100%;\n  width: 100%;\n  float: left; }\n\n.ma-sidebar {\n  display: none;\n  width: 25%;\n  float: left;\n  height: 100%;\n  background: #f5f5f5;\n  box-sizing: border-box;\n  border-right: 1px solid #dedede; }\n\n.ma-sb-icon svg {\n  height: 20px !important;\n  width: 20px !important;\n  fill: #ccc !important; }\n\n.mas-user-list {\n  list-style-type: none;\n  padding: 0;\n  margin: 20px 30px; }\n\n.mas-user {\n  padding-right: 15px;\n  position: relative;\n  margin: 15px 0;\n  color: #666;\n  font-size: 14px; }\n\n.mas-user-icon {\n  height: 10px;\n  width: 10px;\n  display: block;\n  position: absolute;\n  right: 0;\n  top: 4px;\n  border-radius: 50%; }\n\n.ml-g-header, .ma-sb-username {\n  padding: 0 10px 0 30px;\n  border-bottom: 1px solid #dedede;\n  box-sizing: border-box;\n  background-color: #f5f5f5;\n  height: 60px; }\n  .ml-g-header > *, .ma-sb-username > * {\n    position: relative;\n    top: 50%;\n    transform: translateY(-50%) !important; }\n\n.ml-g-h-label {\n  float: left; }\n\n.ml-g-h-icon {\n  float: right; }\n\n.messagesList {\n  height: calc(100% - 172px);\n  overflow: auto;\n  margin: 10px 0; }\n\n.message {\n  padding: 8px 30px; }\n  .message:hover {\n    background: #f6f6f6; }\n\n.message-time {\n  font-size: 11px;\n  color: #aaa;\n  margin-right: 15px; }\n\n.message-name {\n  margin-right: 8px; }\n\n.message-desc {\n  color: #666; }\n\n.ml-userTyping {\n  padding: 0 30px;\n  font-size: 12px;\n  height: 14px;\n  color: #aaa; }\n\n.info-message-desc {\n  font-size: 13px;\n  color: #ccc; }\n\n.ca-footer {\n  bottom: 0;\n  width: 100%;\n  background: #F5F5F5;\n  box-sizing: border-box;\n  padding: 14px 30px;\n  border-top: 1px solid #dedede; }\n\n.ib-em-bt {\n  position: absolute !important;\n  right: 25px; }\n\n.ib-em-icon {\n  fill: #999 !important; }\n\n.ib-text input {\n  padding-right: 40px !important;\n  box-sizing: border-box; }\n\n.emoji {\n  width: 1.5em;\n  height: 1.5em;\n  display: inline-block;\n  background-size: contain; }\n\n.md-link {\n  color: #0000EE; }\n\n@media screen and (min-width: 900px) {\n  .ca-main-paper {\n    top: 10%;\n    width: 450px;\n    height: 450px;\n    left: calc((100% - 450px) / 2); }\n    .ca-main-paper.chatBox {\n      top: 10%;\n      left: 0;\n      height: 80%; }\n  .messageForm {\n    width: 75%; }\n  .ma-sidebar {\n    display: block; } }\n\n@media screen and (min-width: 1200px) {\n  .ca-main-paper.chatBox {\n    left: calc((100% - 1200px) / 2);\n    top: 10%;\n    height: 80%;\n    width: 1200px; } }\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 344 */
+/* 345 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57258,6 +57397,8 @@
 	            return Object.assign({}, state, { showSnackBar: action.data });
 	        case _actions.TOGGLE_EMOTICON_POPOVER:
 	            return Object.assign({}, state, { emoticonPopoverDetails: action.data });
+	        case _actions.TOGGLE_NOTIFICATION:
+	            return Object.assign({}, state, { disableNotification: !state.disableNotification });
 	        case _actions.ON_EMOTICON_ADD:
 	            var message = state.message || '';
 	            return Object.assign({}, state, { message: message + ' ' + action.data });
@@ -57271,23 +57412,23 @@
 	}
 
 /***/ },
-/* 345 */
+/* 346 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defaultClickRejectionStrategy = __webpack_require__(346);
+	var defaultClickRejectionStrategy = __webpack_require__(347);
 
 	module.exports = function injectTapEventPlugin (strategyOverrides) {
 	  strategyOverrides = strategyOverrides || {}
 	  var shouldRejectClick = strategyOverrides.shouldRejectClick || defaultClickRejectionStrategy;
 
 	  __webpack_require__(31).injection.injectEventPluginsByName({
-	    "TapEventPlugin":       __webpack_require__(347)(shouldRejectClick)
+	    "TapEventPlugin":       __webpack_require__(348)(shouldRejectClick)
 	  });
 	};
 
 
 /***/ },
-/* 346 */
+/* 347 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -57298,7 +57439,7 @@
 
 
 /***/ },
-/* 347 */
+/* 348 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57326,10 +57467,10 @@
 	var EventPluginUtils = __webpack_require__(33);
 	var EventPropagators = __webpack_require__(73);
 	var SyntheticUIEvent = __webpack_require__(87);
-	var TouchEventUtils = __webpack_require__(348);
+	var TouchEventUtils = __webpack_require__(349);
 	var ViewportMetrics = __webpack_require__(38);
 
-	var keyOf = __webpack_require__(349);
+	var keyOf = __webpack_require__(350);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -57475,7 +57616,7 @@
 
 
 /***/ },
-/* 348 */
+/* 349 */
 /***/ function(module, exports) {
 
 	/**
@@ -57523,7 +57664,7 @@
 
 
 /***/ },
-/* 349 */
+/* 350 */
 /***/ function(module, exports) {
 
 	/**
@@ -57561,6 +57702,88 @@
 	};
 
 	module.exports = keyOf;
+
+/***/ },
+/* 351 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(258);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _svgIcon = __webpack_require__(277);
+
+	var _svgIcon2 = _interopRequireDefault(_svgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SocialNotifications = _react2.default.createClass({
+	  displayName: 'SocialNotifications',
+
+	  mixins: [_reactAddonsPureRenderMixin2.default],
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      _svgIcon2.default,
+	      this.props,
+	      _react2.default.createElement('path', { d: 'M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z' })
+	    );
+	  }
+	});
+
+	exports.default = SocialNotifications;
+	module.exports = exports['default'];
+
+/***/ },
+/* 352 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactAddonsPureRenderMixin = __webpack_require__(258);
+
+	var _reactAddonsPureRenderMixin2 = _interopRequireDefault(_reactAddonsPureRenderMixin);
+
+	var _svgIcon = __webpack_require__(277);
+
+	var _svgIcon2 = _interopRequireDefault(_svgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SocialNotificationsOff = _react2.default.createClass({
+	  displayName: 'SocialNotificationsOff',
+
+	  mixins: [_reactAddonsPureRenderMixin2.default],
+
+	  render: function render() {
+	    return _react2.default.createElement(
+	      _svgIcon2.default,
+	      this.props,
+	      _react2.default.createElement('path', { d: 'M20 18.69L7.84 6.14 5.27 3.49 4 4.76l2.8 2.8v.01c-.52.99-.8 2.16-.8 3.42v5l-2 2v1h13.73l2 2L21 19.72l-1-1.03zM12 22c1.11 0 2-.89 2-2h-4c0 1.11.89 2 2 2zm6-7.32V11c0-3.08-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68c-.15.03-.29.08-.42.12-.1.03-.2.07-.3.11h-.01c-.01 0-.01 0-.02.01-.23.09-.46.2-.68.31 0 0-.01 0-.01.01L18 14.68z' })
+	    );
+	  }
+	});
+
+	exports.default = SocialNotificationsOff;
+	module.exports = exports['default'];
 
 /***/ }
 /******/ ]);

@@ -14,6 +14,7 @@ export const NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
 export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 export const TOGGLE_EMOTICON_POPOVER = 'TOGGLE_EMOTICON_POPOVER';
 export const ON_EMOTICON_ADD = 'ON_EMOTICON_ADD';
+export const TOGGLE_NOTIFICATION = 'TOGGLE_NOTIFICATION';
 
 /*
  * action creators
@@ -54,5 +55,9 @@ export function toggleEmoticonPopover(data) {
 
 export function onEmoticonClick(data) {
     return {type: ON_EMOTICON_ADD, data}
+}
+
+export function toggleNotification(data) {
+    return {type: TOGGLE_NOTIFICATION, data}
 }
 

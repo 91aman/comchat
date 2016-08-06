@@ -10,9 +10,9 @@ app.get('/build/app.js', function (req, res) {
 });
 
 app.get('/src/*', function (req, res) {
-    console.log(__dirname + '/../../'+req.originalUrl);
+    console.log(__dirname + '/../../' + req.originalUrl);
     res.setHeader('Cache-Control', 'public, max-age=3600');
-    res.sendFile(path.join(__dirname + '/../../'+ req.originalUrl));
+    res.sendFile(path.join(__dirname + '/../../' + req.originalUrl));
 });
 
 app.get('*', function (req, res) {
@@ -84,13 +84,14 @@ var makeNewConnection = function (channelName) {
 
     nsp.on('connection', function (socket) {
 
-        socket.on('login', function (username) {
+        socket.on('login', function (userDetails) {
 
             var id = getRandomId(),
+                username = userDetails.username,
                 newUser = new User({
                     user: username,
                     socket: socket,
-                    color: randomColor()
+                    color: userDetails.color
                 });
 
             if (!ChannelNames[channelName]['users']) {
@@ -115,10 +116,10 @@ var makeNewConnection = function (channelName) {
                 nsp.emit('userTyping', {usersTyping: getTypingUsers(channelName)});
             });
 
-            socket.on('chat message', function (msg) {
+            socket.on('chat message', function (msgDetails) {
                 newUser.typing = false;
                 nsp.emit('userTyping', {usersTyping: getTypingUsers(channelName)});
-                nsp.emit('chat message', {username, msg, color: newUser.color, time: +new Date()});
+                socket.broadcast.emit('chat message', msgDetails);
             });
         });
     });
