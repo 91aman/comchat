@@ -11,6 +11,12 @@ module.exports = {
             './node_modules/'
         ]
     },
+    //resolve: {
+    //    root             : [
+    //        path.resolve( __dirname, __DIRNAME ) //Order of searching a file-> neo/js/app then neo/ then node_modules/
+    //    ],
+    //    moduleDirectories: [ 'node_modules' ] //define where your modules will be resolved, //files in these directory can be required without a relative path
+    //},
     module: {
         loaders: [
             {

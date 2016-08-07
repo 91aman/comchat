@@ -7,11 +7,13 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import ClassNames  from 'classnames';
+
 import Popover from 'material-ui/lib/popover/popover';
-import {toggleEmoticonPopover, onEmoticonClick} from '../actions';
+
+import {toggleEmoticonPopover, onEmoticonClick} from '../../actions';
 import {EmoticonsGroup, EmoticonGroupDetails} from '../../constants/emoticons';
 import styles from './emoticon.scss';
-import AppUtils from '../utils/appUtils';
+import AppUtils from '../../utils/appUtils';
 import Halogen from 'halogen';
 
 

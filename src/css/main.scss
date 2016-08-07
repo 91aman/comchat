@@ -158,10 +158,18 @@ ul {
   }
 }
 
+.m-time{
+  width: 56px;
+}
+
+.m-message{
+  width: calc(100% - 56px);
+  word-break: break-word;
+}
+
 .message-time {
   font-size: 11px;
   color: #aaa;
-  margin-right: 15px;
 }
 
 .message-name {
@@ -217,6 +225,20 @@ ul {
 
 .md-link{
   color:  #0000EE;
+}
+
+.m-ms-media{
+  max-height: 400px;
+  max-width: 400px;
+  margin: 15px 0;
+  border: 1px solid #eee;
+}
+
+.photo-component{
+  height: auto;
+  width: auto;
+  max-height: 100%;
+  max-width: 100%;
 }
 
 @media screen and (min-width: 900px) {

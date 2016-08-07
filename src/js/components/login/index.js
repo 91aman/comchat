@@ -6,11 +6,13 @@
 
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
+
 import Paper from 'material-ui/lib/paper';
 import RaisedButton from 'material-ui/lib/raised-button';
 import TextField from 'material-ui/lib/TextField';
 import PersonIcon from 'material-ui/lib/svg-icons/social/person';
-import {changeUsername, changeChannelName} from '../actions.js';
+
+import {changeUsername, changeChannelName} from '../../actions';
 
 class LoginComponent extends Component {
 
