@@ -4,10 +4,10 @@
  */
 
 import Photo from '../components/media/Photo';
-import Video from '../components/media/Video';
+import IFrame from '../components/media/IFrame';
 
 export default {
     getMediaComponent: function (type) {
-        return type === 'PHOTO' ? Photo : Video;
+        return type === 'PHOTO' ? Photo : IFrame;
     }
 }

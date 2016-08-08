@@ -54,7 +54,7 @@ function copyTextToClipboard() {
     textArea.style.background = 'transparent';
 
 
-    textArea.value = `http://comchat.io${window.location.pathname}`;
+    textArea.value = `http://www.comchat.io${window.location.pathname}`;
 
     document.body.appendChild(textArea);
 

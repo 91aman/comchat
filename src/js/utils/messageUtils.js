@@ -31,6 +31,7 @@ import _ from 'lodash';
 
 const IMAGE_REGEX = /((?:https?\:\/\/)(?:[a-zA-Z]{1}(?:[\w\-]+\.)+(?:[\w]{2,5}))(?:\:[\d]{1,5})?\/(?:[^\s\/]+\/)*(?:[^\s]+\.(?:jpe?g|gif|png))(?:\?\w+=\w+(?:&\w+=\w+)*)?)/;
 const VIDEO_REGEX = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
+const SPOTIFY_REGEX = /(^spotify:|https:\/\/[a-z]+\.spotify\.com\/)([^\s]+)/;
 
 const getEmogifiedMsg = (msg) => {
     return window.emojify.getEmogifiedString(msg);
@@ -74,8 +75,19 @@ const getVideoDetails = (msg) => {
     const matches = VIDEO_REGEX.exec(msg);
 
     return matches ? {
-        type: 'VIDEO',
+        type: 'IFRAME',
+        SUB_TYPE : 'VIDEO',
         url: `https://www.youtube.com/embed/${matches[1]}`
+    } : undefined;
+};
+
+const getSpotifyDetails = (msg) => {
+    const matches = SPOTIFY_REGEX.exec(msg);
+
+    return matches ? {
+        type: 'IFRAME',
+        SUB_TYPE : 'SPOTIFY',
+        url: `https://embed.spotify.com/?uri=spotify:${matches[2].split('/').join(':')}`
     } : undefined;
 };
 
@@ -83,7 +95,7 @@ export default {
     parseMessage: function (msg) {
         var emogifiedMsg = getEmogifiedMsg(msg);
 
-        const mediaDetails = getImageDetails(emogifiedMsg) || getVideoDetails(emogifiedMsg);
+        const mediaDetails = getImageDetails(emogifiedMsg) || getVideoDetails(emogifiedMsg) || getSpotifyDetails(emogifiedMsg);
 
         return {text: getLinkifyMsg(emogifiedMsg), mediaDetails};
     }
