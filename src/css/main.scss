@@ -32,6 +32,14 @@ ul {
   float:left;
 }
 
+.spa{
+  position: absolute;
+}
+
+.spr{
+  position: relative;
+}
+
 #app, .chatApp {
   height: 100%;
 }
@@ -228,7 +236,6 @@ ul {
 }
 
 .m-ms-media{
-  max-height: 400px;
   max-width: 400px;
   margin: 15px 0;
 }

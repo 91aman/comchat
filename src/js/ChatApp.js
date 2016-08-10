@@ -63,7 +63,7 @@ class ChatAppComponent extends Component {
                 </Paper>
                 <Snackbar
                     open={showSnackBar}
-                    message={`Chat link ( http://comchat.io${window.location.pathname} ) is copied to your clipboard`}
+                    message={`Chat link ( http://www.comchat.io${window.location.pathname} ) is copied to your clipboard`}
                     autoHideDuration={2000}
                     onRequestClose={closeSnackbar}
                 />

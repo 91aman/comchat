@@ -10,23 +10,35 @@ import React, {Component, PropTypes} from 'react';
 //todo :calculate dimensions acc to app dimentions
 const DEFAULT_HEIGHT = 315;
 const DEFAULT_WIDTH = 560;
+
 const DIMENSION_SUB_TYPE_MAP = {
     SPOTIFY: {
         width: '300',
         height: '380'
+    },
+    VINE: {
+        width: '300',
+        height: '300'
     }
 };
 
-const IFrame = ({url, SUB_TYPE}) => {
-    const dimensions = DIMENSION_SUB_TYPE_MAP[SUB_TYPE] || {};
+class IFrame extends Component {
 
-    return (<iframe
-        width={dimensions.width || DEFAULT_WIDTH}
-        height={dimensions.height || DEFAULT_HEIGHT}
-        src={url}
-        frameborder="0"
-        allowfullscreen
-    />)
-};
+    render() {
+        const {url, SUB_TYPE} = this.props,
+            {width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT} = DIMENSION_SUB_TYPE_MAP[SUB_TYPE] || {};
+
+        return (<div className="spr" width={width} height={height}>
+            <iframe
+                onLoad={() => {console.log('loaded')}}
+                width={width}
+                height={height}
+                src={url}
+                frameborder="0"
+                allowfullscreen
+            />
+        </div>)
+    }
+}
 
 export default IFrame;
