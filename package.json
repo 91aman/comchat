@@ -44,6 +44,8 @@
     "redux": "^3.5.2",
     "react-redux": "^4.4.5",
     "autolinker": "^0.25.2",
-    "halogen": "0.2.0"
+    "halogen": "0.2.0",
+    "mysql" : "2.11.1",
+    "whatwg-fetch" : "^1.0.0"
   }
 }

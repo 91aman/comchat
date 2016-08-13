@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import ClassName from 'classnames';
+//import 'whatwg-fetch';
 
 import TextField from 'material-ui/lib/TextField';
 import FlatButton from 'material-ui/lib/flat-button';
@@ -51,7 +52,7 @@ class ChatAppComponent extends Component {
         })
     }
 
-    render(){
+    render() {
         const that = this,
             { showSnackBar, closeSnackbar, state} = that.props,
             isLoggedIn = state === 'USER_LOGGED_IN';
@@ -69,6 +70,14 @@ class ChatAppComponent extends Component {
                 />
             </div>
         );
+    }
+
+    componentDidMount() {
+        fetch('/api/usageStats').then((reponse) => {
+            return reponse.json();
+        }).then((reponse) => {
+            console.log(reponse);
+        })
     }
 }
 

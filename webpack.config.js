@@ -2,7 +2,7 @@ const path = require( 'path' );
 const PWD = process.env.PWD;
 
 module.exports = {
-    entry: './src/js/main.js',
+    entry: ['whatwg-fetch','./src/js/main.js'],
     output: {
         filename: './build/app.js'
     },
