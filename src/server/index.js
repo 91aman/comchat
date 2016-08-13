@@ -49,8 +49,6 @@ http.listen(port, function () {
 
 var connection;
 
-console.log(process.env);
-
 function handleDisconnect() {
     connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL); // Recreate the connection, since
     connection.connect(function(err) {              // The server is either down
@@ -61,7 +59,6 @@ function handleDisconnect() {
     });                                     // process asynchronous requests in the meantime.
                                             // If you're also serving http, display a 503 error.
     connection.on('error', function(err) {
-        console.log('connection:', connection.query('SELECT * FROM usageTable'));
         console.log('db error', err);
         if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
             handleDisconnect();                         // lost due to either server restart, or a
