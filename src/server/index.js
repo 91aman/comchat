@@ -18,7 +18,7 @@ app.get('/src/*', function (req, res) {
 app.get('/api/usageStats', function (req, res) {
     connection.query('SELECT * FROM usageTable', function (err, rows, fields) {
 
-        if(!err){
+        if (!err) {
             var Obj = {};
             rows.forEach(function (row) {
                 Obj[row.usageCol] = row.value;
@@ -40,27 +40,28 @@ http.listen(port, function () {
     console.log('listening on *:2000');
 });
 
-//var connection = mysql.createConnection({
-//    host: 'localhost',
-//    user: 'root',
-//    password: 'rootpass',
-//    database: 'usage_stats'
-//});
-
 var connection;
 
 function handleDisconnect() {
+
+    //connection = mysql.createConnection({
+    //    host: 'localhost',
+    //    user: 'root',
+    //    password: 'rootpass',
+    //    database: 'usage_stats'
+    //});
+
     connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL); // Recreate the connection, since
-    connection.connect(function(err) {              // The server is either down
-        if(err) {                                     // or restarting (takes a while sometimes).
+    connection.connect(function (err) {              // The server is either down
+        if (err) {                                     // or restarting (takes a while sometimes).
             console.log('error when connecting to db:', err);
             setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
         }                                     // to avoid a hot loop, and to allow our node script to
     });                                     // process asynchronous requests in the meantime.
                                             // If you're also serving http, display a 503 error.
-    connection.on('error', function(err) {
+    connection.on('error', function (err) {
         console.log('db error', err);
-        if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
             handleDisconnect();                         // lost due to either server restart, or a
         } else {                                      // connnection idle timeout (the wait_timeout
             throw err;                                  // server variable configures this)
@@ -121,22 +122,31 @@ var getTypingUsers = function (channelName) {
     return usersList;
 };
 
-var updateSQLTable = function (columnName) {
-    connection.query("UPDATE usageTable SET value=value+1 where usageCol='"+columnName+"'", function(err){
-        if(err){
+var updateSQLTable = function (columnName, value) {
+    connection.query("UPDATE usageTable SET value=value+" + value + " where usageCol='" + columnName + "'", function (err) {
+        if (err) {
             console.log('ERROR : error while updating ' + columnName + err);
         }
     });
 };
 
+var increaseValueInSQLTable = function (columnName) {
+    updateSQLTable(columnName, 1);
+};
+
+var decreaseValueInSQLTable = function (columnName) {
+    updateSQLTable(columnName, -1);
+};
+
 var makeNewConnection = function (channelName) {
     var nsp = io.of('/' + channelName);
 
-    updateSQLTable('totalGroups');
+    increaseValueInSQLTable('totalGroups');
 
     nsp.on('connection', function (socket) {
 
-        updateSQLTable('totalUsers');
+        increaseValueInSQLTable('totalUsers');
+        increaseValueInSQLTable('totalUsersOnline');
 
         socket.on('login', function (userDetails) {
 
@@ -159,6 +169,7 @@ var makeNewConnection = function (channelName) {
 
             socket.on('disconnect', function () {
                 delete ChannelNames[channelName]['users'][id];
+                decreaseValueInSQLTable('totalUsersOnline');
 
                 newUser.typing = false;
                 nsp.emit('userTyping', {usersTyping: getTypingUsers(channelName)});
@@ -171,7 +182,7 @@ var makeNewConnection = function (channelName) {
             });
 
             socket.on('chat message', function (msgDetails) {
-                updateSQLTable('totalMessages');
+                increaseValueInSQLTable('totalMessages');
                 newUser.typing = false;
                 nsp.emit('userTyping', {usersTyping: getTypingUsers(channelName)});
                 socket.broadcast.emit('chat message', msgDetails);
