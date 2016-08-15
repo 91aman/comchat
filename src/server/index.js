@@ -44,14 +44,14 @@ var connection;
 
 function handleDisconnect() {
 
-    connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'rootpass',
-        database: 'usage_stats'
-    });
+    //connection = mysql.createConnection({
+    //    host: 'localhost',
+    //    user: 'root',
+    //    password: 'rootpass',
+    //    database: 'usage_stats'
+    //});
 
-    //connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL); // Recreate the connection, since
+    connection = mysql.createConnection(process.env.CLEARDB_DATABASE_URL); // Recreate the connection, since
     connection.connect(function (err) {              // The server is either down
         if (err) {                                     // or restarting (takes a while sometimes).
             console.log('error when connecting to db:', err);
