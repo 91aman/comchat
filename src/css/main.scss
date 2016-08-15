@@ -24,20 +24,26 @@ ul {
   height: 0;
 }
 
-.rfloat{
-  float:right;
+.rfloat {
+  float: right;
 }
 
-.lfloat{
-  float:left;
+.lfloat {
+  float: left;
 }
 
-.spa{
+.spa {
   position: absolute;
 }
 
-.spr{
+.spr {
   position: relative;
+}
+
+.vert-center{
+  position: absolute;
+  top:50%;
+  transform: translateY(-50%);
 }
 
 #app, .chatApp {
@@ -100,10 +106,10 @@ ul {
   border-right: 1px solid #dedede;
 }
 
-.ma-sb-icon svg{
-  height:20px !important;
+.ma-sb-icon svg {
+  height: 20px !important;
   width: 20px !important;
-  fill : #ccc !important;
+  fill: #ccc !important;
 }
 
 .mas-user-list {
@@ -166,11 +172,11 @@ ul {
   }
 }
 
-.m-time{
+.m-time {
   width: 56px;
 }
 
-.m-message{
+.m-message {
   width: calc(100% - 56px);
   word-break: break-word;
 }
@@ -231,20 +237,40 @@ ul {
   background-size: contain;
 }
 
-.md-link{
-  color:  #0000EE;
+.md-link {
+  color: #0000EE;
 }
 
-.m-ms-media{
+.m-ms-media {
   max-width: 400px;
   margin: 15px 0;
 }
 
-.photo-component{
+.photo-component {
   height: auto;
   width: auto;
   max-height: 100%;
   max-width: 100%;
+}
+
+.chatApp-login-section {
+  height: 100%;
+  min-height: 600px;
+}
+
+.chatApp-stats-section {
+  background: #3F51B5;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    width: 100%;
+    height: 10px;
+    left: 0;
+    background-size: 20px 40px !important;
+    background: -webkit-linear-gradient(45deg, transparent 33.333%, #3F51B5 33.333%, #3F51B5 66.667%, transparent 66.667%), -webkit-linear-gradient(-45deg, transparent 33.333%, #3F51B5 33.333%, #3F51B5 66.667%, transparent 66.667%);
+  }
 }
 
 @media screen and (min-width: 900px) {

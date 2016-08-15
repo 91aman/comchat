@@ -1,0 +1,67 @@
+.stat-container {
+  border: 1px solid;
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  overflow: hidden;
+  background: #E91E63;
+  transform: translate(-50%, -50%);
+}
+
+.stat-container-list {
+  width: 50%;
+  height: 200px;
+}
+
+.sc-details {
+  margin-left: 25px;
+  color: #fefefe;
+}
+
+.sc-det-value{
+  font-size: 60px;
+}
+
+.sc-det-label{
+  margin-top: -15px;
+  font-size: 14px;
+
+}
+
+.sc-icon {
+  right: -25%;
+  position: absolute;
+  height: 100px !important;
+  width: 100px !important;
+  top: 50%;
+  transform: translateY(-50%);
+  fill: #F06292 !important;
+}
+
+@media screen and (min-width: 900px) {
+  .stat-container-list {
+    width: 25%;
+    height: 300px;
+  }
+
+  .sc-icon{
+    height: 150px !important;
+    width: 150px !important;
+  }
+
+  .stat-container{
+    height: 200px;
+    width: 200px;
+  }
+
+  .sc-det-value{
+    font-size: 80px;
+  }
+
+  .sc-det-label{
+    font-size: 17px;
+  }
+}

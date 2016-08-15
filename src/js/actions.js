@@ -15,6 +15,7 @@ export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 export const TOGGLE_EMOTICON_POPOVER = 'TOGGLE_EMOTICON_POPOVER';
 export const ON_EMOTICON_ADD = 'ON_EMOTICON_ADD';
 export const TOGGLE_NOTIFICATION = 'TOGGLE_NOTIFICATION';
+export const USAGE_STAT_UPDATE = 'USAGE_STAT_UPDATE';
 
 /*
  * action creators
@@ -59,5 +60,9 @@ export function onEmoticonClick(data) {
 
 export function toggleNotification(data) {
     return {type: TOGGLE_NOTIFICATION, data}
+}
+
+export function updateUsageStat(data) {
+    return {type: USAGE_STAT_UPDATE, data}
 }
 

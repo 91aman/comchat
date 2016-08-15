@@ -2,6 +2,9 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import ClassName from 'classnames';
+
+import Stats from '../js/components/stats';
+
 //import 'whatwg-fetch';
 
 import TextField from 'material-ui/lib/TextField';
@@ -59,9 +62,14 @@ class ChatAppComponent extends Component {
 
         return (
             <div className="chatApp">
-                <Paper className={ClassName("ca-main-paper", {chatBox : isLoggedIn})} zDepth={3}>
-                    {isLoggedIn ? <ChatArea /> : <LoginForm onKnockClick={_.bind(onKnockClick, that)}/>}
-                </Paper>
+                <section className="chatApp-login-section">
+                    <Paper className={ClassName("ca-main-paper", {chatBox : isLoggedIn})} zDepth={3}>
+                        {isLoggedIn ? <ChatArea /> : <LoginForm onKnockClick={_.bind(onKnockClick, that)}/>}
+                    </Paper>
+                </section>
+                <section className="chatApp-stats-section spr">
+                    <Stats/>
+                </section>
                 <Snackbar
                     open={showSnackBar}
                     message={`Chat link ( http://www.comchat.io${window.location.pathname} ) is copied to your clipboard`}
@@ -70,14 +78,6 @@ class ChatAppComponent extends Component {
                 />
             </div>
         );
-    }
-
-    componentDidMount() {
-        fetch('/api/usageStats').then((reponse) => {
-            return reponse.json();
-        }).then((reponse) => {
-            console.log(reponse);
-        })
     }
 }
 
