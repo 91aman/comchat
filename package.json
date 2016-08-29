@@ -46,6 +46,7 @@
     "autolinker": "^0.25.2",
     "halogen": "0.2.0",
     "mysql" : "2.11.1",
-    "whatwg-fetch" : "^1.0.0"
+    "whatwg-fetch" : "^1.0.0",
+    "mousetrap":"1.6.0"
   }
 }

@@ -67,9 +67,9 @@ class ChatAppComponent extends Component {
                         {isLoggedIn ? <ChatArea /> : <LoginForm onKnockClick={_.bind(onKnockClick, that)}/>}
                     </Paper>
                 </section>
-                <section className="chatApp-stats-section spr">
+                {!isLoggedIn && <section className="chatApp-stats-section spr">
                     <Stats/>
-                </section>
+                </section>}
                 <Snackbar
                     open={showSnackBar}
                     message={`Chat link ( http://www.comchat.io${window.location.pathname} ) is copied to your clipboard`}

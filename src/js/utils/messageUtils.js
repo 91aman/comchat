@@ -5,6 +5,8 @@
 
 import Autolinker from 'autolinker' ;
 import _ from 'lodash';
+import COMMAND_POPOVERS from '../constants/commandPopoverTypes';
+import EmoticonUtils from './emoticonUtils';
 
 //const autolinker = new Autolinker({
 //    urls: {
@@ -28,6 +30,7 @@ import _ from 'lodash';
 //    className: 'md-link'
 //});
 
+/********************************************MSG FNS****************************************/
 
 const IMAGE_REGEX = /((?:https?\:\/\/)(?:[a-zA-Z]{1}(?:[\w\-]+\.)+(?:[\w]{2,5}))(?:\:[\d]{1,5})?\/(?:[^\s\/]+\/)*(?:[^\s]+\.(?:jpe?g|gif|png))(?:\?\w+=\w+(?:&\w+=\w+)*)?)/;
 const VIDEO_REGEX = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
@@ -138,6 +141,29 @@ const getVineDetails = (msg) => {
     } : undefined;
 };
 
+/******************************************** MSG FNS ENDS****************************************/
+
+
+/********************************************INPUT MSG FNS****************************************/
+
+export const INPUT_MSG_EMOTICON_REGEX = /:([a-z]{2,})$/;
+
+const checkForEmoticons = (msg) => {
+    const matches = INPUT_MSG_EMOTICON_REGEX.exec(msg);
+
+
+    if (matches && EmoticonUtils.hasMatchingEmotions(matches[1])) {
+        return {
+            commandPopover: COMMAND_POPOVERS.EMOTICON
+        }
+    }
+
+    return undefined;
+};
+
+
+/********************************************INPUT MSG FNS ENDS***********************************/
+
 export default {
     parseMessage: function (msg) {
         var emogifiedMsg = getEmogifiedMsg(msg);
@@ -145,5 +171,9 @@ export default {
         const mediaDetails = getImageDetails(emogifiedMsg) || getVideoDetails(emogifiedMsg) || getSpotifyDetails(emogifiedMsg) || getTweetDetails(emogifiedMsg) || getFacebookDetails(emogifiedMsg) || getInstagramDetails(emogifiedMsg) || getVineDetails(emogifiedMsg);
 
         return {text: getLinkifyMsg(emogifiedMsg), mediaDetails};
+    },
+
+    parseInputMessage: function (msg) {
+        return checkForEmoticons(msg);
     }
 }

@@ -13,9 +13,11 @@ export const ON_STATE_UPDATE = 'ON_STATE_UPDATE';
 export const NEW_MESSAGE_RECIEVED = 'NEW_MESSAGE_RECIEVED';
 export const TOGGLE_SNACKBAR = 'TOGGLE_SNACKBAR';
 export const TOGGLE_EMOTICON_POPOVER = 'TOGGLE_EMOTICON_POPOVER';
+export const TOGGLE_COMMANDBOX_POPOVER = 'TOGGLE_COMMANDBOX_POPOVER';
 export const ON_EMOTICON_ADD = 'ON_EMOTICON_ADD';
 export const TOGGLE_NOTIFICATION = 'TOGGLE_NOTIFICATION';
 export const USAGE_STAT_UPDATE = 'USAGE_STAT_UPDATE';
+export const COMMAND_BOX_EL = 'COMMAND_BOX_EL';
 
 /*
  * action creators
@@ -54,6 +56,10 @@ export function toggleEmoticonPopover(data) {
     return {type: TOGGLE_EMOTICON_POPOVER, data}
 }
 
+export function toggleCommandBoxPopover(data) {
+    return {type: TOGGLE_COMMANDBOX_POPOVER, data}
+}
+
 export function onEmoticonClick(data) {
     return {type: ON_EMOTICON_ADD, data}
 }
@@ -65,4 +71,9 @@ export function toggleNotification(data) {
 export function updateUsageStat(data) {
     return {type: USAGE_STAT_UPDATE, data}
 }
+
+export function setCommandBoxEl(data) {
+    return {type: COMMAND_BOX_EL, data}
+}
+
 

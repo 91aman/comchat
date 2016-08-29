@@ -14,11 +14,14 @@ import {
     ON_EMOTICON_ADD,
     TOGGLE_EMOTICON_POPOVER,
     TOGGLE_NOTIFICATION,
-    USAGE_STAT_UPDATE
+    USAGE_STAT_UPDATE,
+    COMMAND_BOX_EL,
+    TOGGLE_COMMANDBOX_POPOVER
 } from './actions';
 
 
 export default function reducer(state = {}, action) {
+    const commandBoxDetails = state.commandBoxDetails || {};
 
     switch (action.type) {
         //Loging
@@ -41,10 +44,14 @@ export default function reducer(state = {}, action) {
         case TOGGLE_NOTIFICATION:
             return Object.assign({}, state, {disableNotification: !state.disableNotification});
         case ON_EMOTICON_ADD:
-            const message = state.message || '';
+            var message = state.message || '';
             return Object.assign({}, state, {message: `${message} ${action.data}`});
         case USAGE_STAT_UPDATE:
             return Object.assign({}, state, {usageStat: action.data});
+        case COMMAND_BOX_EL:
+            return Object.assign({}, state, {commandBoxDetails: {element: action.data}});
+        case TOGGLE_COMMANDBOX_POPOVER:
+            return Object.assign({}, state, {commandBoxDetails: Object.assign({}, commandBoxDetails, action.data)});
         case NEW_MESSAGE_RECIEVED:
             let messages = state.messages;
             messages = [...messages, {type: 'MESSAGE', data: action.data}];

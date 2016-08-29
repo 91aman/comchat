@@ -10,6 +10,9 @@ import ClassNames  from 'classnames';
 
 import Popover from 'material-ui/lib/popover/popover';
 
+import Emoticon from './Emoticon';
+import EmoticonsList from './EmoticonList';
+
 import {toggleEmoticonPopover, onEmoticonClick} from '../../actions';
 import {EmoticonsGroup, EmoticonGroupDetails} from '../../constants/emoticons';
 import styles from './emoticon.scss';
@@ -17,45 +20,21 @@ import AppUtils from '../../utils/appUtils';
 import Halogen from 'halogen';
 
 
-const Emoticon = ({dataKey,emoticonName, emoticonIcon,selected, onClick = () => {
-}}) => {
-    return (
-        <li className={ClassNames("ep-emo-wrap", {selected})} title={emoticonName} onClick={() =>{onClick(dataKey)}}>
-            <img src={`./src/img/emoticons/${emoticonIcon}.png`}/>
-        </li>)
-};
-
-
-const EmoticonsList = ({selectedEmoticonGroup ,closeEmoticonPopover, onEmoticonClick}) => {
-    const selectedEmoticons = EmoticonGroupDetails[selectedEmoticonGroup];
-
-    return (<ul className={"emo-pop-wrap clearfix"}>
-        {Object.keys(selectedEmoticons).map((emoticonIcon) => {
-            return <Emoticon
-                key={emoticonIcon}
-                dataKey={`:${emoticonIcon}:` }
-                emoticonIcon={emoticonIcon}
-                emoticonName={`:${emoticonIcon}:` }
-                onClick={(key) => {onEmoticonClick(key); closeEmoticonPopover()}}
-            />
-        })}
-    </ul>)
-};
-
-const EmoticonGroupList = ({selectedEmoticonGroup, onSelect}) => {
+const EmoticonGroupList = ({selectedEmoticonGroup, onSelect, minified}) => {
 
     return (<ul className={"emo-pop-list-wrap clearfix"}>
         {
             Object.keys(EmoticonsGroup).map((emoticonGroupKey) => {
                 const emoticonGroup = EmoticonsGroup[emoticonGroupKey];
-                return <Emoticon
-                    key={emoticonGroupKey}
-                    dataKey={emoticonGroupKey}
-                    onClick={onSelect}
-                    selected={selectedEmoticonGroup === emoticonGroupKey}
-                    emoticonName={emoticonGroup.groupName}
-                    emoticonIcon={emoticonGroup.groupEmoticon}
-                />
+                return <li key={emoticonGroupKey} className="lfloat">
+                    <Emoticon
+                        onClick={onSelect}
+                        selected={selectedEmoticonGroup === emoticonGroupKey}
+                        emoticonName={emoticonGroup.groupName}
+                        emoticonKey={emoticonGroupKey}
+                        emoticonIcon={emoticonGroup.groupEmoticon}
+                        minified={minified}
+                    /></li>
             })
         }
     </ul>)
@@ -104,14 +83,21 @@ class EmoticonPopoverComponent extends Component {
                 targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 onRequestClose={() => {closeEmoticonPopover(false)}}
             >
-                {needLoading ?
-                    <Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/> :
-                    <EmoticonsList onEmoticonClick={onEmoticonClick} selectedEmoticonGroup={selectedEmoticonGroup} closeEmoticonPopover={closeEmoticonPopover}/>
-                }
+                <div className="emo-pop">
+                    {needLoading ?
+                        <Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/> :
+                        <EmoticonsList
+                            minified={true}
+                            onClick={(key) => {onEmoticonClick(key); closeEmoticonPopover()}}
+                            EmoticonsMap={EmoticonGroupDetails[selectedEmoticonGroup]}
+                        />
+                    }
 
-                <EmoticonGroupList onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
-                                   selectedEmoticonGroup={selectedEmoticonGroup}/>
-
+                    <EmoticonGroupList
+                        minified={true}
+                        onSelect={(key) => { that.setState({selectedEmoticonGroup : key})}}
+                        selectedEmoticonGroup={selectedEmoticonGroup}/>
+                </div>
             </Popover>
         );
     }

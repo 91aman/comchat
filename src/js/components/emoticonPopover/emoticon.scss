@@ -2,19 +2,42 @@
 .emo-pop {
   height: 17rem !important;
   width: 17rem !important;
+}
 
-  div{
-    height:100%;
+.emo-pop-wrap-item {
+  float: left;
+}
+
+.ep-emo-wrap {
+  margin: 3px;
+  padding: 3px;
+  position: relative;
+  cursor: pointer;
+
+  img {
+    max-height: 16px;
+    max-width: 16px;
+    float: left;
+  }
+
+  .ep-emo-text {
+    line-height: 16px;
+    float: left;
+    font-size: 14px;
+    margin-left: 5px;
   }
 }
 
-.ep-emo-wrap{
-  float: left;
+.emo-pop-wrap {
+  height: calc(100% - 41px);
+  overflow-y: auto;
+}
+
+.ep-emo-wrap.minified {
+  margin: 2px;
+  padding: 0;
   height: 35px;
   width: 35px;
-  margin: 2px;
-  position: relative;
-  cursor: pointer;
 
   img {
     height: auto;
@@ -28,12 +51,15 @@
   }
 }
 
-.emo-pop-wrap{
-  height: calc(100% - 41px);
-  overflow-y: auto;
+.emo-pop-wrap-item.selected{
+  background:#81D4FA;
+  border-radius: 5px;
+  -webkit-transition: background 50ms ease-out;
+  -moz-transition: background 50ms ease-out;
+  transition: background 50ms ease-out;
 }
 
-.emo-pop-wrap .ep-emo-wrap {
+.emo-pop-wrap li:not(.selected) {
 
   &:nth-child(n):hover {
     background: #e57373;
@@ -87,24 +113,24 @@
   }
 }
 
-.emo-pop-list-wrap{
+.emo-pop-list-wrap {
   position: absolute;
   bottom: 0;
   width: 100%;
   background: #f7f7f7;
   border-top: 1px solid #ddd;
 
-  .ep-emo-wrap{
+  .ep-emo-wrap {
     margin-bottom: 0;
     border-bottom: 3px solid transparent;
 
-    &.selected{
+    &.selected {
       border-bottom: 3px solid greenyellow;
     }
   }
 }
 
-.emo-pop-loader{
+.emo-pop-loader {
   height: calc(100% - 41px);
   text-align: center;
   padding-top: 100px;

@@ -7,10 +7,12 @@ var obj = {};
   obj[a] = {};
   $('.'+a).find('.name').each(function(iter,name){
     var n = $(name).text();
-    obj[a][n] = {name: n, 'alternate-name' : $(name).attr('data-alternative-name')}
+    obj[a][n] = {name: n, 'alternate-name' : $(name).attr('data-alternative-name') && $(name).attr('data-alternative-name').split(', ')}
   })
 })
 console.log(obj);
+
+//remove simple_smile & black_large_square
 
 /**************************************/
 
@@ -25,3 +27,5 @@ obj[name] = {name : name}
 console.log(obj);
 
 /**************************************/
+
+
