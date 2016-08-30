@@ -46,27 +46,45 @@ const getEmogifiedMsg = (msg) => {
 };
 
 const getLinkifyMsg = (msg) => {
-    return Autolinker.link(msg, {
-        urls: {
-            schemeMatches: true,
-            wwwMatches: true,
-            tldMatches: true
-        },
-        email: true,
-        phone: false,
-        twitter: true,
-        hashtag: 'twitter',
+    let matchedUrl = '',
+        text = Autolinker.link(msg, {
+            urls: {
+                schemeMatches: true,
+                wwwMatches: true,
+                tldMatches: true
+            },
+            email: true,
+            phone: false,
+            twitter: true,
+            hashtag: 'twitter',
 
-        stripPrefix: false,
-        newWindow: true,
+            stripPrefix: false,
+            newWindow: true,
 
-        truncate: {
-            length: 0,
-            location: 'end'
-        },
+            truncate: {
+                length: 0,
+                location: 'end'
+            },
 
-        className: 'md-link'
-    });
+            replaceFn: function (autolinker, match) {
+                switch (match.getType()) {
+                    case 'url' :
+                        console.log("url: ", match.getUrl());
+                        !matchedUrl && (matchedUrl = match.getUrl())
+                }
+                return true;
+            },
+
+            className: 'md-link'
+        });
+
+    return {
+        text,
+        mediaDetails: matchedUrl ? {
+            type: 'EMBEDLY',
+            url: matchedUrl
+        } : undefined
+    }
 };
 
 const getImageDetails = (msg) => {
@@ -167,10 +185,15 @@ const checkForEmoticons = (msg) => {
 export default {
     parseMessage: function (msg) {
         var emogifiedMsg = getEmogifiedMsg(msg);
+        //getImageDetails(emogifiedMsg) || getVideoDetails(emogifiedMsg) || || getTweetDetails(emogifiedMsg) || getFacebookDetails(emogifiedMsg) || getInstagramDetails(emogifiedMsg)  || getVineDetails(emogifiedMsg);
 
-        const mediaDetails = getImageDetails(emogifiedMsg) || getVideoDetails(emogifiedMsg) || getSpotifyDetails(emogifiedMsg) || getTweetDetails(emogifiedMsg) || getFacebookDetails(emogifiedMsg) || getInstagramDetails(emogifiedMsg) || getVineDetails(emogifiedMsg);
+        const mediaDetails = getSpotifyDetails(emogifiedMsg),
+            linkfiedMsg = getLinkifyMsg(emogifiedMsg);
 
-        return {text: getLinkifyMsg(emogifiedMsg), mediaDetails};
+        return {
+            text : linkfiedMsg.text,
+            mediaDetails : mediaDetails || linkfiedMsg.mediaDetails
+        };
     },
 
     parseInputMessage: function (msg) {

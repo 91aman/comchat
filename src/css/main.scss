@@ -242,8 +242,13 @@ ul {
 }
 
 .m-ms-media {
-  max-width: 400px;
+  border-left: 3px solid #999;
+  padding-left: 10px;
   margin: 15px 0;
+
+  .embdscl0{
+    display : none;
+  }
 }
 
 .photo-component {
@@ -281,9 +286,9 @@ ul {
     left: calc((100% - 450px) / 2);
 
     &.chatBox {
-      top: 10%;
+      top: 5%;
       left: 0;
-      height: 80%;
+      height: 90%;
     }
   }
 
@@ -296,12 +301,12 @@ ul {
   }
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 1300px) {
   .ca-main-paper.chatBox {
-    left: calc((100% - 1200px) / 2);
-    top: 10%;
-    height: 80%;
-    width: 1200px;
+    left: calc((100% - 1300px) / 2);
+    top: 5%;
+    height: 90%;
+    width: 1300px;
   }
 }
 

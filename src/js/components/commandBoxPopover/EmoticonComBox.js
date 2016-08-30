@@ -15,16 +15,36 @@ import {
     toggleCommandBoxPopover,
     onMessageChange
 } from '../../actions';
+import AppUtils from '../../utils/appUtils';
+import Halogen from 'halogen';
 
 let MatchedEmoticons;
+
+function prefetchImages() {
+    const {message} = this.props,
+        matches = INPUT_MSG_EMOTICON_REGEX.exec(message);
+
+    MatchedEmoticons = EmoticonUtils.getMatchedEmoticons(matches && matches[1]);
+
+    const imageSrcList = Object.keys(MatchedEmoticons).map((emoticonIcon) => {
+        return `./src/img/emoticons/${emoticonIcon}.png`;
+    });
+
+    AppUtils.preFetchImages(imageSrcList).then(() => {
+        this.setState({loadingEmoticons: false});
+    })
+}
 
 class EmoticonComBox extends Component {
 
     constructor(props) {
         super(props);
 
+        prefetchImages.call(this);
+
         this.state = {
-            selectedEmoticonIndex: 0
+            selectedEmoticonIndex: 0,
+            loadingEmoticons: true
         }
     }
 
@@ -38,7 +58,7 @@ class EmoticonComBox extends Component {
 
     render() {
         const {message} = this.props,
-            {selectedEmoticonIndex} = this.state,
+            {selectedEmoticonIndex, loadingEmoticons} = this.state,
             matches = INPUT_MSG_EMOTICON_REGEX.exec(message);
 
         MatchedEmoticons = EmoticonUtils.getMatchedEmoticons(matches && matches[1]);
@@ -48,13 +68,15 @@ class EmoticonComBox extends Component {
                 <CmdPopoverHeader
                     text={`Emoticons matching ':${matches && matches[1]}'`}
                 />
-                <div className="cmdPop-emoticonList">
-                    <EmoticonList
-                        EmoticonsMap={EmoticonUtils.getMatchedEmoticons(matches && matches[1]) }
-                        selectedEmoticonIndex={selectedEmoticonIndex}
-                        onClick={(key) => {this.onEmoticonSelect(key)}}
-                    />
-                </div>
+                {loadingEmoticons ? <Halogen.SyncLoader className="emo-pop-loader" color="#4DAF7C"/> :
+                    <div className="cmdPop-emoticonList">
+                        <EmoticonList
+                            EmoticonsMap={EmoticonUtils.getMatchedEmoticons(matches && matches[1]) }
+                            selectedEmoticonIndex={selectedEmoticonIndex}
+                            onClick={(key) => {this.onEmoticonSelect(key)}}
+                        />
+                    </div>}
+
             </div>
         );
 
@@ -63,12 +85,16 @@ class EmoticonComBox extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.message != this.props.message) {
             this.setState({
-                selectedEmoticonIndex: 0
-            })
+                selectedEmoticonIndex: 0,
+                loadingEmoticons: true
+            });
+
+            prefetchImages.call(this);
         }
     }
 
     componentDidUpdate() {
+        console.log('uo');
         this.props.onPopOverComponentChange();
     }
 

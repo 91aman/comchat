@@ -9,5 +9,6 @@ export default {
     IFRAME: 'IFRAME',
     TWEET: 'TWEET',
     FACEBOOK: 'FACEBOOK',
-    INSTAGRAM: 'INSTAGRAM'
+    INSTAGRAM: 'INSTAGRAM',
+    EMBEDLY : 'EMBEDLY'
 }
