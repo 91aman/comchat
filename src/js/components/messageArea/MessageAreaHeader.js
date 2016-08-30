@@ -70,8 +70,8 @@ function copyTextToClipboard() {
 
 
 const ChatAreaHeaderComponent = ({channelName, showSnackbar, disableNotification, toggleNotification}) => (
-    <div className="ml-g-header">
-        <div className="ml-g-h-label">{channelName}</div>
+    <div className="ml-g-header spr">
+        <div className="ml-g-h-label vert-center">{channelName}</div>
         <IconButton
             className="ml-g-h-icon"
             title="Copy Link"
@@ -80,7 +80,7 @@ const ChatAreaHeaderComponent = ({channelName, showSnackbar, disableNotification
             <LinkIcon />
         </IconButton>
         <IconButton
-            className="ml-g-h-icon"
+            className="ml-g-h-icon "
             title={disableNotification ? 'Enable Notification' : 'Disable Notification'}
             onClick={toggleNotification}
         >

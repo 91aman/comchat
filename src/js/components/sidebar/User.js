@@ -7,7 +7,8 @@ import React, {Component, PropTypes} from 'react';
 
 export default ({username, color}) => {
     return (<li className="mas-user">
+        <div className="mas-user-profilePic" style={{background:'#'+color}}>{username[0]}</div>
         <div>{username}</div>
-        <div className="mas-user-icon" style={{background:'#'+color}}></div>
+        <div className="mas-user-status"></div>
     </li>);
 };

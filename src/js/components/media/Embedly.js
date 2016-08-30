@@ -9,6 +9,8 @@ import React, {Component, PropTypes} from 'react';
 function getWidth(url) {
     if (url.indexOf('jsfiddle') > -1 || url.indexOf('wikipedia') > -1) {
         return '450px';
+    } else if (url.indexOf('quora') > -1){
+        return '550px';
     }
 
     return '400px';

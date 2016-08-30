@@ -40,9 +40,9 @@ ul {
   position: relative;
 }
 
-.vert-center{
+.vert-center {
   position: absolute;
-  top:50%;
+  top: 50%;
   transform: translateY(-50%);
 }
 
@@ -115,40 +115,63 @@ ul {
 .mas-user-list {
   list-style-type: none;
   padding: 0;
-  margin: 20px 30px;
+  margin: 10px 0;
+}
+
+.mas-user-profilePic {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  text-transform: capitalize;
+  float: left;
+  text-align: center;
+  margin-right: 10px;
+  color: white;
 }
 
 .mas-user {
-  padding-right: 15px;
   position: relative;
-  margin: 15px 0;
+  padding: 10px 20px;
   color: #666;
   font-size: 14px;
+  line-height: 30px;
 
+  &:hover{
+    background: #e1e1e1;
+  }
 }
 
-.mas-user-icon {
+.mas-user-status {
   height: 10px;
   width: 10px;
   display: block;
   position: absolute;
-  right: 0;
-  top: 4px;
+  right: 20px;
+  top: 20px;
   border-radius: 50%;
+  background: #4CAF50;
 }
 
-.ml-g-header, .ma-sb-username {
+.ml-g-header {
   padding: 0 10px 0 30px;
   border-bottom: 1px solid #dedede;
   box-sizing: border-box;
   background-color: #f5f5f5;
   height: 60px;
+}
 
-  > * {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%) !important;
-  }
+.ma-sb-username{
+  padding: 15px 20px;
+  border-bottom: 1px solid #dedede;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  height: 60px;
+}
+
+.ma-sb-username-wrap{
+  width: 100%;
+  height:30px;
+  line-height:30px;
 }
 
 .ml-g-h-label {
@@ -157,6 +180,8 @@ ul {
 
 .ml-g-h-icon {
   float: right;
+  top:50%;
+  transform: translateY(-50%) !important;
 }
 
 .messagesList {
@@ -173,11 +198,11 @@ ul {
 }
 
 .m-time {
-  width: 56px;
+  width: 65px;
 }
 
 .m-message {
-  width: calc(100% - 56px);
+  width: calc(100% - 65px);
   word-break: break-word;
 }
 
@@ -188,6 +213,7 @@ ul {
 
 .message-name {
   margin-right: 8px;
+  margin-left: -10px;
 }
 
 .message-desc {
@@ -204,6 +230,7 @@ ul {
 .info-message-desc {
   font-size: 13px;
   color: #ccc;
+  margin-left: -10px;
 }
 
 .ca-footer {
@@ -242,12 +269,12 @@ ul {
 }
 
 .m-ms-media {
-  border-left: 3px solid #999;
+  border-left: 3px solid #ddd;
   padding-left: 10px;
   margin: 15px 0;
 
-  .embdscl0{
-    display : none;
+  .embdscl0 {
+    display: none;
   }
 }
 

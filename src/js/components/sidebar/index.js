@@ -11,13 +11,17 @@ import ChatIcon from 'material-ui/lib/svg-icons/communication/chat';
 
 import User from './User';
 
-const SideBar = ({username,users = []}) => (<div className="ma-sidebar">
-    <div className="ma-sb-username">
-        <div className="lfloat">{username}</div>
-        <a className="rfloat" href="http://comchat.io/" target="_blank">
-            <IconButton className="ma-sb-icon" title="Start a new conversation">
-                <ChatIcon />
-            </IconButton></a>
+const SideBar = ({username,userColor,users = []}) => (<div className="ma-sidebar">
+    <div className="ma-sb-username spr">
+        <div className="ma-sb-username-wrap">
+            <div className="mas-user-profilePic" style={{background : `#${userColor}`}}>{username[0]}</div>
+            <div>{username}</div>
+        </div>
+        {/* <a className="vert-center" href="http://comchat.io/" target="_blank">
+         <IconButton className="ma-sb-icon" title="Start a new conversation">
+         <ChatIcon />
+         </IconButton>
+         </a>*/}
     </div>
     <ul className="mas-user-list">
         {_.map(users, (user) => <User key={user.username} {...user}/>)}
@@ -27,7 +31,8 @@ const SideBar = ({username,users = []}) => (<div className="ma-sidebar">
 const mapStateToProps = (state) => {
     return {
         users: state.users,
-        username: state.username
+        username: state.username,
+        userColor : state.color
     }
 };
 
